@@ -1,19 +1,118 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+<!doctype html>
+<html lang="en">
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+<head>
+    <meta charset="utf-8" />
+    <title>{% block title %}OPTIMUM{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Administration" name="description" />
+    <meta content="OPTIMUM" name="author" />
+    {% block stylesheet %}
+        <link href="{{ asset('assets/admin/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/admin/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+        <link  href="{{ asset('assets/frontend/css/jquery.datetimepicker.min.css') }}" rel="stylesheet" type="text/css" >
+        <link href="{{ asset('assets/admin/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+     <style>
+         .btn-group-sm>.btn, .btn-sm {
+              --bs-btn-border-radius: 0.02rem;
+         }
+         .btn-primary {
+             --bs-btn-color: #fff;
+             --bs-btn-bg: #ffa500;
+             --bs-btn-border-color: #ffa500;
+             --bs-btn-hover-color: #fff;
+             --bs-btn-hover-bg: #ffa500;
+             --bs-btn-hover-border-color: #ffa500;
+             --bs-btn-focus-shadow-rgb: 111,132,234;
+             --bs-btn-active-color: #fff;
+             --bs-btn-active-bg: #ffa500;
+             --bs-btn-active-border-color: #ffa500;
+             --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+             --bs-btn-disabled-color: #fff;
+             --bs-btn-disabled-bg: #556ee6;
+             --bs-btn-disabled-border-color: #556ee6;
+         }
+         body[data-sidebar=dark] .vertical-menu {
+             background: #ffa500;
+         }
+         body[data-sidebar=dark] .navbar-brand-box {
+             background: #ffa500;
+         }
+         body[data-sidebar=dark] #sidebar-menu ul li a i {
+             color: #000000;
+         }
+         body[data-sidebar=dark].vertical-collpsed .vertical-menu #sidebar-menu>ul>li:hover>a {
+             background: #000000;
+             color: #fff;
+         }
+         body[data-sidebar=dark] #sidebar-menu ul li ul.sub-menu li a {
+             color: #ffffff;
+             background-color: #ffa500;
+         }
+         body[data-sidebar=dark] #sidebar-menu ul li a {
+             color: #fafafa;
+         }
+         body[data-sidebar=dark] .menu-title {
+             color: #ffffff;
+             background-color: #252525;
+         }
+         .menu-title {
+             padding: 6px 20px !important;
+         }
+         .metismenu .mm-collapse.mm-show {
+             color: #ffffff;
+             background-color: #ffa500;
+         }
+         body[data-sidebar=dark].vertical-collpsed .vertical-menu #sidebar-menu>ul>li:hover>ul a {
+             color: #ffffff;
+         }
+         body[data-sidebar=dark].vertical-collpsed .vertical-menu #sidebar-menu>ul ul {
+             background-color: #ffa500;
+         }
+
+         .wizard .steps .current a, .wizard .steps .current a:active, .wizard .steps .current a:hover {
+             background-color: transparent !important;
+             color: #ffa500 !important;
+         }
+         .wizard .steps>ul>li a {
+             background-color: transparent !important;
+             cursor: pointer;
+         }
+         .wizard .steps .number{
+             font-size: 16px !important;
+             border: 2px solid #ffa500 !important;
+         }
+         .wizard .steps li.current a span.number{
+             background-color: #ffa500;
+         }
+         .wizard>.actions a, .wizard>.actions a:active, .wizard>.actions a:hover {
+             background-color: #ffa500 !important;
+             border-radius: 0px !important;
+             padding: 16px 47px !important;
+             color: #fff !important;
+         }
+     </style>
+    {% endblock %}
+</head>
+
+<body data-sidebar="dark" data-layout-mode="light" class="sidebar-enable vertical-collpsed">
+<!-- <body data-layout="horizontal" data-topbar="dark"> -->
+
+{% block body %}
+{% endblock %}
+
+
+{% block javascript %}
+<script src="{{ asset('assets/admin/libs/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/metismenu/metisMenu.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/simplebar/simplebar.min.js') }}"></script>
+<script src="{{ asset('assets/admin/libs/node-waves/waves.min.js') }}"></script>
+
+<!-- App js -->
+<script src="{{ asset('assets/admin/js/app.js') }}"></script>
+{% endblock %}
+
+</body>
+
 </html>

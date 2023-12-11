@@ -26,39 +26,37 @@ services:
       - proxy
 
   db:
-    image: postgres:15.3
+    image: mariadb:10.5
     container_name: db
     restart: always
+    labels:
+      - "traefik.enable=false"
     environment:
-      POSTGRES_DB: app_db
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: QT6e5APtSYaU
-      PGDATA: /var/lib/postgresql/data/pgdata
+      MYSQL_ROOT_PASSWORD: QT6e5APtSYaU
+      MYSQL_USER: root
+      MYSQL_PASSWORD: QT6e5APtSYaU
+      MYSQL_DATABASE: demo_db
     volumes:
-      - ./db:/var/lib/postgresql/data:rw
+      - ./db:/var/lib/mysql
+      - ./docker/mariadb/my.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
     ports:
-      - 5432:5432
+      - 3306:3306
     networks:
       - internal
 
-  pgadmin:
-    image: "dpage/pgadmin4:latest"
-    restart: always
-    container_name: pgadmin
-    environment:
-      POSTGRES_DB: app_db
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: QT6e5APtSYaU
-      PGADMIN_DEFAULT_EMAIL: anguidev@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: QT6e5APtSYaU
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
     depends_on:
       - db
+    ports:
+      - 15432:80
     labels:
       - "traefik.docker.network=proxy"
       - "traefik.enable=true"
-      - "traefik.http.routers.phpmyadmin.rule=Host(`db.demo.develop`)"
-    ports:
-      - 15432:80
+      - "traefik.http.routers.phpmyadmin.rule=Host(`pma.demo.develop`)"
+    environment:
+      UPLOAD_LIMIT: 300M
     networks:
       - internal
       - proxy
@@ -74,9 +72,10 @@ services:
       - "traefik.enable=false"
     environment:
       - APP_ENV=dev
-      - APP_SECRET=cb6aee34801ece16b9d9453e62886cee
       - XDEBUG_MODES=debug
-      - DATABASE_URL=postgresql://root:QT6e5APtSYaU@db:5432/app_db?serverVersion=14
+      - MAILER_DSN=gmail
+      - TZ=Africa/Abidjan
+      - DATABASE_URL=mysql://root:QT6e5APtSYaU@db:3306/demo_db?serverVersion=14
       - REMOTE_HOST=host.docker.internal
       - "host.docker.internal:host-gateway"
     volumes:

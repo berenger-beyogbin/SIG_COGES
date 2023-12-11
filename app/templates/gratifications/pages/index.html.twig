@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheet %}
+    {{ parent() }}
+    <style>
+        .card-body{
+            border: 2px solid #f8f8fb;
+            cursor: pointer;
+        }
+        .card-body {
+            border: 2px solid #ffa500;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+
+        {{ include('_partials/header.html.twig') }}
+
+            <div class="page-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18">Accueil</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center align-items-center align-content-center mt-5">
+                        <div class="col-md-12">
+                            <form method="post" action="{{ path('gratification_upload') }}" enctype="multipart/form-data">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="mb-5">Charger le fichier des gratifications</h4>
+                                        <div class="mb-5 row">
+                                            <label for="annee" class="col-md-2 col-form-label">Année</label>
+                                            <div class="col-md-10">
+                                                <input class="form-control" type="text" name="annee" value="" id="annee" aria-required="true" required>
+                                            </div>
+                                        </div>
+                                        <div class="mb-5 row">
+                                            <label class="col-md-2 col-form-label" for="mois">Sélectionner le mois : </label>
+                                            <div class="col-md-10">
+                                                <select class="form-select" name="mois" aria-required="true" required>
+                                                    <option value="Janvier">Janvier</option>
+                                                    <option value="Février">Février</option>
+                                                    <option value="Mars">Mars</option>
+                                                    <option value="Avril">Avril</option>
+                                                    <option value="Mai">Mai</option>
+                                                    <option value="Juin">Juin</option>
+                                                    <option value="Juillet">Juillet</option>
+                                                    <option value="Aôut">Aôut</option>
+                                                    <option value="Septembre">Septembre</option>
+                                                    <option value="Octobre">Octobre</option>
+                                                    <option value="Novembre">Novembre</option>
+                                                    <option value="Décembre">Décembre</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="mb-5 row">
+                                            <label for="fichier" class="col-md-2 col-form-label">Fichier</label>
+                                            <div class="col-md-10">
+                                                <input class="form-control" type="file" name="fichier" id="fichier" aria-required="true" required>
+                                            </div>
+                                        </div>
+                                        <div class="mb-5 row">
+                                            <div class="col-md-10 d-flex justify-content-center">
+                                                <input type="submit" class="btn btn-success" value="LANCER LE TRAITEMENT" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+
+        });
+    </script>
+{% endblock %}
