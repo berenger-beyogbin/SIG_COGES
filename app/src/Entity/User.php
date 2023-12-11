@@ -11,8 +11,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+
 #[UniqueEntity(fields: ['username','email'], message: 'There is already an account with this username or email')]
 #[ApiResource]
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -35,8 +37,47 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(type: 'boolean')]
-    private $isVerified = false;
+    private $plain_password;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $firstname;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $lastname;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $photo;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $status;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private $created_at;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private $modified_at;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTime $last_connection;
+
+
+    public function __construct()
+    {
+        $this->created_at = new \DateTime();
+        $this->modified_at = new \DateTime();
+    }
+
+    /**
+     * Prepersist gets triggered on Insert
+     * @ORM\PrePersist
+     */
+    public function updatedTimestamps()
+    {
+        if ($this->created_at == null) {
+            $this->created_at = new \DateTime('now');
+        }
+        $this->modified_at =  new \DateTime('now');
+    }
 
     public function getId(): ?int
     {
@@ -66,7 +107,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
     /**
      * A visual identifier that represents this user.
      *
@@ -99,6 +139,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
+
     public function getPassword(): string
     {
         return $this->password;
@@ -131,4 +172,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+
 }

@@ -4,10 +4,13 @@ namespace App\Repository;
 
 use App\Entity\Role;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+
 use Doctrine\Persistence\ManagerRegistry;
+
 
 /**
  * @extends ServiceEntityRepository<Role>
+ *
  *
  * @method Role|null find($id, $lockMode = null, $lockVersion = null)
  * @method Role|null findOneBy(array $criteria, array $orderBy = null)
@@ -21,37 +24,23 @@ class RoleRepository extends ServiceEntityRepository
         parent::__construct($registry, Role::class);
     }
 
-//    /**
-//     * @return Role[] Returns an array of Role objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-    public function findOneByNom($value): ?Role
+    public function add(Role $entity, bool $flush = false): void
     {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.nom = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
     }
 
-    public function findByDescription($value): ?Role
+    public function remove(Role $entity, bool $flush = false): void
     {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.description = :nom')
-            ->setParameter('nom', $value)
-            ->getQuery()
-            ->getResult();
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
     }
+
+
 }
