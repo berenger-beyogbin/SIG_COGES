@@ -29,15 +29,9 @@ security:
             lazy: true
             custom_authenticator: App\Security\FormLoginAuthenticator
             logout:
-<<<<<<< HEAD
                 path: app_logout
                 # where to redirect after logout
                 target: app_login
-=======
-                path: admin_logout
-                # where to redirect after logout
-                target: admin_login
->>>>>>> 22ea570c38a67c6755a4cac707a55e69a03e7f00
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800

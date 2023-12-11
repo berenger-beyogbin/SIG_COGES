@@ -37,29 +37,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    private $plain_password;
-
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $firstname;
-
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $lastname;
-
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $photo;
-
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $status;
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private ?bool $isVerified;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
-    private $created_at;
+    private ?\DateTime $created_at;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
-    private $modified_at;
-
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?\DateTime $last_connection;
-
+    private ?\DateTime $modified_at;
 
     public function __construct()
     {
@@ -107,6 +92,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
     /**
      * A visual identifier that represents this user.
      *
@@ -173,5 +159,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return \DateTime|null
+     */
+    public function getCreatedAt(): ?\DateTime
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @param \DateTime|null $created_at
+     */
+    public function setCreatedAt(?\DateTime $created_at): void
+    {
+        $this->created_at = $created_at;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getModifiedAt(): ?\DateTime
+    {
+        return $this->modified_at;
+    }
+
+    /**
+     * @param \DateTime|null $modified_at
+     */
+    public function setModifiedAt(?\DateTime $modified_at): void
+    {
+        $this->modified_at = $modified_at;
+    }
 
 }
