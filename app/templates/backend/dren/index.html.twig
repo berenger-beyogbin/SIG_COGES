@@ -1,0 +1,36 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block body %}
+
+    {{ include('backend/_partials/header.html.twig') }}
+
+    {{ include('backend/_partials/left_sidebar.html.twig') }}
+
+    <table id="projects-tbl" class="table dataTable no-footer" role="grid" aria-describedby="projects-tbl_info">
+        <thead>
+        <tr role="row">
+            <th class="sorting_asc" tabindex="0" aria-controls="projects-tbl" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Nom: activate to sort column descending" style="width: 199.531px;">ID</th>
+            <th class="sorting" tabindex="0" aria-controls="projects-tbl" rowspan="1" colspan="1" aria-label="Président: activate to sort column ascending" style="width: 268.688px;">LIBELLE</th>
+            <th class="sorting" tabindex="0" aria-controls="projects-tbl" rowspan="1" colspan="1" aria-label="Progrès: activate to sort column ascending" style="width: 159.047px;">EMAIL</th>
+        </thead>
+        <tbody>
+        {% for dren in drens %}
+            <tr  role="row" class="odd">
+                <td>{{ dren.id }}</td>
+                <td>{{ dren.libelle }}</td>
+                <td>{{ dren.email }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+    {{ include("backend/_partials/footer.html.twig") }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
