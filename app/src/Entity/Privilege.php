@@ -41,7 +41,7 @@ class Privilege
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -53,7 +53,7 @@ class Privilege
         return $this->description;
     }
 
-    public function setDescription(?string $description): static
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
 
@@ -68,7 +68,7 @@ class Privilege
         return $this->roles;
     }
 
-    public function addRole(Role $role): static
+    public function addRole(Role $role): self
     {
         if (!$this->roles->contains($role)) {
             $this->roles->add($role);
@@ -77,7 +77,7 @@ class Privilege
         return $this;
     }
 
-    public function removeRole(Role $role): static
+    public function removeRole(Role $role): self
     {
         $this->roles->removeElement($role);
 

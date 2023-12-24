@@ -35,7 +35,7 @@ services:
       MYSQL_ROOT_PASSWORD: QT6e5APtSYaU
       MYSQL_USER: root
       MYSQL_PASSWORD: QT6e5APtSYaU
-      MYSQL_DATABASE: demo_db
+      MYSQL_DATABASE: sigcoges_db
     volumes:
       - ./db:/var/lib/mysql
       - ./docker/mariadb/my.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
@@ -49,12 +49,10 @@ services:
     image: phpmyadmin/phpmyadmin
     depends_on:
       - db
-    ports:
-      - 15432:80
     labels:
       - "traefik.docker.network=proxy"
       - "traefik.enable=true"
-      - "traefik.http.routers.phpmyadmin.rule=Host(`pma.demo.develop`)"
+      - "traefik.http.routers.phpmyadmin.rule=Host(`pma.sigcoges.develop`)"
     environment:
       UPLOAD_LIMIT: 300M
     networks:
@@ -74,7 +72,7 @@ services:
       - APP_ENV=dev
       - XDEBUG_MODES=debug
       - MAILER_DSN=gmail
-      - DATABASE_URL=postgresql://root:QT6e5APtSYaU@db:5432/app_db?serverVersion=14
+      - DATABASE_URL=mysql://root:QT6e5APtSYaU@db:3306/sigcoges_db
       - REMOTE_HOST=host.docker.internal
       - "host.docker.internal:host-gateway"
     volumes:
@@ -95,7 +93,7 @@ services:
     labels:
       - "traefik.docker.network=proxy"
       - "traefik.enable=true"
-      - "traefik.http.routers.www.rule=Host(`demo.develop`)"
+      - "traefik.http.routers.www.rule=Host(`sigcoges.develop`)"
       - "traefik.http.services.www.loadbalancer.server.port=80"
     depends_on:
       - app
