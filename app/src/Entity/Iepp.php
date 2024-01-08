@@ -18,6 +18,13 @@ class Iepp
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
+    #[ORM\Column]
+    private ?int $parent = null;
+
+    #[ORM\ManyToOne(inversedBy: 'iepps')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Dren $IDDren = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -31,6 +38,30 @@ class Iepp
     public function setLibelle(string $libelle): self
     {
         $this->libelle = $libelle;
+
+        return $this;
+    }
+
+    public function getParent(): ?int
+    {
+        return $this->parent;
+    }
+
+    public function setParent(int $parent): static
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    public function getIDDren(): ?Dren
+    {
+        return $this->IDDren;
+    }
+
+    public function setIDDren(?Dren $IDDren): static
+    {
+        $this->IDDren = $IDDren;
 
         return $this;
     }

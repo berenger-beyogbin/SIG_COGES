@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\DrenRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DrenRepository::class)]
@@ -20,6 +22,14 @@ class Dren
 
     #[ORM\Column(length: 255)]
     private ?string $email = null;
+
+    #[ORM\OneToMany(mappedBy: 'IDDren', targetEntity: Iepp::class)]
+    private Collection $iepps;
+
+    public function __construct()
+    {
+        $this->iepps = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -46,6 +56,36 @@ class Dren
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Iepp>
+     */
+    public function getIepps(): Collection
+    {
+        return $this->iepps;
+    }
+
+    public function addIepp(Iepp $iepp): static
+    {
+        if (!$this->iepps->contains($iepp)) {
+            $this->iepps->add($iepp);
+            $iepp->setIDDren($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIepp(Iepp $iepp): static
+    {
+        if ($this->iepps->removeElement($iepp)) {
+            // set the owning side to null (unless already changed)
+            if ($iepp->getIDDren() === $this) {
+                $iepp->setIDDren(null);
+            }
+        }
 
         return $this;
     }
