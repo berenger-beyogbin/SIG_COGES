@@ -6,31 +6,54 @@
 
     {{ include('backend/_partials/left_sidebar.html.twig') }}
 
-    <table id="projects-tbl" class="table dataTable no-footer" role="grid" aria-describedby="projects-tbl_info">
-        <thead>
-        <tr role="row">
-            <th class="sorting_asc" tabindex="0" aria-controls="projects-tbl" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Nom: activate to sort column descending" style="width: 199.531px;">ID</th>
-            <th class="sorting" tabindex="0" aria-controls="projects-tbl" rowspan="1" colspan="1" aria-label="Président: activate to sort column ascending" style="width: 268.688px;">LIBELLE</th>
-            <th class="sorting" tabindex="0" aria-controls="projects-tbl" rowspan="1" colspan="1" aria-label="Progrès: activate to sort column ascending" style="width: 159.047px;">EMAIL</th>
+    <table id="dren-tbl" class="table dataTable no-footer" role="grid" aria-describedby="dren-tbl_info">
+        <thead class="datable-thead table-light">
+        <tr>
+            <th><small></small></th>
+            <th><small>Libéllé</small></th>
+            <th><small>Email</small></th>
+            <th style="min-width:50px">Action</th>
+        </tr>
         </thead>
-        <tbody>
-        {% for dren in drens %}
-            <tr  role="row" class="odd">
-                <td>{{ dren.id }}</td>
-                <td>{{ dren.libelle }}</td>
-                <td>{{ dren.email }}</td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-
     </table>
     {{ include("backend/_partials/footer.html.twig") }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+<script type="text/javascript">
+    $(document).ready(function () {
+        var datatable = initDatatable();
+
+        function initDatatable(){
+            /* DATATABLE INIT */
+            var dt = $('#dren-tbl').DataTable( {
+                "responsive": true,
+                "processing": true,
+                "serverSide": true,
+                "searching": false,
+                "ajax": {
+                    "url": '{{ path('app_dren_dt') }}',
+                    "data": function (d) {
+                    }
+                },
+                "columns": [
+                    {
+                        "class":   "details-control",
+                        "orderable": false,
+                        "data":      "id",
+                        "defaultContent": ""
+                    },
+                    {"data":  "libelle"},
+                    {"data":  "email"},
+                    { "data": "" }
+                ],
+                "order": [[1, 'asc']]
+            } );
+
+            return dt;
+        }
+    })
+</script>
+
 {% endblock %}
