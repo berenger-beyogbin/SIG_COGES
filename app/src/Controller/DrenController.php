@@ -4,9 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Dren;
 use App\Form\DrenType;
+use App\Helper\DataTableHelper;
 use App\Repository\DrenRepository;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -78,4 +81,47 @@ class DrenController extends AbstractController
 
         return $this->redirectToRoute('app_dren_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+    #[Route('/dt', name: 'app_dren_dt', methods: ['GET'])]
+    public function listDrenDT(Request $request, Connection $connection, DrenRepository $paymentRepository)
+    {
+        $user = $this->getUser();
+
+        date_default_timezone_set("Africa/Abidjan");
+        $params = $request->query->all();
+        $paramDB = $connection->getParams();
+        $table = 'dren';
+        $primaryKey = 'id';
+        $payment = null;
+        $columns = [
+            [
+                'db' => 'id',
+                'dt' => 'DT_RowId',
+                'formatter' => function( $d, $row ) {
+                    return 'row_'.$d;
+                }
+            ],
+            [
+                'db' => 'libelle',
+                'dt' => 'libelle',
+            ],
+            [
+                'db' => 'montant',
+                'dt' => 'montant',
+            ]
+        ];
+
+        $sql_details = array(
+            'user' => $paramDB['user'],
+            'pass' => $paramDB['password'],
+            'db'   => $paramDB['dbname'],
+            'host' => $paramDB['host']
+        );
+
+        $whereResult =  null;
+        $response = DataTableHelper::complex( $_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
+        return new JsonResponse($response);
+    }
+
 }

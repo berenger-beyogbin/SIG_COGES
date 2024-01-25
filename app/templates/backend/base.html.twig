@@ -79,6 +79,9 @@
                 [data-sidebar-style="full"][data-layout="vertical"] .menu-toggle .deznav .metismenu li>ul {
                     border-radius: 0;
                 }
+                .required {
+                    color: #211f1f;
+                }
             </style>
         {% endblock %}
     </head>
@@ -107,7 +110,6 @@
             Scripts
         ***********************************-->
         <!-- Required vendors -->
-        <script src="{{ asset('assets/backend/vendor/global/global.min.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/chart.js/Chart.bundle.min.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/apexchart/apexchart.js') }}"></script>
@@ -116,6 +118,7 @@
         <script src="{{ asset('assets/backend/vendor/draggable/draggable.js') }}"></script>
         <!-- tagify -->
         <script src="{{ asset('assets/backend/vendor/tagify/dist/tagify.js') }}"></script>
+        <script src="{{ asset('assets/backend/vendor/global/global.min.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/datatables/js/dataTables.buttons.min.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/datatables/js/buttons.html5.min.js') }}"></script>
