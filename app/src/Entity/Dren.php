@@ -26,9 +26,13 @@ class Dren
     #[ORM\OneToMany(mappedBy: 'IDDren', targetEntity: Iepp::class)]
     private Collection $iepps;
 
+    #[ORM\OneToMany(mappedBy: 'IDDren', targetEntity: COGES::class)]
+    private Collection $Coges;
+
     public function __construct()
     {
         $this->iepps = new ArrayCollection();
+        $this->Coges = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -84,6 +88,36 @@ class Dren
             // set the owning side to null (unless already changed)
             if ($iepp->getIDDren() === $this) {
                 $iepp->setIDDren(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, COGES>
+     */
+    public function getCoges(): Collection
+    {
+        return $this->Coges;
+    }
+
+    public function addCoge(COGES $coge): static
+    {
+        if (!$this->Coges->contains($coge)) {
+            $this->Coges->add($coge);
+            $coge->setIDDren($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCoge(COGES $coge): static
+    {
+        if ($this->Coges->removeElement($coge)) {
+            // set the owning side to null (unless already changed)
+            if ($coge->getIDDren() === $this) {
+                $coge->setIDDren(null);
             }
         }
 

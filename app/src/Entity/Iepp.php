@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\IeppRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: IeppRepository::class)]
@@ -24,6 +26,14 @@ class Iepp
     #[ORM\ManyToOne(inversedBy: 'iepps')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Dren $IDDren = null;
+
+    #[ORM\OneToMany(mappedBy: 'IDIEpp', targetEntity: COGES::class)]
+    private Collection $Coges;
+
+    public function __construct()
+    {
+        $this->Coges = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -62,6 +72,36 @@ class Iepp
     public function setIDDren(?Dren $IDDren): static
     {
         $this->IDDren = $IDDren;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, COGES>
+     */
+    public function getCoges(): Collection
+    {
+        return $this->Coges;
+    }
+
+    public function addCoge(COGES $coge): static
+    {
+        if (!$this->Coges->contains($coge)) {
+            $this->Coges->add($coge);
+            $coge->setIDIEpp($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCoge(COGES $coge): static
+    {
+        if ($this->Coges->removeElement($coge)) {
+            // set the owning side to null (unless already changed)
+            if ($coge->getIDIEpp() === $this) {
+                $coge->setIDIEpp(null);
+            }
+        }
 
         return $this;
     }
