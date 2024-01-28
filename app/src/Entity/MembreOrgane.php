@@ -14,115 +14,113 @@ class MembreOrgane
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $NomPrenoms = null;
+    private ?string $nom= null;
+    private ?string $prenoms = null;
 
     #[ORM\Column(length: 10)]
-    private ?string $Genre = null;
+    private ?string $genre = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $Profession = null;
+    private ?string $profession = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $Contact = null;
+    private ?string $contact = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?OrganeCoges $IDOrgane = null;
+    private ?PosteOrgane $poste = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?PosteOrgane $IDPoste = null;
-
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?MandatCoges $IDMandat = null;
+    private ?MandatCoges $mandat = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNomPrenoms(): ?string
+    public function getNom(): ?string
     {
-        return $this->NomPrenoms;
+        return $this->nom;
     }
 
-    public function setNomPrenoms(string $NomPrenoms): static
+    public function setNom(string $nom): static
     {
-        $this->NomPrenoms = $NomPrenoms;
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getPrenoms(): ?string
+    {
+        return $this->prenoms;
+    }
+
+    public function setPrenoms(string $prenoms): static
+    {
+        $this->prenoms = $prenoms;
 
         return $this;
     }
 
     public function getGenre(): ?string
     {
-        return $this->Genre;
+        return $this->genre;
     }
 
-    public function setGenre(string $Genre): static
+    public function setGenre(string $genre): static
     {
-        $this->Genre = $Genre;
+        $this->genre = $genre;
 
         return $this;
     }
 
     public function getProfession(): ?string
     {
-        return $this->Profession;
+        return $this->profession;
     }
 
-    public function setProfession(string $Profession): static
+    public function setProfession(string $profession): static
     {
-        $this->Profession = $Profession;
+        $this->profession = $profession;
 
         return $this;
     }
 
     public function getContact(): ?string
     {
-        return $this->Contact;
+        return $this->contact;
     }
 
-    public function setContact(string $Contact): static
+    public function setContact(string $contact): static
     {
-        $this->Contact = $Contact;
+        $this->contact = $contact;
 
         return $this;
     }
 
-    public function getIDOrgane(): ?OrganeCoges
+    public function getPoste(): ?PosteOrgane
     {
-        return $this->IDOrgane;
+        return $this->poste;
     }
 
-    public function setIDOrgane(?OrganeCoges $IDOrgane): static
+    public function setPoste(PosteOrgane $poste): static
     {
-        $this->IDOrgane = $IDOrgane;
+        $this->poste = $poste;
 
         return $this;
     }
 
-    public function getIDPoste(): ?PosteOrgane
+    public function getMandat(): ?MandatCoges
     {
-        return $this->IDPoste;
+        return $this->mandat;
     }
 
-    public function setIDPoste(?PosteOrgane $IDPoste): static
+    public function setMandat(MandatCoges $mandat): static
     {
-        $this->IDPoste = $IDPoste;
+        $this->mandat = $mandat;
 
         return $this;
     }
 
-    public function getIDMandat(): ?MandatCoges
-    {
-        return $this->IDMandat;
-    }
-
-    public function setIDMandat(?MandatCoges $IDMandat): static
-    {
-        $this->IDMandat = $IDMandat;
-
-        return $this;
-    }
 }

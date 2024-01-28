@@ -16,14 +16,16 @@ class OrganeCoges
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $LibelleOrgane = null;
+    private ?string $libelleOrgane = null;
 
-    #[ORM\OneToMany(mappedBy: 'IDOrgane', targetEntity: PosteOrgane::class)]
-    private Collection $Poste;
+    #[ORM\OneToMany(mappedBy: 'organeCoges', targetEntity: PosteOrgane::class)]
+    private Collection $postes;
+
+
 
     public function __construct()
     {
-        $this->Poste = new ArrayCollection();
+        $this->postes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -33,12 +35,12 @@ class OrganeCoges
 
     public function getLibelleOrgane(): ?string
     {
-        return $this->LibelleOrgane;
+        return $this->libelleOrgane;
     }
 
-    public function setLibelleOrgane(string $LibelleOrgane): static
+    public function setLibelleOrgane(string $libelleOrgane): static
     {
-        $this->LibelleOrgane = $LibelleOrgane;
+        $this->libelleOrgane = $libelleOrgane;
 
         return $this;
     }
@@ -46,16 +48,16 @@ class OrganeCoges
     /**
      * @return Collection<int, PosteOrgane>
      */
-    public function getPoste(): Collection
+    public function getPostes(): Collection
     {
-        return $this->Poste;
+        return $this->postes;
     }
 
     public function addPoste(PosteOrgane $poste): static
     {
-        if (!$this->Poste->contains($poste)) {
-            $this->Poste->add($poste);
-            $poste->setIDOrgane($this);
+        if (!$this->postes->contains($poste)) {
+            $this->postes->add($poste);
+            $poste->setOrganeCoges($this);
         }
 
         return $this;
@@ -63,13 +65,14 @@ class OrganeCoges
 
     public function removePoste(PosteOrgane $poste): static
     {
-        if ($this->Poste->removeElement($poste)) {
+        if ($this->postes->removeElement($poste)) {
             // set the owning side to null (unless already changed)
-            if ($poste->getIDOrgane() === $this) {
-                $poste->setIDOrgane(null);
+            if ($poste->getOrganeCoges() === $this) {
+                $poste->setOrganeCoges(null);
             }
         }
 
         return $this;
     }
+
 }

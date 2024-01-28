@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+
+<title>Edit Pacc</title>
+
+{% block body %}
+    <h1>Edit Pacc</h1>
+
+    {{ include('pacc/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_pacc_index') }}">back to list</a>
+
+    {{ include('pacc/_delete_form.html.twig') }}
+{% endblock %}

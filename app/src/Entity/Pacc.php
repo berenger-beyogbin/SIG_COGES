@@ -15,20 +15,20 @@ class Pacc
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $DateDebut = null;
+    private ?\DateTimeInterface $dateDebut = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $DateFin = null;
+    private ?\DateTimeInterface $dateFin = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\Column(length: 255)]
+    private ?string $cheminFichier = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $nomFichier = null;
+
+    #[ORM\ManyToOne(inversedBy: 'paccs')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?MandatCoges $IDMandat = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $CheminFichier = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $NomFichier = null;
+    private ?MandatCoges $mandatCoges = null;
 
     public function getId(): ?int
     {
@@ -37,60 +37,60 @@ class Pacc
 
     public function getDateDebut(): ?\DateTimeInterface
     {
-        return $this->DateDebut;
+        return $this->dateDebut;
     }
 
-    public function setDateDebut(\DateTimeInterface $DateDebut): static
+    public function setDateDebut(\DateTimeInterface $dateDebut): static
     {
-        $this->DateDebut = $DateDebut;
+        $this->dateDebut = $dateDebut;
 
         return $this;
     }
 
     public function getDateFin(): ?\DateTimeInterface
     {
-        return $this->DateFin;
+        return $this->dateFin;
     }
 
-    public function setDateFin(\DateTimeInterface $DateFin): static
+    public function setDateFin(\DateTimeInterface $dateFin): static
     {
-        $this->DateFin = $DateFin;
-
-        return $this;
-    }
-
-    public function getIDMandat(): ?MandatCoges
-    {
-        return $this->IDMandat;
-    }
-
-    public function setIDMandat(?MandatCoges $IDMandat): static
-    {
-        $this->IDMandat = $IDMandat;
+        $this->dateFin = $dateFin;
 
         return $this;
     }
 
     public function getCheminFichier(): ?string
     {
-        return $this->CheminFichier;
+        return $this->cheminFichier;
     }
 
-    public function setCheminFichier(string $CheminFichier): static
+    public function setCheminFichier(string $cheminFichier): static
     {
-        $this->CheminFichier = $CheminFichier;
+        $this->cheminFichier = $cheminFichier;
 
         return $this;
     }
 
     public function getNomFichier(): ?string
     {
-        return $this->NomFichier;
+        return $this->nomFichier;
     }
 
-    public function setNomFichier(string $NomFichier): static
+    public function setNomFichier(string $nomFichier): static
     {
-        $this->NomFichier = $NomFichier;
+        $this->nomFichier = $nomFichier;
+
+        return $this;
+    }
+
+    public function getMandatCoges(): ?MandatCoges
+    {
+        return $this->mandatCoges;
+    }
+
+    public function setMandatCoges(?MandatCoges $mandatCoges): static
+    {
+        $this->mandatCoges = $mandatCoges;
 
         return $this;
     }

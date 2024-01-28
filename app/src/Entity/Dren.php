@@ -23,16 +23,23 @@ class Dren
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
-    #[ORM\OneToMany(mappedBy: 'IDDren', targetEntity: Iepp::class)]
+    #[ORM\Column(length: 255)]
+    private ?string $telephone = null;
+
+    #[ORM\OneToMany(mappedBy: 'dren', targetEntity: Iepp::class, orphanRemoval: true)]
     private Collection $iepps;
 
-    #[ORM\OneToMany(mappedBy: 'IDDren', targetEntity: COGES::class)]
-    private Collection $Coges;
+    #[ORM\OneToMany(mappedBy: 'dren', targetEntity: Etablissement::class)]
+    private Collection $etablissements;
+
+    #[ORM\OneToMany(mappedBy: 'dren', targetEntity: Coges::class)]
+    private Collection $dren_coges;
 
     public function __construct()
     {
         $this->iepps = new ArrayCollection();
-        $this->Coges = new ArrayCollection();
+        $this->etablissements = new ArrayCollection();
+        $this->dren_coges = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -65,6 +72,24 @@ class Dren
     }
 
     /**
+     * @return string|null
+     */
+    public function getTelephone(): ?string
+    {
+        return $this->telephone;
+    }
+
+    /**
+     * @param string|null $telephone
+     * @return Dren
+     */
+    public function setTelephone(?string $telephone): self
+    {
+        $this->telephone = $telephone;
+        return $this;
+    }
+
+    /**
      * @return Collection<int, Iepp>
      */
     public function getIepps(): Collection
@@ -76,7 +101,7 @@ class Dren
     {
         if (!$this->iepps->contains($iepp)) {
             $this->iepps->add($iepp);
-            $iepp->setIDDren($this);
+            $iepp->setDren($this);
         }
 
         return $this;
@@ -86,8 +111,8 @@ class Dren
     {
         if ($this->iepps->removeElement($iepp)) {
             // set the owning side to null (unless already changed)
-            if ($iepp->getIDDren() === $this) {
-                $iepp->setIDDren(null);
+            if ($iepp->getDren() === $this) {
+                $iepp->setDren(null);
             }
         }
 
@@ -95,32 +120,63 @@ class Dren
     }
 
     /**
-     * @return Collection<int, COGES>
+     * @return Collection<int, Etablissement>
      */
-    public function getCoges(): Collection
+    public function getEtablissements(): Collection
     {
-        return $this->Coges;
+        return $this->etablissements;
     }
 
-    public function addCoge(COGES $coge): static
+    public function addEtablissement(Etablissement $etablissement): static
     {
-        if (!$this->Coges->contains($coge)) {
-            $this->Coges->add($coge);
-            $coge->setIDDren($this);
+        if (!$this->etablissements->contains($etablissement)) {
+            $this->etablissements->add($etablissement);
+            $etablissement->setDren($this);
         }
 
         return $this;
     }
 
-    public function removeCoge(COGES $coge): static
+    public function removeEtablissement(Etablissement $etablissement): static
     {
-        if ($this->Coges->removeElement($coge)) {
+        if ($this->etablissements->removeElement($etablissement)) {
             // set the owning side to null (unless already changed)
-            if ($coge->getIDDren() === $this) {
-                $coge->setIDDren(null);
+            if ($etablissement->getDren() === $this) {
+                $etablissement->setDren(null);
             }
         }
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Coges>
+     */
+    public function getDrenCoges(): Collection
+    {
+        return $this->dren_coges;
+    }
+
+    public function addDrenCoge(Coges $drenCoge): static
+    {
+        if (!$this->dren_coges->contains($drenCoge)) {
+            $this->dren_coges->add($drenCoge);
+            $drenCoge->setDren($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDrenCoge(Coges $drenCoge): static
+    {
+        if ($this->dren_coges->removeElement($drenCoge)) {
+            // set the owning side to null (unless already changed)
+            if ($drenCoge->getDren() === $this) {
+                $drenCoge->setDren(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+
+<title>Edit MembreOrgane</title>
+
+{% block body %}
+    <h1>Edit MembreOrgane</h1>
+
+    {{ include('membre_organe/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_membre_organe_index') }}">back to list</a>
+
+    {{ include('membre_organe/_delete_form.html.twig') }}
+{% endblock %}

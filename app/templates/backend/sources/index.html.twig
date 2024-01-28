@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<title>Sources index</title>
+
+{% block body %}
+    <h1>Sources index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>LibelleSources</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for source in sources %}
+            <tr>
+                <td>{{ source.id }}</td>
+                <td>{{ source.libelleSources }}</td>
+                <td>
+                    <a href="{{ path('app_sources_show', {'id': source.id}) }}">show</a>
+                    <a href="{{ path('app_sources_edit', {'id': source.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_sources_new') }}">Create new</a>
+{% endblock %}

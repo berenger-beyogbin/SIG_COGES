@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<title>MandatCoges</title>
+
+{% block body %}
+    <h1>MandatCoges</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ mandat_coge.id }}</td>
+            </tr>
+            <tr>
+                <th>DateDebut</th>
+                <td>{{ mandat_coge.DateDebut ? mandat_coge.DateDebut|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>DateFin</th>
+                <td>{{ mandat_coge.DateFin ? mandat_coge.DateFin|date('Y-m-d') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_mandat_coges_index') }}">back to list</a>
+
+    <a href="{{ path('app_mandat_coges_edit', {'id': mandat_coge.id}) }}">edit</a>
+
+    {{ include('mandat_coges/_delete_form.html.twig') }}
+{% endblock %}

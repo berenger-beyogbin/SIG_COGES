@@ -24,28 +24,12 @@ class PageController extends AbstractController
         return $this->render(self::TMPL_DASHBOARD);
     }
 
-    #[Route('/coges', name: 'app_coges', methods: ['GET'])]
-    public function coges(): Response
-    {
-        return $this->render(self::TMPL_COGES);
-    }
-
     #[Route('/daps_coges', name: 'app_daps_coges', methods: ['GET'])]
     public function dapsCoges(): Response
     {
         return $this->render(self::TMPL_DASHBOARD);
     }
 
-    #[Route('/iepp', name: 'app_iepp', methods: ['GET'])]
-    public function iepp(): Response
-    {
-        return $this->render(self::TMPL_DASHBOARD);
-    }
-    #[Route('/etablissements', name: 'app_etablissements', methods: ['GET'])]
-    public function etablissements(): Response
-    {
-        return $this->render(self::TMPL_DASHBOARD);
-    }
     #[Route('/creation_pacc', name: 'app_creation_pacc', methods: ['GET'])]
     public function creationPacc(): Response
     {
@@ -71,25 +55,11 @@ class PageController extends AbstractController
     {
         return $this->render(self::TMPL_DASHBOARD);
     }
-    #[Route('/liste_coges', name: 'app_liste_coges', methods: ['GET'])]
-    public function listeCoges(): Response
-    {
-        return $this->render(self::TMPL_DASHBOARD);
-    }
     #[Route('/affectations_ecoles', name: 'app_affectations_ecoles', methods: ['GET'])]
     public function affectationsEcoles(): Response
     {
         return $this->render(self::TMPL_DASHBOARD);
     }
-    #[Route('/fournisseurs', name: 'app_fournisseurs', methods: ['GET'])]
-    public function fournisseurs(): Response
-    {
-        return $this->render(self::TMPL_DASHBOARD);
-    }
-    #[Route('/utilisateurs', name: 'app_utilisateurs', methods: ['GET'])]
-    public function utilisateurs(): Response
-    {
-        return $this->render(self::TMPL_DASHBOARD);
-    }
+
 
 }

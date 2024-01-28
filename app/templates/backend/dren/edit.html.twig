@@ -1,13 +1,16 @@
-<!DOCTYPE html>
-
-<title>Edit Dren</title>
+{% extends 'backend/base.html.twig' %}
 
 {% block body %}
-    <h1>Edit Dren</h1>
+
+    {{ include('backend/_partials/header.html.twig') }}
+
+    {{ include('backend/_partials/left_sidebar.html.twig') }}
 
     {{ include('dren/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_dren_index') }}">back to list</a>
+    {{ include("backend/_partials/footer.html.twig") }}
+{% endblock %}
 
-    {{ include('dren/_delete_form.html.twig') }}
+{% block javascripts %}
+    {{ parent() }}
 {% endblock %}

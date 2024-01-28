@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<title>Sources</title>
+
+{% block body %}
+    <h1>Sources</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ source.id }}</td>
+            </tr>
+            <tr>
+                <th>LibelleSources</th>
+                <td>{{ source.libelleSources }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_sources_index') }}">back to list</a>
+
+    <a href="{{ path('app_sources_edit', {'id': source.id}) }}">edit</a>
+
+    {{ include('sources/_delete_form.html.twig') }}
+{% endblock %}

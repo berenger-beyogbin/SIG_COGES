@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<title>MembreOrgane index</title>
+
+{% block body %}
+    <h1>MembreOrgane index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Genre</th>
+                <th>Profession</th>
+                <th>Contact</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for membre_organe in membre_organes %}
+            <tr>
+                <td>{{ membre_organe.id }}</td>
+                <td>{{ membre_organe.nom }}</td>
+                <td>{{ membre_organe.genre }}</td>
+                <td>{{ membre_organe.profession }}</td>
+                <td>{{ membre_organe.contact }}</td>
+                <td>
+                    <a href="{{ path('app_membre_organe_show', {'id': membre_organe.id}) }}">show</a>
+                    <a href="{{ path('app_membre_organe_edit', {'id': membre_organe.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_membre_organe_new') }}">Create new</a>
+{% endblock %}

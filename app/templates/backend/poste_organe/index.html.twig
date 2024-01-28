@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<title>PosteOrgane index</title>
+
+{% block body %}
+    <h1>PosteOrgane index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>LibellePoste</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for poste_organe in poste_organes %}
+            <tr>
+                <td>{{ poste_organe.id }}</td>
+                <td>{{ poste_organe.libellePoste }}</td>
+                <td>
+                    <a href="{{ path('app_poste_organe_show', {'id': poste_organe.id}) }}">show</a>
+                    <a href="{{ path('app_poste_organe_edit', {'id': poste_organe.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_poste_organe_new') }}">Create new</a>
+{% endblock %}

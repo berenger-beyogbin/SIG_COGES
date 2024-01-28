@@ -20,19 +20,26 @@ class Iepp
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
-    #[ORM\Column]
-    private ?int $parent = null;
+    #[ORM\Column(length: 255)]
+    private ?string $email = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $telephone = null;
 
     #[ORM\ManyToOne(inversedBy: 'iepps')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Dren $IDDren = null;
+    private ?Dren $dren = null;
 
-    #[ORM\OneToMany(mappedBy: 'IDIEpp', targetEntity: COGES::class)]
-    private Collection $Coges;
+    #[ORM\OneToMany(mappedBy: 'iepp', targetEntity: Etablissement::class)]
+    private Collection $etablissements;
+
+    #[ORM\OneToMany(mappedBy: 'iepp', targetEntity: Coges::class)]
+    private Collection $iepp_coges;
 
     public function __construct()
     {
-        $this->Coges = new ArrayCollection();
+        $this->etablissements = new ArrayCollection();
+        $this->iepp_coges = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -52,57 +59,112 @@ class Iepp
         return $this;
     }
 
-    public function getParent(): ?int
+    /**
+     * @return string|null
+     */
+    public function getEmail(): ?string
     {
-        return $this->parent;
+        return $this->email;
     }
 
-    public function setParent(int $parent): static
+    /**
+     * @param string|null $email
+     * @return Iepp
+     */
+    public function setEmail(?string $email): self
     {
-        $this->parent = $parent;
-
+        $this->email = $email;
         return $this;
     }
 
-    public function getIDDren(): ?Dren
+    /**
+     * @return string|null
+     */
+    public function getTelephone(): ?string
     {
-        return $this->IDDren;
+        return $this->telephone;
     }
 
-    public function setIDDren(?Dren $IDDren): static
+    /**
+     * @param string|null $telephone
+     * @return Iepp
+     */
+    public function setTelephone(?string $telephone): self
     {
-        $this->IDDren = $IDDren;
+        $this->telephone = $telephone;
+        return $this;
+    }
+
+    public function getDren(): ?Dren
+    {
+        return $this->dren;
+    }
+
+    public function setDren(?Dren $dren): static
+    {
+        $this->dren = $dren;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, COGES>
+     * @return Collection<int, Etablissement>
      */
-    public function getCoges(): Collection
+    public function getEtablissements(): Collection
     {
-        return $this->Coges;
+        return $this->etablissements;
     }
 
-    public function addCoge(COGES $coge): static
+    public function addEtablissement(Etablissement $etablissement): static
     {
-        if (!$this->Coges->contains($coge)) {
-            $this->Coges->add($coge);
-            $coge->setIDIEpp($this);
+        if (!$this->etablissements->contains($etablissement)) {
+            $this->etablissements->add($etablissement);
+            $etablissement->setIepp($this);
         }
 
         return $this;
     }
 
-    public function removeCoge(COGES $coge): static
+    public function removeEtablissement(Etablissement $etablissement): static
     {
-        if ($this->Coges->removeElement($coge)) {
+        if ($this->etablissements->removeElement($etablissement)) {
             // set the owning side to null (unless already changed)
-            if ($coge->getIDIEpp() === $this) {
-                $coge->setIDIEpp(null);
+            if ($etablissement->getIepp() === $this) {
+                $etablissement->setIepp(null);
             }
         }
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Coges>
+     */
+    public function getIeppCoges(): Collection
+    {
+        return $this->iepp_coges;
+    }
+
+    public function addIeppCoge(Coges $ieppCoge): static
+    {
+        if (!$this->iepp_coges->contains($ieppCoge)) {
+            $this->iepp_coges->add($ieppCoge);
+            $ieppCoge->setIepp($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIeppCoge(Coges $ieppCoge): static
+    {
+        if ($this->iepp_coges->removeElement($ieppCoge)) {
+            // set the owning side to null (unless already changed)
+            if ($ieppCoge->getIepp() === $this) {
+                $ieppCoge->setIepp(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

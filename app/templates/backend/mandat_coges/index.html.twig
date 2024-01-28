@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<title>MandatCoges index</title>
+
+{% block body %}
+    <h1>MandatCoges index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>DateDebut</th>
+                <th>DateFin</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for mandat_coge in mandat_coges %}
+            <tr>
+                <td>{{ mandat_coge.id }}</td>
+                <td>{{ mandat_coge.DateDebut ? mandat_coge.DateDebut|date('Y-m-d') : '' }}</td>
+                <td>{{ mandat_coge.DateFin ? mandat_coge.DateFin|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_mandat_coges_show', {'id': mandat_coge.id}) }}">show</a>
+                    <a href="{{ path('app_mandat_coges_edit', {'id': mandat_coge.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_mandat_coges_new') }}">Create new</a>
+{% endblock %}

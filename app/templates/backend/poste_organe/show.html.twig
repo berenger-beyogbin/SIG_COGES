@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<title>PosteOrgane</title>
+
+{% block body %}
+    <h1>PosteOrgane</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ poste_organe.id }}</td>
+            </tr>
+            <tr>
+                <th>LibellePoste</th>
+                <td>{{ poste_organe.libellePoste }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_poste_organe_index') }}">back to list</a>
+
+    <a href="{{ path('app_poste_organe_edit', {'id': poste_organe.id}) }}">edit</a>
+
+    {{ include('poste_organe/_delete_form.html.twig') }}
+{% endblock %}

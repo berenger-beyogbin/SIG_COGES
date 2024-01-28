@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\MandatCogesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -20,9 +22,17 @@ class MandatCoges
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $DateFin = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'mandats')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?COGES $IDCoges = null;
+    private ?Coges $coges = null;
+
+    #[ORM\OneToMany(mappedBy: 'mandatCoges', targetEntity: Pacc::class)]
+    private Collection $paccs;
+
+    public function __construct()
+    {
+        $this->paccs = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -53,15 +63,46 @@ class MandatCoges
         return $this;
     }
 
-    public function getIDCoges(): ?COGES
+    public function getCoges(): ?Coges
     {
-        return $this->IDCoges;
+        return $this->coges;
     }
 
-    public function setIDCoges(?COGES $IDCoges): static
+    public function setCoges(?Coges $coges): static
     {
-        $this->IDCoges = $IDCoges;
+        $this->coges = $coges;
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Pacc>
+     */
+    public function getPaccs(): Collection
+    {
+        return $this->paccs;
+    }
+
+    public function addPacc(Pacc $pacc): static
+    {
+        if (!$this->paccs->contains($pacc)) {
+            $this->paccs->add($pacc);
+            $pacc->setMandatCoges($this);
+        }
+
+        return $this;
+    }
+
+    public function removePacc(Pacc $pacc): static
+    {
+        if ($this->paccs->removeElement($pacc)) {
+            // set the owning side to null (unless already changed)
+            if ($pacc->getMandatCoges() === $this) {
+                $pacc->setMandatCoges(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

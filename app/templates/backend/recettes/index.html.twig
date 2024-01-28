@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<title>Recettes index</title>
+
+{% block body %}
+    <h1>Recettes index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>MontantRecettes</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for recette in recettes %}
+            <tr>
+                <td>{{ recette.id }}</td>
+                <td>{{ recette.montantRecettes }}</td>
+                <td>
+                    <a href="{{ path('app_recettes_show', {'id': recette.id}) }}">show</a>
+                    <a href="{{ path('app_recettes_edit', {'id': recette.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_recettes_new') }}">Create new</a>
+{% endblock %}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<title>Depenses index</title>
+
+{% block body %}
+    <h1>Depenses index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>MontantDepense</th>
+                <th>FichierPreuve</th>
+                <th>NomFichierPreuve</th>
+                <th>DateExe</th>
+                <th>HeureExe</th>
+                <th>PaiementFournisseur</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for depense in depenses %}
+            <tr>
+                <td>{{ depense.id }}</td>
+                <td>{{ depense.MontantDepense }}</td>
+                <td>{{ depense.FichierPreuve }}</td>
+                <td>{{ depense.NomFichierPreuve }}</td>
+                <td>{{ depense.DateExe ? depense.DateExe|date('Y-m-d') : '' }}</td>
+                <td>{{ depense.HeureExe ? depense.HeureExe|date('H:i:s') : '' }}</td>
+                <td>{{ depense.PaiementFournisseur ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_depenses_show', {'id': depense.id}) }}">Afficher</a>
+                    <a href="{{ path('app_depenses_edit', {'id': depense.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_depenses_new') }}">Create new</a>
+{% endblock %}

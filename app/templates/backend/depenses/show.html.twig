@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<title>Depenses</title>
+
+{% block body %}
+    <h1>Depenses</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ depense.id }}</td>
+            </tr>
+            <tr>
+                <th>MontantDepense</th>
+                <td>{{ depense.MontantDepense }}</td>
+            </tr>
+            <tr>
+                <th>FichierPreuve</th>
+                <td>{{ depense.FichierPreuve }}</td>
+            </tr>
+            <tr>
+                <th>NomFichierPreuve</th>
+                <td>{{ depense.NomFichierPreuve }}</td>
+            </tr>
+            <tr>
+                <th>DateExe</th>
+                <td>{{ depense.DateExe ? depense.DateExe|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>HeureExe</th>
+                <td>{{ depense.HeureExe ? depense.HeureExe|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>PaiementFournisseur</th>
+                <td>{{ depense.PaiementFournisseur ? 'Yes' : 'No' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_depenses_index') }}">back to list</a>
+
+    <a href="{{ path('app_depenses_edit', {'id': depense.id}) }}">edit</a>
+
+    {{ include('depenses/_delete_form.html.twig') }}
+{% endblock %}

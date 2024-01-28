@@ -82,43 +82,38 @@
                 .required {
                     color: #211f1f;
                 }
+                .header-profile2 .dropdown-item:hover {
+                    background-color: #efefef;
+                }
+                .chatbox .contacts li:hover {
+                    background: #e6e6e6;
+                }
             </style>
         {% endblock %}
     </head>
-    <body class="vh-100" data-typography="poppins" data-theme-version="light" data-layout="vertical" data-nav-headerbg="color_2" data-headerbg="color_2" data-sidebar-style="overlay" data-sidebarbg="color_2" data-sidebar-position="static" data-header-position="fixed" data-container="wide" direction="ltr" data-primary="color_2" data-secondary="color_1">        <!--*******************
-        Preloader start
-        ********************-->
+    <body class="vh-100" data-typography="poppins" data-theme-version="light" data-layout="vertical" data-nav-headerbg="color_2" data-headerbg="color_2" data-sidebar-style="overlay" data-sidebarbg="color_2" data-sidebar-position="static" data-header-position="fixed" data-container="wide" direction="ltr" data-primary="color_2" data-secondary="color_1">
+    <!--******************* Preloader start ********************-->
 {#        <div id="preloader">#}
 {#            <div class="lds-ripple">#}
 {#                <div></div>#}
 {#                <div></div>#}
 {#            </div>#}
 {#        </div>#}
-        <!--*******************
-            Preloader end
-        ********************-->
+        <!--********* Preloader end *************-->
         {% block body %}
         {% endblock %}
     </body>
     {% block javascripts %}
-        {{ encore_entry_script_tags('app') }}
-        <!--**********************************
-     Main wrapper end
- ***********************************-->
-
-        <!--**********************************
-            Scripts
-        ***********************************-->
+{#        {{ encore_entry_script_tags('app') }}#}
+        <!--*********** Scripts ******************-->
         <!-- Required vendors -->
+        <script src="{{ asset('assets/backend/vendor/global/global.min.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/chart.js/Chart.bundle.min.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/apexchart/apexchart.js') }}"></script>
         <!-- Dashboard 1 -->
-        <script src="{{ asset('assets/backend/js/dashboard/dashboard-1.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/draggable/draggable.js') }}"></script>
-        <!-- tagify -->
-        <script src="{{ asset('assets/backend/vendor/tagify/dist/tagify.js') }}"></script>
-        <script src="{{ asset('assets/backend/vendor/global/global.min.js') }}"></script>
+
         <script src="{{ asset('assets/backend/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/datatables/js/dataTables.buttons.min.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/datatables/js/buttons.html5.min.js') }}"></script>

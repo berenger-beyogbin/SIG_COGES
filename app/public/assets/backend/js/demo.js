@@ -196,7 +196,7 @@ function deleteAllCookie(reload = true) {
 
 
     function themeChange(theme) {
-        alert(theme);
+        // alert(theme);
         var themeSettings = {};
         themeSettings = eval('dzThemeSet' + theme);
         dzSettingsOptions = themeSettings; /* For Screen Resize */

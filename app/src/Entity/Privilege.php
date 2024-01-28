@@ -23,12 +23,8 @@ class Privilege
     #[ORM\Column(length: 900, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'privileges')]
-    private Collection $roles;
-
     public function __construct()
     {
-        $this->roles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -60,27 +56,4 @@ class Privilege
         return $this;
     }
 
-    /**
-     * @return Collection<int, Role>
-     */
-    public function getRoles(): Collection
-    {
-        return $this->roles;
-    }
-
-    public function addRole(Role $role): self
-    {
-        if (!$this->roles->contains($role)) {
-            $this->roles->add($role);
-        }
-
-        return $this;
-    }
-
-    public function removeRole(Role $role): self
-    {
-        $this->roles->removeElement($role);
-
-        return $this;
-    }
 }

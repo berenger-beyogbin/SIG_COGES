@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<title>Pacc</title>
+
+{% block body %}
+    <h1>Pacc</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ pacc.id }}</td>
+            </tr>
+            <tr>
+                <th>DateDebut</th>
+                <td>{{ pacc.dateDebut ? pacc.dateDebut|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>DateFin</th>
+                <td>{{ pacc.dateFin ? pacc.dateFin|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>CheminFichier</th>
+                <td>{{ pacc.cheminFichier }}</td>
+            </tr>
+            <tr>
+                <th>NomFichier</th>
+                <td>{{ pacc.nomFichier }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_pacc_index') }}">back to list</a>
+
+    <a href="{{ path('app_pacc_edit', {'id': pacc.id}) }}">edit</a>
+
+    {{ include('pacc/_delete_form.html.twig') }}
+{% endblock %}

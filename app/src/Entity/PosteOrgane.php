@@ -14,11 +14,11 @@ class PosteOrgane
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-    private ?string $LibellePoste = null;
+    private ?string $libellePoste = null;
 
-    #[ORM\ManyToOne(inversedBy: 'Poste')]
+    #[ORM\ManyToOne(inversedBy: 'postes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?OrganeCoges $IDOrgane = null;
+    private ?OrganeCoges $organeCoges = null;
 
     public function getId(): ?int
     {
@@ -27,25 +27,26 @@ class PosteOrgane
 
     public function getLibellePoste(): ?string
     {
-        return $this->LibellePoste;
+        return $this->libellePoste;
     }
 
-    public function setLibellePoste(string $LibellePoste): static
+    public function setLibellePoste(string $libellePoste): static
     {
-        $this->LibellePoste = $LibellePoste;
+        $this->libellePoste = $libellePoste;
 
         return $this;
     }
 
-    public function getIDOrgane(): ?OrganeCoges
+    public function getOrganeCoges(): ?OrganeCoges
     {
-        return $this->IDOrgane;
+        return $this->organeCoges;
     }
 
-    public function setIDOrgane(?OrganeCoges $IDOrgane): static
+    public function setOrganeCoges(?OrganeCoges $organeCoges): static
     {
-        $this->IDOrgane = $IDOrgane;
+        $this->organeCoges = $organeCoges;
 
         return $this;
     }
+
 }

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<title>Recettes</title>
+
+{% block body %}
+    <h1>Recettes</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ recette.id }}</td>
+            </tr>
+            <tr>
+                <th>MontantRecettes</th>
+                <td>{{ recette.montantRecettes }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_recettes_index') }}">back to list</a>
+
+    <a href="{{ path('app_recettes_edit', {'id': recette.id}) }}">edit</a>
+
+    {{ include('recettes/_delete_form.html.twig') }}
+{% endblock %}

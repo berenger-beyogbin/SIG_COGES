@@ -14,7 +14,6 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Intl\Countries;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
@@ -35,7 +34,7 @@ class UserFormType extends AbstractType
         $past = new \DateTime('- 80 years');
         $end = new \DateTime();
 
-        $countries = array_combine(array_values(Countries::getNames()), array_values(Countries::getNames()));
+       // $countries = array_combine(array_values(Countries::getNames()), array_values(Countries::getNames()));
 
         $builder
             ->add('sex', ChoiceType::class, [

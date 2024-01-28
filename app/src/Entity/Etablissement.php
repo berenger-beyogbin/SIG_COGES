@@ -16,27 +16,29 @@ class Etablissement
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $Nom = null;
+    private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $Localite = null;
+    private ?string $localite = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $TypeMilieu = null;
+    private ?string $typeMilieu = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $Cycle = null;
+    private ?string $cycle = null;
 
     #[ORM\Column(length: 10)]
-    private ?string $CodeEts = null;
+    private ?string $codeEts = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Dren $IDDren = null;
+    #[ORM\ManyToOne(inversedBy: 'etablissements')]
+    private ?Iepp $iepp = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'etablissements')]
+    private ?Dren $dren = null;
+
+    #[ORM\ManyToOne(inversedBy: 'etablissements')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Iepp $IDIepp = null;
+    private ?Coges $coges = null;
 
     public function getId(): ?int
     {
@@ -45,85 +47,99 @@ class Etablissement
 
     public function getNom(): ?string
     {
-        return $this->Nom;
+        return $this->nom;
     }
 
-    public function setNom(string $Nom): static
+    public function setNom(string $nom): static
     {
-        $this->Nom = $Nom;
+        $this->nom = $nom;
 
         return $this;
     }
 
     public function getLocalite(): ?string
     {
-        return $this->Localite;
+        return $this->localite;
     }
 
-    public function setLocalite(string $Localite): static
+    public function setLocalite(string $localite): static
     {
-        $this->Localite = $Localite;
+        $this->localite = $localite;
 
         return $this;
     }
 
     public function getTypeMilieu(): ?string
     {
-        return $this->TypeMilieu;
+        return $this->typeMilieu;
     }
 
-    public function setTypeMilieu(string $TypeMilieu): static
+    public function setTypeMilieu(string $typeMilieu): static
     {
-        $this->TypeMilieu = $TypeMilieu;
+        $this->typeMilieu = $typeMilieu;
 
         return $this;
     }
 
     public function getCycle(): ?string
     {
-        return $this->Cycle;
+        return $this->cycle;
     }
 
-    public function setCycle(string $Cycle): static
+    public function setCycle(string $cycle): static
     {
-        $this->Cycle = $Cycle;
+        $this->cycle = $cycle;
 
         return $this;
     }
 
     public function getCodeEts(): ?string
     {
-        return $this->CodeEts;
+        return $this->codeEts;
     }
 
-    public function setCodeEts(string $CodeEts): static
+    public function setCodeEts(string $codeEts): static
     {
-        $this->CodeEts = $CodeEts;
+        $this->codeEts = $codeEts;
 
         return $this;
     }
 
-    public function getIDDren(): ?Dren
+    public function getIepp(): ?Iepp
     {
-        return $this->IDDren;
+        return $this->iepp;
     }
 
-    public function setIDDren(?Dren $IDDren): static
+    public function setIepp(?Iepp $iepp): static
     {
-        $this->IDDren = $IDDren;
+        $this->iepp = $iepp;
 
         return $this;
     }
 
-    public function getIDIepp(): ?Iepp
+    public function getDren(): ?Dren
     {
-        return $this->IDIepp;
+        return $this->dren;
     }
 
-    public function setIDIepp(?Iepp $IDIepp): static
+    public function setDren(?Dren $dren): static
     {
-        $this->IDIepp = $IDIepp;
+        $this->dren = $dren;
 
         return $this;
     }
+
+    public function getCoges(): ?Coges
+    {
+        return $this->coges;
+    }
+
+    public function setCoges(?Coges $coges): static
+    {
+        $this->coges = $coges;
+
+        return $this;
+    }
+
+
 }

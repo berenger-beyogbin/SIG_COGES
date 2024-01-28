@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -189,6 +190,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setModifiedAt(?\DateTime $modified_at): void
     {
         $this->modified_at = $modified_at;
+    }
+
+    public function isIsVerified(): ?bool
+    {
+        return $this->isVerified;
     }
 
 }

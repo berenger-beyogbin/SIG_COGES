@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+
+<title>New Iepp</title>
+
+{% block body %}
+    <h1>Create new Iepp</h1>
+
+    {{ include('iepp/_form.html.twig') }}
+
+    <a href="{{ path('app_iepp_index') }}">back to list</a>
+{% endblock %}

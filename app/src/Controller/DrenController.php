@@ -17,6 +17,67 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/admin/dren')]
 class DrenController extends AbstractController
 {
+    #[Route('/dt', name: 'app_dren_dt', methods: ['GET'])]
+    public function listDrenDT(Request $request, Connection $connection, DrenRepository $paymentRepository)
+    {
+        $user = $this->getUser();
+
+        date_default_timezone_set("Africa/Abidjan");
+        $params = $request->query->all();
+        $paramDB = $connection->getParams();
+        $table = 'dren';
+        $primaryKey = 'id';
+        $payment = null;
+        $columns = [
+            [
+                'db' => 'id',
+                'dt' => 'DT_RowId',
+                'formatter' => function( $d, $row ) {
+                    return 'row_'.$d;
+                }
+            ],
+            [
+                'db' => 'libelle',
+                'dt' => 'libelle',
+            ],
+            [
+                'db' => 'email',
+                'dt' => 'email',
+            ],
+            [
+                'db' => 'telephone',
+                'dt' => 'telephone',
+            ],
+            [
+                'db' => 'id',
+                'dt' => 'id',
+                'formatter' => function($d, $row) {
+                      return "<a href='/admin/dren/$d/iepp' class='link-info'>IEPP</a>";
+                }
+            ]
+        ];
+
+        $sql_details = array(
+            'user' => $paramDB['user'],
+            'pass' => $paramDB['password'],
+            'db'   => $paramDB['dbname'],
+            'host' => $paramDB['host']
+        );
+
+        $whereResult =  null;
+        $response = DataTableHelper::complex( $_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
+        return new JsonResponse($response);
+    }
+
+    #[Route('/{id}/iepp', name: 'app_dren_iepp_index', methods: ['GET'])]
+    public function showDrenIepps(Dren $dren): Response
+    {
+        $iepps = $dren->getIepps();
+        foreach($iepps as $iepp){
+            dump($iepp);
+        }
+        die;
+    }
     #[Route('/', name: 'app_dren_index', methods: ['GET'])]
     public function index(DrenRepository $drenRepository): Response
     {
@@ -83,45 +144,5 @@ class DrenController extends AbstractController
     }
 
 
-    #[Route('/dt', name: 'app_dren_dt', methods: ['GET'])]
-    public function listDrenDT(Request $request, Connection $connection, DrenRepository $paymentRepository)
-    {
-        $user = $this->getUser();
-
-        date_default_timezone_set("Africa/Abidjan");
-        $params = $request->query->all();
-        $paramDB = $connection->getParams();
-        $table = 'dren';
-        $primaryKey = 'id';
-        $payment = null;
-        $columns = [
-            [
-                'db' => 'id',
-                'dt' => 'DT_RowId',
-                'formatter' => function( $d, $row ) {
-                    return 'row_'.$d;
-                }
-            ],
-            [
-                'db' => 'libelle',
-                'dt' => 'libelle',
-            ],
-            [
-                'db' => 'montant',
-                'dt' => 'montant',
-            ]
-        ];
-
-        $sql_details = array(
-            'user' => $paramDB['user'],
-            'pass' => $paramDB['password'],
-            'db'   => $paramDB['dbname'],
-            'host' => $paramDB['host']
-        );
-
-        $whereResult =  null;
-        $response = DataTableHelper::complex( $_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
-        return new JsonResponse($response);
-    }
 
 }

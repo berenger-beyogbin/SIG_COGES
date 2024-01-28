@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<title>Iepp index</title>
+
+{% block body %}
+    <h1>Iepp index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Libelle</th>
+                <th>Parent</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for iepp in iepps %}
+            <tr>
+                <td>{{ iepp.id }}</td>
+                <td>{{ iepp.libelle }}</td>
+                <td>{{ iepp.parent }}</td>
+                <td>
+                    <a href="{{ path('app_iepp_show', {'id': iepp.id}) }}">show</a>
+                    <a href="{{ path('app_iepp_edit', {'id': iepp.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_iepp_new') }}">Create new</a>
+{% endblock %}
