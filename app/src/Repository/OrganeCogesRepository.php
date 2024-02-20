@@ -21,6 +21,19 @@ class OrganeCogesRepository extends ServiceEntityRepository
         parent::__construct($registry, OrganeCoges::class);
     }
 
+    public function add(OrganeCoges $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
 //    /**
 //     * @return OrganeCoges[] Returns an array of OrganeCoges objects
 //     */

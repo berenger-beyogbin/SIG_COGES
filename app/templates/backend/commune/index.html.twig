@@ -1,0 +1,172 @@
+
+{% extends 'backend/base.html.twig' %}
+
+{% block body %}
+
+    <div id="main-wrapper">
+
+        {{ include('backend/_partials/header.html.twig') }}
+        {{ include('backend/_partials/left_sidebar.html.twig') }}
+
+        <div class="content-body">
+            <!-- row -->
+            <div class="page-titles">
+                <ol class="breadcrumb">
+                    <li>
+                        <h5 class="bc-title">Gestion des COMMUNES</h5>
+                    </li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">
+                            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Home </a>
+                    </li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">COMMUNE</a></li>
+                </ol>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="table-responsive active-projects style-1">
+                                    <div class="tbl-caption">
+                                        <h4 class="heading mb-0">COMMUNES</h4>
+                                        <div>
+                                            <a class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" href="#offcanvasCreateCommune" role="button" aria-controls="offcanvasCreateCommune">+ Enregister un commune</a>
+                                            <a href="{{ path('app_commune_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
+                                        </div>
+                                    </div>
+                                    <div class="row border-1 border-light p-3">
+                                        <div class="col-sm-2">
+                                            <select type="text" class="form-control select2 filter" id="region_filter" name="region_filter">
+                                                <option value="" selected>--REGION--</option>
+                                                {% for region in regions %}
+                                                    <option value="{{ region.id }}">{{ region.libelle }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <select type="text" class="form-control select2 filter" id="commune_filter" name="commune_filter">
+                                                <option value="" selected>--COMMUNE</option>
+                                                {% for commune in communes %}
+                                                    <option value="{{ commune.id }}">{{ commune.libelle }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" placeholder="Recherche rapide" name="filter">
+                                        </div>
+                                    </div>
+                                    <table id="datatable" class="table dataTable no-footer" role="grid" aria-describedby="dt_info">
+                                        <thead>
+                                        <tr role="row">
+                                            <th>#</th>
+                                            <th>LIBELLE</th>
+                                            <th>DESCRIPTION</th>
+                                            <th>REGION</th>
+                                            <th width="5%">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{ include("backend/commune/_create_commune_offcanvas.html.twig") }}
+
+
+        {{ include("backend/_partials/footer.html.twig") }}
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/datatables/js/datatables.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var datatable = initDatatable();
+
+            $(".filter").change(function (e) {
+                datatable.draw();
+            });
+
+            $('.region').select2({
+                ajax: {
+                    placeholder: "REGIONS",
+                    url: '{{ path('app_region_select2_ajax') }}',
+                    delay: 250,
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+            function initDatatable(){
+                var dt = $('#datatable').DataTable( {
+                    responsive: true,
+                    pageLength: 20,
+                    searching: true,
+                    select: true,
+                    lengthChange: false,
+                    language: {
+                        paginate: {
+                            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
+                            first: '',
+                            last: '',
+                            next: '<i class="fa-solid fa-angle-right"></i>',
+                            previous: '<i class="fa-solid fa-angle-left"></i>'
+                        }
+                    },
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        "url": '{{ path('app_commune_dt') }}',
+                        "data": function (d) {
+                            d.region_filter = $("#region_filter").val();
+                            d.commune_filter = $("#commune_filter").val();
+                        }
+                    },
+                    columns: [
+                        {"data":  "id"},
+                        {"data":  "libelle"},
+                        {"data":  "description"},
+                        { "data": "region" },
+                        { "data": "region_id" },
+                    ],
+                    order: [[1, 'desc']]
+                } );
+                return dt;
+
+            }
+
+            $('#formCreateCoges').ajaxForm(function(d) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Enregistrement effectué avec succès",
+                    showConfirmButton: false,
+                    timer: 1500,
+                }).then(function(result){
+                    $('#formCreateCoges').resetForm();
+                    cogesDT.draw();
+                });
+            });
+
+        });
+    </script>
+
+{% endblock %}

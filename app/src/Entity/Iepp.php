@@ -20,10 +20,10 @@ class Iepp
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255,nullable: true)]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $telephone = null;
 
     #[ORM\ManyToOne(inversedBy: 'iepps')]

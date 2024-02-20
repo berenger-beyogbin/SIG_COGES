@@ -7,7 +7,11 @@ var W3Crm = function() {
 
     var handleSelectPicker = function() {
         if (jQuery('.default-select,.table-responsive select').length > 0) {
-            jQuery('.default-select,.table-responsive select').selectpicker();
+            jQuery('.default-select,.table-responsive select').selectpicker({
+                "noneSelectedText": "",
+                "noneResultsText": "",
+                "selectAllText": "Tout"
+            });
         }
     }
     var handlePreloader = function() {
@@ -637,8 +641,8 @@ var W3Crm = function() {
             MagnificPopup();
             handleDraggableCard();
             handleConverterTheme();
-            //handleImageSelect();
-            handleSelectPicker();
+            // handleImageSelect();
+            // handleSelectPicker();
             handlePageOnScroll();
             tagify();
             // masonryBox();

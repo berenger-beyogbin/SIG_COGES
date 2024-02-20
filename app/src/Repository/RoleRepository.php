@@ -24,6 +24,7 @@ class RoleRepository extends ServiceEntityRepository
         parent::__construct($registry, Role::class);
     }
 
+
     public function add(Role $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -31,6 +32,11 @@ class RoleRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
     }
 
     public function remove(Role $entity, bool $flush = false): void

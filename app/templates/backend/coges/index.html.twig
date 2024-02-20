@@ -20,11 +20,10 @@
                                 <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                            Home </a>
+                            Accueil </a>
                     </li>
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">COGES</a></li>
                 </ol>
-                <a class="text-primary fs-13" data-bs-toggle="offcanvas" href="#offcanvasExample1" role="button" aria-controls="offcanvasExample1">+ Add Task</a>
             </div>
             <div class="container-fluid">
                 <div class="row">
@@ -35,26 +34,48 @@
                                     <div class="tbl-caption">
                                         <h4 class="heading mb-0">COGES</h4>
                                         <div>
-                                            <a class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">+ Ajouter</a>
-                                            <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal1">
-                                                + Voir le détail
-                                            </button>
+                                            <a class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" href="#offcanvasCreateCoges" role="button" aria-controls="offcanvasCreateCoges">+ Enregister un coges</a>
+                                            <a href="{{ path('app_coges_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
                                         </div>
                                     </div>
-                                    <table id="coges-tbl" class="table dataTable no-footer" role="grid" aria-describedby="coges-tbl_info">
-                                        <thead class="datable-thead table-light">
-                                        <tr>
-                                            <th></th>
-                                            <th>Libellé</th>
-                                            <th>Cycle</th>
-                                            <th>Numéro Compte</th>
-                                            <th>Domiciliation</th>
-                                            <th>Groupe Scolaire</th>
-                                            <th>actions</th>
-                                        </tr>
+                                    <div class="row border-1 border-light p-3">
+                                        <div class="col-sm-2">
+                                            <select type="text" class="form-control region filter" id="region_filter" name="region_filter">
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <select type="text" class="form-control dren filter" id="dren_filter" name="dren_filter">
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <select type="text" class="form-control iepp filter" id="iepp_filter" name="iepp_filter">
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <select type="text" class="form-control commune filter" id="commune_filter" name="commune_filter">
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" placeholder="Recherche rapide" name="filter">
+                                        </div>
+                                    </div>
+                                    <table id="datatable" class="table dataTable no-footer" role="grid" aria-describedby="dt_info">
+                                        <thead>
+                                            <tr role="row">
+                                                <th>#</th>
+                                                <th>LIBELLE</th>
+                                                <th>CYCLE</th>
+                                                <th>N° COMPTE</th>
+                                                <th>DOMICILIATION</th>
+                                                <th>GROUPE SCOLAIRE</th>
+                                                <th>REGION</th>
+                                                <th>DREN</th>
+                                                <th>IEPP</th>
+                                                <th>COMMUNE</th>
+                                                <th>Actions</th>
+                                            </tr>
                                         </thead>
-                                        <tbody>
-                                        </tbody>
+                                        <tbody></tbody>
                                     </table>
                                 </div>
                             </div>
@@ -64,54 +85,170 @@
             </div>
         </div>
 
-
-        {#        {{ include("backend/pages/_add_employee_offcanvas.html.twig")}}#}
-        {#        {{ include("backend/pages/_add_task_offcanvas.html.twig")}}#}
-
         {{ include("backend/_partials/footer.html.twig") }}
 
+        {{ include("backend/coges/_create_coges_offcanvas.html.twig") }}
     </div>
 
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    Swal.fire({
+    position: "top-end",
+    icon: "success",
+    title: "Enregistrement effectué avec succès",
+    showConfirmButton: false,
+    timer: 1500,
     <script type="text/javascript">
         $(document).ready(function () {
             var datatable = initDatatable();
 
+            $(".filter").change(function (e) {
+                datatable.draw();
+            });
+
+           // $(".select2").select2();
+
+            $('.region').select2({
+                ajax: {
+                    placeholder: "REGIONS",
+                    allowClear: true,
+                    url: '{{ path('app_region_select2_ajax') }}',
+                    delay: 250,
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+            $('.coges').select2({
+                ajax: {
+                    placeholder: "COGES",
+                    allowClear: true,
+                    url: '{{ path('app_coges_select2_ajax') }}',
+                    delay: 250,
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+            $('.commune').select2({
+                ajax: {
+                    placeholder: "COMMUNES",
+                    allowClear: true,
+                    url: '{{ path('app_commune_select2_ajax') }}',
+                    delay: 250,
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+            $('.iepp').select2({
+                ajax: {
+                    placeholder: "IEPP",
+                    allowClear: true,
+                    url: '{{ path('app_iepp_select2_ajax') }}',
+                    delay: 250,
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+            $('.dren').select2({
+                ajax: {
+                    allowClear: true,
+                    placeholder: "DREN",
+                    url: '{{ path('app_dren_select2_ajax') }}',
+                    delay: 250,
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+
             function initDatatable(){
-                /* DATATABLE INIT */
-                var dt = $('#coges-tbl').DataTable( {
-                    "responsive": true,
-                    "processing": true,
-                    "serverSide": true,
-                    "searching": false,
-                    "ajax": {
-                        "url": '{{ path('app_coges_dt') }}',
-                        "data": function (d) {
+                var dt = $('#datatable').DataTable( {
+                    responsive: true,
+                    pageLength: 20,
+                    searching: true,
+                    select: true,
+                    lengthChange: false,
+                    language: {
+                        paginate: {
+                            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
+                            first: '',
+                            last: '',
+                            next: '<i class="fa-solid fa-angle-right"></i>',
+                            previous: '<i class="fa-solid fa-angle-left"></i>'
                         }
                     },
-                    "columns": [
-                        {
-                            "class":   "details-control",
-                            "orderable": false,
-                            "data":      "id",
-                            "defaultContent": ""
-                        },
-                        {"data":  "libelle_coges"},
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        "url": '{{ path('app_coges_dt') }}',
+                        "data": function (d) {
+                            d.region_filter = $("#region_filter").val();
+                            d.iepp_filter = $("#iepp_filter").val();
+                            d.commune_filter = $("#commune_filter").val();
+                            d.dren_filter = $("#dren_filter").val();
+                        }
+                    },
+                    columns: [
+                        {"data":  "id"},
+                        {"data":  "coges"},
                         {"data":  "cycle"},
                         {"data":  "numero_compte"},
-                        {"data":  "domiciliation"},
-                        {"data":  "groupe_scolaire"},
-                        { "data": "" }
+                        { "data": "domiciliation" },
+                        { "data": "groupe_scolaire" },
+                        { "data": "region" },
+                        { "data": "dren" },
+                        { "data": "iepp" },
+                        { "data": "commune" },
+                        { "data": "iepp_id" }
                     ],
-                    "order": [[1, 'asc']]
+                    order: [[1, 'desc']]
                 } );
-
                 return dt;
+
             }
-        })
+
+            $('#formCreateCoges').ajaxForm(function(d) {
+            }).then(function(result){
+                    $('#formCreateCoges').resetForm();
+                    datatable.draw();
+            });
+
+        });
     </script>
 
 {% endblock %}

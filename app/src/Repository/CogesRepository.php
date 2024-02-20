@@ -20,20 +20,33 @@ class CogesRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Coges::class);
     }
+    public function add(Coges $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
 
 //    /**
 //     * @return COGES[] Returns an array of COGES objects
 //     */
-    public function findByDepartment($department): array
+
+    public function findAllAjaxSelect2($libelle): array
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.departement_id = :department')
-            ->setParameter('department', $department)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
+        $data = $this->createQueryBuilder('c')
+            ->select('c.id, c.libelle as text')
+            ->andWhere("c.libelle LIKE '%$libelle%'")
             ->getQuery()
             ->getResult()
-        ;
+            ;
+
+        return $data;
     }
 
 //    public function findOneBySomeField($value): ?COGES

@@ -1,7 +1,7 @@
 .photo-content{
     position: relative;
     .cover-photo{
-        background: url(../images/profile/12.jpg);
+        /*background: url(../images/profile/12.jpg);*/
         background-size: cover;
         background-position: center;
         min-height: 15.625rem;
@@ -28,18 +28,18 @@
             display: flex;
             justify-content: space-between;
             width: 100%;
-			
+
             @include respond('phone') {
                 display:block;
-                
-            
+
+
             }
             .user-contact{
                 display: flex;
                 align-items: center;
                 padding-top: 1.125rem;
                 flex-wrap: wrap;
-               
+
                 .user-number {
                     display: flex;
                     align-items: center;
@@ -61,9 +61,9 @@
                     margin: 0;
                 }
             }
-    
+
         }
-       
+
     }
 }
 .user-photo {
@@ -79,7 +79,7 @@
         height: 100%;
         object-fit: cover;
     }
-	
+
 	@include respond('phone') {
 		margin-left: auto;
 		margin-right: auto;
@@ -89,13 +89,13 @@
 	}
 }
 [direction="rtl"]{
-    
+
 	.user-photo {
 		left: auto;
 		right: 0;
 		margin-right: 0;
 		margin-left: 0.9375rem;
-		
+
 		@include respond('tab-land') {
 			right: 0.9375rem;
 		}
@@ -103,13 +103,13 @@
 			width: 5rem;
 			right: calc(50% - 2.5rem);
 			top: -6.25rem;
-			
-			
+
+
 		}
 	}
 }
 
-	
+
 
 .profile-interest{
     .row{
@@ -147,7 +147,7 @@
                     font-size: 0.075rem;
                 }
             }
-            
+
         }
     }
 }
@@ -172,7 +172,7 @@
 				margin-right:0rem;
 			}
         }
-        
+
     }
 }
 
@@ -226,10 +226,10 @@
 			margin:0!important;
 		}
 	}
-    
-}  
+
+}
 .profile-uoloaded-post{
-    
+
     img{
         margin-bottom: 1.25rem;
     }
@@ -260,7 +260,7 @@
 			font-size: 20px;
 			font-weight: 600;
 			color: white;
-		} 
+		}
 		a {
 			background-color: white;
 			padding: 8px 15px;
@@ -344,7 +344,7 @@
             @include respond('tab-land'){
                 flex: 0 0 50%;
                 margin-bottom: 0.875rem;
-               
+
             }
             @include respond('phone'){
                 flex: 0 0 100%;
@@ -379,7 +379,7 @@
             margin-bottom: 0;
         }
     }
-    
+
 }
 
 
@@ -393,7 +393,7 @@
 		&:active,
 		&:focus,
 		&:hover{
-			border-color: var(--primary);		
+			border-color: var(--primary);
 		}
 	}
 	.bootstrap-select>.dropdown-toggle{
@@ -494,7 +494,7 @@
 			width: 130px;
 			border-radius: 100%;
 		}
-	}	
+	}
 	.author-info{
 		.title{
 			font-size:15px;

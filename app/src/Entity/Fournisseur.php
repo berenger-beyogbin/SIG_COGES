@@ -17,27 +17,29 @@ class Fournisseur
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $prenoms = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $contact = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $entreprise = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $domaineActivite = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $localite = null;
 
-    #[ORM\Column(length: 24)]
+    #[ORM\Column(length: 24, nullable: true)]
     private ?string $rib = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $domiciliation = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $intituleCompte = null;
 
     #[ORM\OneToMany(mappedBy: 'fournisseur', targetEntity: Activite::class)]

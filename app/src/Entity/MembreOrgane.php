@@ -15,15 +15,17 @@ class MembreOrgane
 
     #[ORM\Column(length: 255)]
     private ?string $nom= null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $prenoms = null;
 
-    #[ORM\Column(length: 10)]
+    #[ORM\Column(length: 10, nullable: true)]
     private ?string $genre = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $profession = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $contact = null;
 
     #[ORM\ManyToOne]

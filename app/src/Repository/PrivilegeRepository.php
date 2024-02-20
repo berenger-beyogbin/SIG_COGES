@@ -21,6 +21,19 @@ class PrivilegeRepository extends ServiceEntityRepository
         parent::__construct($registry, Privilege::class);
     }
 
+    public function add(Privilege $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
 //    /**
 //     * @return Privilege[] Returns an array of Privilege objects
 //     */

@@ -1,37 +1,158 @@
-<!DOCTYPE html>
 
-<title>MandatCoges index</title>
+{% extends 'backend/base.html.twig' %}
 
 {% block body %}
-    <h1>MandatCoges index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>DateDebut</th>
-                <th>DateFin</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for mandat_coge in mandat_coges %}
-            <tr>
-                <td>{{ mandat_coge.id }}</td>
-                <td>{{ mandat_coge.DateDebut ? mandat_coge.DateDebut|date('Y-m-d') : '' }}</td>
-                <td>{{ mandat_coge.DateFin ? mandat_coge.DateFin|date('Y-m-d') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_mandat_coges_show', {'id': mandat_coge.id}) }}">show</a>
-                    <a href="{{ path('app_mandat_coges_edit', {'id': mandat_coge.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div id="main-wrapper">
 
-    <a href="{{ path('app_mandat_coges_new') }}">Create new</a>
+        {{ include('backend/_partials/header.html.twig') }}
+        {{ include('backend/_partials/left_sidebar.html.twig') }}
+
+        <div class="content-body">
+            <!-- row -->
+            <div class="page-titles">
+                <ol class="breadcrumb">
+                    <li>
+                        <h5 class="bc-title">Gestion des MANDAT COGES</h5>
+                    </li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">
+                            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Accueil </a>
+                    </li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">MANDAT COGES</a></li>
+                </ol>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="table-responsive active-projects style-1">
+                                    <div class="tbl-caption">
+                                        <h4 class="heading mb-0">MANDAT COGES</h4>
+                                        <div>
+                                            <a class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" href="#offcanvasCreateMandatCoges" role="button" aria-controls="offcanvasCreateDren">+ Enregister un mandat</a>
+                                            <a href="{{ path('app_mandat_coges_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
+                                        </div>
+                                    </div>
+                                    <div class="row border-1 border-light p-3">
+                                        <div class="col-sm-2">
+                                            <select type="text" class="form-control coges" id="coges_filter" name="coges_filter"></select>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" placeholder="Recherche rapide" name="filter">
+                                        </div>
+                                    </div>
+                                    <table id="datatable" class="table dataTable no-footer" role="grid" aria-describedby="dt_info">
+                                        <thead>
+                                        <tr role="row">
+                                            <th>#</th>
+                                            <th>DATE DEBUT</th>
+                                            <th>DATE FIN</th>
+                                            <th>COGES</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        {{ include("backend/mandat_coges/_create_mandatcoges_offcanvas.html.twig") }}
+
+
+        {{ include("backend/_partials/footer.html.twig") }}
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var datatable = initDatatable();
+
+            $(".filter").change(function (e) {
+                datatable.draw();
+            });
+
+         //   $(".select2").select2();
+
+            $('.coges').select2({
+                ajax: {
+                    url: '{{ path('app_coges_select2_ajax') }}',
+                    delay: 250,
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+            function initDatatable(){
+                var dt = $('#datatable').DataTable( {
+                    responsive: true,
+                    pageLength: 20,
+                    searching: false,
+                    select: true,
+                    lengthChange: false,
+                    language: {
+                        paginate: {
+                            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
+                            first: '',
+                            last: '',
+                            next: '<i class="fa-solid fa-angle-right"></i>',
+                            previous: '<i class="fa-solid fa-angle-left"></i>'
+                        }
+                    },
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        "url": '{{ path('app_mandat_coges_dt') }}',
+                        "data": function (d) {
+                            d.coges_filter = $("#coges_filter").val();
+                        }
+                    },
+                    columns: [
+                        {"data":  "id"},
+                        {"data":  "date_debut"},
+                        {"data":  "date_fin"},
+                        { "data": "coges" },
+                        { "data": "coges_id" }
+                    ],
+                    order: [[1, 'desc']]
+                } );
+                return dt;
+            }
+
+
+            $('#formCreateMandatCoges').ajaxForm(function(d) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Enregistrement effectué avec succès",
+                    showConfirmButton: false,
+                    timer: 1500,
+                }).then(function(result){
+                    $('#formCreateMandatCoges').resetForm();
+                    drenDT.draw();
+                });
+            });
+        });
+    </script>
+
 {% endblock %}

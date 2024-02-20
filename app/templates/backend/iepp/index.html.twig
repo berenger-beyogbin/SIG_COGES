@@ -1,37 +1,108 @@
-<!DOCTYPE html>
 
-<title>Iepp index</title>
+{% extends 'backend/base.html.twig' %}
 
 {% block body %}
-    <h1>Iepp index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Libelle</th>
-                <th>Parent</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for iepp in iepps %}
-            <tr>
-                <td>{{ iepp.id }}</td>
-                <td>{{ iepp.libelle }}</td>
-                <td>{{ iepp.parent }}</td>
-                <td>
-                    <a href="{{ path('app_iepp_show', {'id': iepp.id}) }}">show</a>
-                    <a href="{{ path('app_iepp_edit', {'id': iepp.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div id="main-wrapper">
 
-    <a href="{{ path('app_iepp_new') }}">Create new</a>
+        {{ include('backend/_partials/header.html.twig') }}
+        {{ include('backend/_partials/left_sidebar.html.twig') }}
+
+        <div class="content-body">
+            <!-- row -->
+            <div class="page-titles">
+                <ol class="breadcrumb">
+                    <li>
+                        <h5 class="bc-title">Gestion des IEPP</h5>
+                    </li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">
+                            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Home </a>
+                    </li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">IEPP</a></li>
+                </ol>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="table-responsive active-projects style-1">
+                                    <div class="tbl-caption">
+                                        <h4 class="heading mb-0">IEPP</h4>
+                                        <div>
+                                            <a class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" href="#offcanvasCreateIepp" role="button" aria-controls="offcanvasCreateIepp">+ Enregister un IEPP</a>
+                                            <a href="{{ path('app_iepp_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
+                                        </div>
+                                    </div>
+                                    <div id="iepp-tbl">Chargement...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{ include("backend/iepp/_create_iepp_offcanvas.html.twig") }}
+
+
+        {{ include("backend/_partials/footer.html.twig") }}
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/datatables/js/datatables.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var ieppDT = null;
+            $('#iepp-tbl').initDataTables({{ datatable_settings(datatable) }}, {
+                'dom': 'ZBfrltip',
+                buttons: [
+                ],
+                searching: false,
+                select: true,
+                /* pageLength:5, */
+                lengthChange: false,
+                language: {
+                    paginate: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
+                        first: '',
+                        last: '',
+                        next: '<i class="fa-solid fa-angle-right"></i>',
+                        previous: '<i class="fa-solid fa-angle-left"></i>'
+                    }
+
+                },
+
+            }).then(function(dt) {
+                ieppDT = dt;
+                // dt contains the initialized instance of DataTables
+                dt.on('draw', function() {
+                   // alert('Redrawing table');
+                })
+            });
+
+            $('#formCreateIepp').ajaxForm(function(d) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Enregistrement effectué avec succès",
+                    showConfirmButton: false,
+                    timer: 1500,
+                }).then(function(result){
+                    $('#formCreateIepp').resetForm();
+                    ieppDT.draw();
+                });
+            });
+
+        });
+    </script>
+
 {% endblock %}

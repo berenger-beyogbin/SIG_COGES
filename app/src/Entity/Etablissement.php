@@ -18,16 +18,16 @@ class Etablissement
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $localite = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $typeMilieu = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $cycle = null;
 
-    #[ORM\Column(length: 10)]
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $codeEts = null;
 
     #[ORM\ManyToOne(inversedBy: 'etablissements')]
@@ -37,7 +37,7 @@ class Etablissement
     private ?Dren $dren = null;
 
     #[ORM\ManyToOne(inversedBy: 'etablissements')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Coges $coges = null;
 
     public function getId(): ?int

@@ -59,24 +59,16 @@ let dataSet = [
     var table = $('#projects-tbl').DataTable({
         //dom: 'Bfrtip',
         'dom': 'ZBfrltip',
-        buttons: [
-
-            {
-                extend: 'excel',
-                text: '<i class="fa-solid fa-file-excel"></i> Exporter',
-                className: 'btn btn-sm border-0'
-            }
-        ],
         searching: false,
         pageLength: 5,
         select: false,
         lengthChange: false,
         language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
             paginate: {
                 next: '<i class="fa-solid fa-angle-right"></i>',
                 previous: '<i class="fa-solid fa-angle-left"></i>'
             }
-
         },
 
     });

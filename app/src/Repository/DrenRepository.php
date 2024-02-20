@@ -21,6 +21,30 @@ class DrenRepository extends ServiceEntityRepository
         parent::__construct($registry, Dren::class);
     }
 
+    public function add(Dren $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
+    public function findAllAjaxSelect2($libelle): array
+    {
+        $data = $this->createQueryBuilder('c')
+            ->select('c.id, c.libelle as text')
+            ->andWhere("c.libelle LIKE '%$libelle%'")
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $data;
+    }
 //    /**
 //     * @return Dren[] Returns an array of Dren objects
 //     */

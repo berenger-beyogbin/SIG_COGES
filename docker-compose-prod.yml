@@ -7,30 +7,10 @@ networks:
 
 services:
 
-  traefik:
-    image: "traefik:v2.7"
-    container_name: "traefik"
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker"
-      - "--providers.docker.exposedByDefault=false"
-      - "--providers.docker.network=proxy"
-      - "--entrypoints.web.address=:80"
-    ports:
-      - "80:80"
-      #      - "443:443"
-      - "8080:8080"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    networks:
-      - proxy
-
   db:
     image: mariadb:10.5
     container_name: db
     restart: always
-    labels:
-      - "traefik.enable=false"
     environment:
       MYSQL_ROOT_PASSWORD: QT6e5APtSYaU
       MYSQL_USER: root
@@ -70,8 +50,6 @@ services:
       - APP_ENV=prod
       - MAILER_DSN=gmail
       - DATABASE_URL=mysql://root:QT6e5APtSYaU@db:3306/sigcoges_db
-      - REMOTE_HOST=host.docker.internal
-      - "host.docker.internal:host-gateway"
     volumes:
       - ./app:/var/www/html
     networks:

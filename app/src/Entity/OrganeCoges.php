@@ -15,7 +15,7 @@ class OrganeCoges
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $libelleOrgane = null;
 
     #[ORM\OneToMany(mappedBy: 'organeCoges', targetEntity: PosteOrgane::class)]

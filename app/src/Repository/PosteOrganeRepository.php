@@ -21,6 +21,18 @@ class PosteOrganeRepository extends ServiceEntityRepository
         parent::__construct($registry, PosteOrgane::class);
     }
 
+    public function add(PosteOrgane $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
 //    /**
 //     * @return PosteOrgane[] Returns an array of PosteOrgane objects
 //     */

@@ -1,43 +1,161 @@
-<!DOCTYPE html>
 
-<title>Etablissement index</title>
+{% extends 'backend/base.html.twig' %}
 
 {% block body %}
-    <h1>Etablissement index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>Localite</th>
-                <th>TypeMilieu</th>
-                <th>Cycle</th>
-                <th>CodeEts</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for etablissement in etablissements %}
-            <tr>
-                <td>{{ etablissement.id }}</td>
-                <td>{{ etablissement.nom }}</td>
-                <td>{{ etablissement.localite }}</td>
-                <td>{{ etablissement.typeMilieu }}</td>
-                <td>{{ etablissement.cycle }}</td>
-                <td>{{ etablissement.codeEts }}</td>
-                <td>
-                    <a href="{{ path('app_etablissement_show', {'id': etablissement.id}) }}">show</a>
-                    <a href="{{ path('app_etablissement_edit', {'id': etablissement.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="7">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div id="main-wrapper">
 
-    <a href="{{ path('app_etablissement_new') }}">Create new</a>
+        {{ include('backend/_partials/header.html.twig') }}
+        {{ include('backend/_partials/left_sidebar.html.twig') }}
+
+        <div class="content-body">
+            <!-- row -->
+            <div class="page-titles">
+                <ol class="breadcrumb">
+                    <li>
+                        <h5 class="bc-title">Gestion des Etablissements</h5>
+                    </li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">
+                            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Accueil </a>
+                    </li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">ETABLISSEMENTS</a></li>
+                </ol>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="table-responsive active-projects style-1">
+                                    <div class="tbl-caption">
+                                        <h4 class="heading mb-0">ETABLISSEMENTS</h4>
+                                        <div>
+                                            <a class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" href="#offcanvasCreateEtablissement" role="button" aria-controls="offcanvasCreateEtablissement">+ Enregister un établissement</a>
+                                            <a href="{{ path('app_etablissement_index') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
+                                        </div>
+                                    </div>
+                                    <div class="row border-1 border-light p-3">
+                                        <div class="col-sm-2">
+                                            <select type="text" class="form-control iepp select2 filter" id="iepp_filter" name="iepp_filter">
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <select type="text" class="form-control coges select2 filter" id="coges_filter" name="coges_filter">
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <select type="text" class="form-control dren select2 filter" id="dren_filter" name="dren_filter">
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" placeholder="Recherche rapide" name="filter">
+                                        </div>
+                                    </div>
+                                    <table id="datatable" class="table dataTable no-footer" role="grid" aria-describedby="dt_info">
+                                        <thead>
+                                        <tr role="row">
+                                            <th>#</th>
+                                            <th>NOM</th>
+                                            <th>LOCALITE</th>
+                                            <th>TYPE MILIEU</th>
+                                            <th>CYCLE</th>
+                                            <th>CODE ETABLISSEMENT</th>
+                                            <th>DREN</th>
+                                            <th>IEPP</th>
+                                            <th>COGES</th>
+                                            <th width="5%">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{ include("backend/etablissement/_create_etablissement_offcanvas.html.twig") }}
+
+        {{ include("backend/_partials/footer.html.twig") }}
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var datatable = initDatatable();
+
+            $(".filter").change(function (e) {
+                datatable.draw();
+            });
+
+            $(".select2").select2();
+
+            function initDatatable(){
+                var dt = $('#datatable').DataTable( {
+                    responsive: true,
+                    pageLength: 20,
+                 //   searching: true,
+                    select: true,
+                    lengthChange: false,
+                    language: {
+                        paginate: {
+                            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
+                            first: '',
+                            last: '',
+                            next: '<i class="fa-solid fa-angle-right"></i>',
+                            previous: '<i class="fa-solid fa-angle-left"></i>'
+                        }
+                    },
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        "url": '{{ path('app_etablissement_dt') }}',
+                        "data": function (d) {
+                            d.iepp_filter = $("#iepp_filter").val();
+                            d.dren_filter = $("#dren_filter").val();
+                            d.coges_filter = $("#coges_filter").val();
+                        }
+                    },
+                    columns: [
+                        {"data":  "id"},
+                        {"data":  "nom"},
+                        {"data":  "localite"},
+                        { "data": "type_milieu" },
+                        { "data": "cycle" },
+                        { "data": "code_ets" },
+                        { "data": "dren" },
+                        { "data": "iepp" },
+                        { "data": "coges" },
+                        { "data": "coges_id" },
+                    ],
+                    order: [[1, 'desc']]
+                } );
+                return dt;
+            }
+
+            $('#formCreateEtablissement').ajaxForm(function(d) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Enregistrement effectué avec succès",
+                    showConfirmButton: false,
+                    timer: 1500,
+                }).then(function(result){
+                    $('#formCreateEtablissement').resetForm();
+                    datatable.draw();
+                });
+            });
+        });
+    </script>
+
 {% endblock %}

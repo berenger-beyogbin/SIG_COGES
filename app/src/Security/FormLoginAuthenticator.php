@@ -15,6 +15,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 class FormLoginAuthenticator extends AbstractLoginFormAuthenticator
@@ -31,7 +32,7 @@ class FormLoginAuthenticator extends AbstractLoginFormAuthenticator
     {
         $username = $request->request->get('username', '');
 
-        $request->getSession()->set(Security::LAST_USERNAME, $username);
+        $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $username);
 
         return new Passport(
             new UserBadge($username),

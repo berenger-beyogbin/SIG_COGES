@@ -1,11 +1,16 @@
-<!DOCTYPE html>
-
-<title>New Iepp</title>
+{% extends 'backend/base.html.twig' %}
 
 {% block body %}
-    <h1>Create new Iepp</h1>
+
+    {{ include('backend/_partials/header.html.twig') }}
+
+    {{ include('backend/_partials/left_sidebar.html.twig') }}
 
     {{ include('iepp/_form.html.twig') }}
 
-    <a href="{{ path('app_iepp_index') }}">back to list</a>
+    {{ include("backend/_partials/footer.html.twig") }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
 {% endblock %}

@@ -20,7 +20,18 @@ class ChapitreRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Chapitre::class);
     }
+    public function add(Chapitre $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
 
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
 //    /**
 //     * @return Chapitres[] Returns an array of Chapitres objects
 //     */

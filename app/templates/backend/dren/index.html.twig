@@ -1,61 +1,151 @@
+
 {% extends 'backend/base.html.twig' %}
 
 {% block body %}
 
-    {{ include('backend/_partials/header.html.twig') }}
+    <div id="main-wrapper">
 
-    {{ include('backend/_partials/left_sidebar.html.twig') }}
+        {{ include('backend/_partials/header.html.twig') }}
+        {{ include('backend/_partials/left_sidebar.html.twig') }}
 
-    <table id="dren-tbl" class="table dataTable no-footer" role="grid" aria-describedby="dren-tbl_info">
-        <thead class="datable-thead table-light">
-        <tr>
-            <th><small></small></th>
-            <th><small>Libellé</small></th>
-            <th><small>Email</small></th>
-            <th><small>Téléphone</small></th>
-            <th style="min-width:50px">Action</th>
-        </tr>
-        </thead>
-    </table>
-    {{ include("backend/_partials/footer.html.twig") }}
+        <div class="content-body">
+            <!-- row -->
+            <div class="page-titles">
+                <ol class="breadcrumb">
+                    <li>
+                        <h5 class="bc-title">Gestion des DREN</h5>
+                    </li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">
+                            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Accueil </a>
+                    </li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">DREN</a></li>
+                </ol>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="table-responsive active-projects style-1">
+                                    <div class="tbl-caption">
+                                        <h4 class="heading mb-0">DREN</h4>
+                                        <div>
+                                            <a class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" href="#offcanvasCreateDren" role="button" aria-controls="offcanvasCreateDren">+ Enregister une DREN</a>
+                                            <a href="{{ path('app_dren_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
+                                        </div>
+                                    </div>
+                                    <table id="datatable" class="table dataTable no-footer table-responsive" role="grid" aria-describedby="dt_info">
+                                        <thead>
+                                        <tr role="row">
+                                            <th>#</th>
+                                            <th>NOM</th>
+                                            <th>EMAIL</th>
+                                            <th>TELEPHONE</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        {{ include("backend/dren/_create_dren_offcanvas.html.twig") }}
+
+
+        {{ include("backend/_partials/footer.html.twig") }}
+
+    </div>
+
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-<script type="text/javascript">
-    $(document).ready(function () {
-        var datatable = initDatatable();
+    <script src="{{ asset('bundles/datatables/js/datatables.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
 
-        function initDatatable(){
-            /* DATATABLE INIT */
-            var dt = $('#dren-tbl').DataTable( {
-                "responsive": true,
-                "processing": true,
-                "serverSide": true,
-                "searching": false,
-                "ajax": {
-                    "url": '{{ path('app_dren_dt') }}',
-                    "data": function (d) {
+            var datatable = initDatatable();
+
+            $(".filter").change(function (e) {
+                datatable.draw();
+            });
+
+            $('.region').select2({
+                ajax: {
+                    allowClear: true,
+                    placeholder: "REGIONS",
+                    url: '{{ path('app_region_select2_ajax') }}',
+                    delay: 250,
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
                     }
-                },
-                "columns": [
-                    {
-                        "class":   "details-control",
-                        "orderable": false,
-                        "data":      "id",
-                        "defaultContent": ""
-                    },
-                    {"data":  "libelle"},
-                    {"data":  "email"},
-                    {"data":  "telephone"},
-                    { "data": "id" }
-                ],
-                "order": [[1, 'asc']]
-            } );
+                }
+            });
 
-            return dt;
-        }
-    })
-</script>
+            function initDatatable(){
+                var dt = $('#datatable').DataTable( {
+                    responsive: true,
+                    pageLength: 20,
+                    searching: true,
+                    select: true,
+                    lengthChange: false,
+                    language: {
+                        paginate: {
+                            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
+                            first: '',
+                            last: '',
+                            next: '<i class="fa-solid fa-angle-right"></i>',
+                            previous: '<i class="fa-solid fa-angle-left"></i>'
+                        }
+                    },
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        "url": '{{ path('app_dren_dt') }}',
+                        "data": function (d) {
+                            d.libelle_filter = $("#region_filter").val();
+                        }
+                    },
+                    columns: [
+                        {"data":  "id"},
+                        {"data":  "libelle"},
+                        {"data":  "email"},
+                        {"data":  "id"},
+                    ],
+                    order: [[0, 'desc']]
+                } );
+                return dt;
+
+            }
+
+            $('#formCreateDren').ajaxForm(function(d) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Enregistrement effectué avec succès",
+                    showConfirmButton: false,
+                    timer: 1500,
+                }).then(function(result){
+                    $('#formCreateDren').resetForm();
+                    drenDT.draw();
+                });
+            });
+        });
+    </script>
 
 {% endblock %}

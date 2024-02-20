@@ -20,7 +20,7 @@ class Region
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
     #[ORM\OneToMany(mappedBy: 'region', targetEntity: Commune::class, orphanRemoval: true)]

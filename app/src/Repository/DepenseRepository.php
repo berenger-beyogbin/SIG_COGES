@@ -21,6 +21,18 @@ class DepenseRepository extends ServiceEntityRepository
         parent::__construct($registry, Depense::class);
     }
 
+    public function add(Depense $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
 //    /**
 //     * @return Depenses[] Returns an array of Depenses objects
 //     */

@@ -22,9 +22,12 @@
             <link href="{{ asset("assets/backend/vendor/bootstrap-select/dist/css/bootstrap-select.min.css") }}" rel="stylesheet">
             <link href="{{ asset('assets/backend/vendor/swiper/css/swiper-bundle.min.css') }}" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.4/nouislider.min.css">
+            <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.4/nouislider.min.css" rel="stylesheet">
             <link href="{{ asset('assets/backend/vendor/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet">
+            <link href="{{ asset('assets/backend/vendor/select2/css/select2.min.css') }}" rel="stylesheet">
             <link href="{{ asset('assets/backend/vendor/jvmap/jquery-jvectormap.css') }}" rel="stylesheet">
+            <link href="{{ asset('assets/backend/vendor/dropzone/min/dropzone.min.css') }}" rel="stylesheet">
+            <link href="{{ asset('assets/backend/vendor/sweetalert2/dist/sweetalert2.min.css') }}" rel="stylesheet">
             <link href="https://cdn.datatables.net/buttons/1.6.4/css/buttons.dataTables.min.css" rel="stylesheet">
             <link href="{{ asset('assets/backend/vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
             <!-- tagify-css -->
@@ -88,6 +91,18 @@
                 .chatbox .contacts li:hover {
                     background: #e6e6e6;
                 }
+                .dataTables_wrapper .dataTables_paginate .paginate_button.previous.current:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.previous.previous:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.previous.next:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.next.current:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.next.previous:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.next.next:hover {
+                    background: #dbf4da !important;
+                }
+                .dataTables_wrapper .dataTables_paginate span .paginate_button:hover, .dataTables_wrapper .dataTables_paginate span .paginate_button:active {
+                    color: #ffffff !important;
+                }
+                .list-group {
+                    border-radius: 0px 0px !important;
+                }
+                .list-group-item {
+                    padding: 0.5rem 1.5rem;
+                }
             </style>
         {% endblock %}
     </head>
@@ -109,10 +124,15 @@
         <!-- Required vendors -->
         <script src="{{ asset('assets/backend/vendor/global/global.min.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/chart.js/Chart.bundle.min.js') }}"></script>
-        <script src="{{ asset('assets/backend/vendor/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/apexchart/apexchart.js') }}"></script>
+        <script src="{{ asset('assets/backend/vendor/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
+
+        <script src="{{ asset('assets/backend/vendor/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
+        <script src="{{ asset('assets/backend/vendor/select2/js/select2.full.min.js') }}"></script>
+
         <!-- Dashboard 1 -->
         <script src="{{ asset('assets/backend/vendor/draggable/draggable.js') }}"></script>
+        <script src="{{ asset('assets/backend/vendor/jquery.form/jquery.form.min.js') }}"></script>
 
         <script src="{{ asset('assets/backend/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/datatables/js/dataTables.buttons.min.js') }}"></script>
@@ -121,7 +141,10 @@
         <script src="{{ asset('assets/backend/js/plugins-init/datatables.init.js') }}"></script>
         <!-- Apex Chart -->
         <script src="{{ asset('assets/backend/vendor/bootstrap-datetimepicker/js/moment.js') }}"></script>
-        <script src="{{ asset('assets/backend/vendor/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js') }}"></script>
+
+        <script src="{{ asset('assets/backend/vendor/dropzone/min/dropzone.min.js') }}"></script>
+        <script src="{{ asset('assets/backend/vendor/sweetalert2/dist/sweetalert2.min.js') }}"></script>
+
         <!-- Vectormap -->
         <script src="{{ asset('assets/backend/vendor/jqvmap/js/jquery.vmap.min.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/jqvmap/js/jquery.vmap.world.js') }}"></script>
@@ -129,6 +152,5 @@
         <script src="{{ asset('assets/backend/js/custom.js') }}"></script>
         <script src="{{ asset('assets/backend/js/deznav-init.js') }}"></script>
         <script src="{{ asset('assets/backend/js/demo.js') }}"></script>
-        <script src="{{ asset('assets/backend/js/styleSwitcher.js') }}"></script>
     {% endblock %}
 </html>

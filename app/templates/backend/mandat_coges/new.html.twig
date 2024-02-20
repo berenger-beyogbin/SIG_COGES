@@ -1,11 +1,16 @@
-<!DOCTYPE html>
-
-<title>New MandatCoges</title>
+{% extends 'backend/base.html.twig' %}
 
 {% block body %}
-    <h1>Create new MandatCoges</h1>
 
-    {{ include('mandat_coges/_form.html.twig') }}
+    {{ include('backend/_partials/header.html.twig') }}
 
-    <a href="{{ path('app_mandat_coges_index') }}">back to list</a>
+    {{ include('backend/_partials/left_sidebar.html.twig') }}
+
+    {{ include('dren/_form.html.twig') }}
+
+    {{ include("backend/_partials/footer.html.twig") }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
 {% endblock %}

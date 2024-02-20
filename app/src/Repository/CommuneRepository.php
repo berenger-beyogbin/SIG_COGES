@@ -20,6 +20,30 @@ class CommuneRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Commune::class);
     }
+    public function add(Commune $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
+    public function findAllAjaxSelect2($libelle): array
+    {
+        $data = $this->createQueryBuilder('c')
+            ->select('c.id, c.libelle as text')
+            ->andWhere("c.libelle LIKE '%$libelle%'")
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $data;
+    }
 
 //    /**
 //     * @return Commune[] Returns an array of Commune objects

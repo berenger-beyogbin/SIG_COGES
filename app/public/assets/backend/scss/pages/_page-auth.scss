@@ -115,7 +115,7 @@
 		@include respond ('phone'){
 			.auth-form{
 				padding: 1.875rem 0rem;
-				
+
 			}
 		}
 	}
@@ -127,7 +127,7 @@
 }
 
 .welcome-content{
-    background: url('./../images/1.jpg');
+  /*  background: url('./../images/1.jpg');*/
     background-size: cover;
     background-position: center;
     height: 100%;
@@ -192,7 +192,7 @@
     padding: 3.125rem 3.125rem;
 	@include respond('phone') {
 		padding: 1.875rem;
-	}	
+	}
     .btn{
         height: 3.125rem;
         font-weight: 700;

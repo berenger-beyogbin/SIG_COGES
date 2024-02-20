@@ -21,6 +21,31 @@ class RegionRepository extends ServiceEntityRepository
         parent::__construct($registry, Region::class);
     }
 
+    public function add(Region $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
+    public function findAllAjaxSelect2($libelle): array
+    {
+        $data = $this->createQueryBuilder('c')
+            ->select('c.id, c.libelle as text')
+            ->andWhere("c.libelle LIKE '%$libelle%'")
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $data;
+    }
+
 //    /**
 //     * @return Region[] Returns an array of Region objects
 //     */

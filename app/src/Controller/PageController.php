@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 
+use App\Service\DbMetadataService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 #[Route('/admin')]
@@ -11,7 +13,7 @@ class PageController extends AbstractController
 {
     const TMPL_INDEX = "backend/pages/index.html.twig";
     const TMPL_DASHBOARD = "backend/pages/index.html.twig";
-    const TMPL_COGES = "backend/pages/index.html.twig";
+    const TMPL_DATA_ENTRY = "backend/pages/data_entry.html.twig";
 
     #[Route('/', name: 'app_index', methods: ['GET'])]
     public function index(): Response
@@ -58,6 +60,20 @@ class PageController extends AbstractController
     #[Route('/affectations_ecoles', name: 'app_affectations_ecoles', methods: ['GET'])]
     public function affectationsEcoles(): Response
     {
+        return $this->render(self::TMPL_DASHBOARD);
+    }
+
+    #[Route('/data_entry', name: 'app_admin_data_entry', methods: ['GET'])]
+    public function dataEntry(Request $request): Response
+    {
+        return $this->render(self::TMPL_DATA_ENTRY);
+    }
+
+
+    #[Route('/dbschema', name: 'app_dbschema', methods: ['GET'])]
+    public function dbSchema(DbMetadataService $tableSchemaService): Response
+    {
+        $tableSchemaService->getDbMetadata();
         return $this->render(self::TMPL_DASHBOARD);
     }
 

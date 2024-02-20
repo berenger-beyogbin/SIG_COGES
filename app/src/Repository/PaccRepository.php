@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Pacc;
+use App\Entity\Region;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -21,6 +22,18 @@ class PaccRepository extends ServiceEntityRepository
         parent::__construct($registry, Pacc::class);
     }
 
+    public function add(Pacc $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
 //    /**
 //     * @return Pacc[] Returns an array of Pacc objects
 //     */

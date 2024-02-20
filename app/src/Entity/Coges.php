@@ -17,17 +17,17 @@ class Coges
     #[ORM\Column]
     private ?int $id = null;
     #[ORM\Column(length: 255)]
-    private ?string $libelleCOGES = null;
+    private ?string $libelle = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $cycle = null;
-    #[ORM\Column(length: 24)]
+    #[ORM\Column(length: 24, nullable: true)]
     private ?string $numeroCompte = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $domiciliation = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $groupeScolaire = null;
 
     #[ORM\OneToMany(mappedBy: 'coges', targetEntity: Etablissement::class)]
@@ -58,14 +58,14 @@ class Coges
         return $this->id;
     }
 
-    public function getLibelleCOGES(): ?string
+    public function getLibelle(): ?string
     {
-        return $this->libelleCOGES;
+        return $this->libelle;
     }
 
-    public function setLibelleCOGES(string $libelleCOGES): static
+    public function setLibelle(string $libelle): static
     {
-        $this->libelleCOGES = $libelleCOGES;
+        $this->libelle = $libelle;
 
         return $this;
     }
@@ -75,7 +75,7 @@ class Coges
         return $this->cycle;
     }
 
-    public function setCycle(int $cycle): static
+    public function setCycle(?int $cycle): static
     {
         $this->cycle = $cycle;
 
@@ -87,7 +87,7 @@ class Coges
         return $this->numeroCompte;
     }
 
-    public function setNumeroCompte(string $numeroCompte): static
+    public function setNumeroCompte(?string $numeroCompte): static
     {
         $this->numeroCompte = $numeroCompte;
 
@@ -99,7 +99,7 @@ class Coges
         return $this->domiciliation;
     }
 
-    public function setDomiciliation(string $domiciliation): static
+    public function setDomiciliation(?string $domiciliation): static
     {
         $this->domiciliation = $domiciliation;
 
@@ -111,7 +111,7 @@ class Coges
         return $this->groupeScolaire;
     }
 
-    public function setGroupeScolaire(bool $groupeScolaire): static
+    public function setGroupeScolaire(?bool $groupeScolaire): static
     {
         $this->groupeScolaire = $groupeScolaire;
 

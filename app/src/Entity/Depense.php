@@ -14,7 +14,7 @@ class Depense
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column()]
     private ?int $montantDepense = null;
 
     #[ORM\Column(length: 255, nullable: true)]

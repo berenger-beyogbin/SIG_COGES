@@ -21,6 +21,18 @@ class SourceRepository extends ServiceEntityRepository
         parent::__construct($registry, Source::class);
     }
 
+    public function add(Source $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
 //    /**
 //     * @return Sources[] Returns an array of Sources objects
 //     */
