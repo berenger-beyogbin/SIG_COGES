@@ -1,0 +1,28 @@
+<div class="offcanvas offcanvas-end customeoff" tabindex="-1" id="offcanvasCreatePosteOrgane">
+    <div class="offcanvas-header">
+        <h5 class="modal-title" id="#gridSystemModal1">Enregistrer un poste organe</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="container-fluid">
+            <form id="formCreateCoges" method="post" action="{{ path('app_poste_organe_new_ajax') }}">
+                <div class="row">
+                    <div class="col-xl-6 mb-3">
+                        <label for="libelle_poste" class="form-label">Libellé<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="libelle_poste">
+                    </div>
+                    <div class="col-xl-6 mb-3">
+                        <label for="organe_coges_id" class="form-label">Organe Coges<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="organe_coges_id">
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary me-1" id="btnCreatePosteOrgane" data-bs-dismiss="offcanvas">Enregister</button>
+                    <button class="btn btn-info light ms-1" id="btnCancel"  data-bs-dismiss="offcanvas">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

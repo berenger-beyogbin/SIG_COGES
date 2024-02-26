@@ -24,7 +24,6 @@
             <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
             <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.4/nouislider.min.css" rel="stylesheet">
             <link href="{{ asset('assets/backend/vendor/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet">
-            <link href="{{ asset('assets/backend/vendor/select2/css/select2.min.css') }}" rel="stylesheet">
             <link href="{{ asset('assets/backend/vendor/jvmap/jquery-jvectormap.css') }}" rel="stylesheet">
             <link href="{{ asset('assets/backend/vendor/dropzone/min/dropzone.min.css') }}" rel="stylesheet">
             <link href="{{ asset('assets/backend/vendor/sweetalert2/dist/sweetalert2.min.css') }}" rel="stylesheet">
@@ -33,6 +32,8 @@
             <!-- tagify-css -->
             <link href="{{ asset('assets/backend/vendor/tagify/dist/tagify.css') }}" rel="stylesheet">
             <!-- Style css -->
+{#            <link href="{{ asset('assets/backend/vendor/select2/css/select2.min.css') }}" rel="stylesheet">#}
+            <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
             <link href="{{ asset('assets/backend/css/style.css') }}" rel="stylesheet">
             <style>
                 [data-primary="color_2"] {
@@ -128,8 +129,8 @@
         <script src="{{ asset('assets/backend/vendor/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
 
         <script src="{{ asset('assets/backend/vendor/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
-        <script src="{{ asset('assets/backend/vendor/select2/js/select2.full.min.js') }}"></script>
-
+{#        <script src="{{ asset('assets/backend/vendor/select2/js/select2.full.min.js') }}"></script>#}
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <!-- Dashboard 1 -->
         <script src="{{ asset('assets/backend/vendor/draggable/draggable.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/jquery.form/jquery.form.min.js') }}"></script>
@@ -141,6 +142,7 @@
         <script src="{{ asset('assets/backend/js/plugins-init/datatables.init.js') }}"></script>
         <!-- Apex Chart -->
         <script src="{{ asset('assets/backend/vendor/bootstrap-datetimepicker/js/moment.js') }}"></script>
+        <script src="{{ asset('assets/backend/vendor/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js') }}"></script>
 
         <script src="{{ asset('assets/backend/vendor/dropzone/min/dropzone.min.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/sweetalert2/dist/sweetalert2.min.js') }}"></script>

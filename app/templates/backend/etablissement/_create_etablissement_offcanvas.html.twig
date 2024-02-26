@@ -34,26 +34,17 @@
                     </div>
                     <div class="col-xl-6 mb-3">
                         <label for="iepp_id" class="form-label">IEPP<span class="text-danger">*</span></label>
-                        <select type="text" class="form-control select2" name="iepp_id">
-                            {% for iepp in iepps %}
-                                <option value="{{ iepp.id }}">{{ iepp.libelle }}</option>
-                            {% endfor %}
+                        <select type="text" class="form-control iepp select2" name="iepp_id">
                         </select>
                     </div>
                     <div class="col-xl-6 mb-3">
-                        <label for="coges_id" class="form-label">DREN<span class="text-danger">*</span></label>
-                        <select type="text" class="form-control select2 filter" id="coges_id" name="coges_id">
-                            {% for coge in coges %}
-                                <option value="{{ coge.id }}">{{ coge.libelle }}</option>
-                            {% endfor %}
+                        <label for="coges_id" class="form-label">COGES<span class="text-danger">*</span></label>
+                        <select type="text" class="form-control coges select2" id="coges_id" name="coges_id">
                         </select>
                     </div>
                     <div class="col-xl-6 mb-3">
                         <label for="dren_id" class="form-label">DREN<span class="text-danger">*</span></label>
-                        <select type="text" class="form-control select2" name="dren_id">
-                            {% for dren in drens %}
-                                <option value="{{ dren.id }}">{{ dren.libelle }}</option>
-                            {% endfor %}
+                        <select type="text" class="form-control dren select2" name="dren_id">
                         </select>
                     </div>
                 </div>

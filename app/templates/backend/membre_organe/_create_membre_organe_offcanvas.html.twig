@@ -1,0 +1,50 @@
+<div class="offcanvas offcanvas-end customeoff" tabindex="-1" id="offcanvasCreateMembreOrgane">
+    <div class="offcanvas-header">
+        <h5 class="modal-title" id="#gridSystemModal1">Enregistrer un mandat COGES</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="container-fluid">
+            <form id="formCreateMembreOrgane" method="post" action="{{ path('app_membre_organe_new_ajax') }}">
+                <div class="row">
+                    <div class="col-xl-6 mb-3">
+                        <label for="genre" class="form-label">Genre<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="genre">
+                    </div>
+                    <div class="col-xl-6 mb-3">
+                        <label for="nom" class="form-label">Nom<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="nom">
+                    </div>
+                    <div class="col-xl-6 mb-3">
+                        <label for="prenoms" class="form-label">Prénoms<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="prenoms">
+                    </div>
+                    <div class="col-xl-6 mb-3">
+                        <label for="profession" class="form-label">Profession<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="profession">
+                    </div>
+                    <div class="col-xl-6 mb-3">
+                        <label for="contact" class="form-label">Contact<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="contact">
+                    </div>
+                    <div class="col-xl-6 mb-3">
+                        <label for="mandat_id" class="form-label">MANDAT<span class="text-danger">*</span></label>
+                        <select type="text" class="form-control mandat" name="mandat_id" id="mandat_id">
+                        </select>
+                    </div>
+                    <div class="col-xl-6 mb-3">
+                        <label for="poste_id" class="form-label">POSTE<span class="text-danger">*</span></label>
+                        <select type="text" class="form-control poste_id" name="mandat_id" id="poste_id">
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary me-1" id="btnMembreOrgane" data-bs-dismiss="offcanvas">Enregister</button>
+                    <button class="btn btn-info light ms-1" id="btnCancel"  data-bs-dismiss="offcanvas">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

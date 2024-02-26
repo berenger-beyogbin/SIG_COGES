@@ -115,31 +115,33 @@ class DrenController extends AbstractController
                 'dt' => 'email',
             ],
             [
+                'db' => 'telephone',
+                'dt' => 'telephone',
+            ],
+            [
                 'db' => 'id',
-                'dt' => 'id',
+                'dt' => '',
                 'formatter' => function($d, $row){
                     $dren_id = $row['id'];
                     $content = sprintf("<div class='d-flex'><span class='btn btn-primary shadow btn-xs sharp me-1' data-dren-id='%s'><i class='fa fa-pencil'></i></span><span data-dren-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $dren_id, $dren_id);
                     return $content;
                 }
             ],
-
         ];
 
-        $sql_details = array(
+        $sql_details = [
             'user' => $paramDB['user'],
             'pass' => $paramDB['password'],
             'db'   => $paramDB['dbname'],
             'host' => $paramDB['host']
-        );
+        ];
+        $whereResult = null;
 
-        $whereResult = '';
-
-        if(!empty($params['libelle_filter'])){
+        if(!empty($params['libelle_filter'])) {
             $whereResult .= " libelle = '". $params['region_filter'] . "' AND";
         }
 
-        $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
+        if($whereResult) $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);
@@ -149,28 +151,23 @@ class DrenController extends AbstractController
     public function index(Request $request,  DataTableFactory $dataTableFactory): Response
     {
         $table = $dataTableFactory->create()
-            ->add('id', TextColumn::class,['label' => '#'])
-            ->add('libelle', TextColumn::class,['label' => 'Libellé'])
-            ->add('description', TextColumn::class, ['label' => 'Description'])
-            ->add('actions', TextColumn::class, [
-                    'label' => '',
-                    'orderable'=> false,
+                ->add('id', TextColumn::class,['label' => '#'])
+                ->add('libelle', TextColumn::class,['label' => 'Libellé'])
+                ->add('description', TextColumn::class, ['label' => 'Description'])
+                ->add('actions', TextColumn::class, ['label' => '', 'orderable' => false,
                     'render' => function($value, $context) {
                         $commune_id = $context->getId();
                         return sprintf("<div class='d-flex'><span class='btn btn-primary shadow btn-xs sharp me-1' data-commune-id='%s'><i class='fa fa-pencil'></i></span><span data-commune-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $commune_id, $commune_id);
                     }
-                ]
-            )
-            ->createAdapter(ORMAdapter::class, [
-                'entity' => Dren::class,
-            ])
-            ->handleRequest($request);
+                ])
+                ->createAdapter(ORMAdapter::class, ['entity' => Dren::class])
+                ->handleRequest($request);
+
         if ($table->isCallback()) {
             return $table->getResponse();
         }
-        return $this->render('backend/dren/index.html.twig', [
-            'datatable' => $table
-        ]);
+
+        return $this->render('backend/dren/index.html.twig', [ 'datatable' => $table ]);
     }
 
     #[Route('/new', name: 'app_dren_new', methods: ['GET', 'POST'])]
@@ -183,22 +180,16 @@ class DrenController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($dren);
             $entityManager->flush();
-
             return $this->redirectToRoute('app_dren_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('backend/dren/new.html.twig', [
-            'dren' => $dren,
-            'form' => $form,
-        ]);
+        return $this->render('backend/dren/new.html.twig',[ 'dren' => $dren, 'form' => $form ]);
     }
 
     #[Route('/{id}', name: 'app_dren_show', methods: ['GET'])]
     public function show(Dren $dren): Response
     {
-        return $this->render('backend/dren/show.html.twig', [
-            'dren' => $dren,
-        ]);
+        return $this->render('backend/dren/show.html.twig', ['dren' => $dren ]);
     }
 
     #[Route('/{id}/edit', name: 'app_dren_edit', methods: ['GET', 'POST'])]
@@ -209,14 +200,10 @@ class DrenController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
             return $this->redirectToRoute('app_dren_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('backend/dren/edit.html.twig', [
-            'dren' => $dren,
-            'form' => $form,
-        ]);
+        return $this->render('backend/dren/edit.html.twig', [ 'dren' => $dren, 'form' => $form ]);
     }
 
     #[Route('/{id}', name: 'app_dren_delete', methods: ['POST'])]

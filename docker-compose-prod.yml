@@ -7,9 +7,9 @@ networks:
 
 services:
 
-  db:
+  dbsigcoges:
     image: mariadb:10.5
-    container_name: db
+    container_name: dbsigcoges
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: QT6e5APtSYaU
@@ -21,14 +21,14 @@ services:
       - ./docker/mariadb/my.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
     ports:
-      - 3306:3306
+      - 3307:3306
     networks:
       - internal
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     depends_on:
-      - db
+      - dbsigcoges
     ports:
       - 83:80
     environment:
@@ -43,13 +43,13 @@ services:
     build:
       context: ./docker
     depends_on:
-      - db
+      - dbsigcoges
     labels:
       - "traefik.enable=false"
     environment:
       - APP_ENV=prod
       - MAILER_DSN=gmail
-      - DATABASE_URL=mysql://root:QT6e5APtSYaU@db:3306/sigcoges_db
+      - DATABASE_URL=mysql://root:QT6e5APtSYaU@dbsigcoges:3306/sigcoges_db
     volumes:
       - ./app:/var/www/html
     networks:

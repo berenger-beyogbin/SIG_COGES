@@ -115,10 +115,13 @@ class MandatCogesController extends AbstractController
             [
                 'db' => 'coges',
                 'dt' => 'coges',
+                'formatter' => function($d, $row){
+                    return sprintf("<a href='/admin/coges/%s' class='link-info'>%s</a>", $row['coges_id'], $d);
+                }
             ],
             [
-                'db' => 'coges_id',
-                'dt' => 'coges_id',
+                'db' => 'id',
+                'dt' => 'id',
                 'formatter' => function($d, $row){
                     $mandat_coges_id = $row['id'];
                     $content = sprintf("<div class='d-flex'><span class='btn btn-primary shadow btn-xs sharp me-1' data-mandat_coges-id='%s'><i class='fa fa-pencil'></i></span><span data-mandat_coges-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $mandat_coges_id, $mandat_coges_id);
@@ -135,23 +138,21 @@ class MandatCogesController extends AbstractController
             'host' => $paramDB['host']
         );
 
-        $whereResult = '';
+        $whereResult = null;
 
         if(!empty($params['coges_filter'])){
             $whereResult .= " coges_id ='". $params['coges_filter'] . "' AND";
         }
+        if($whereResult) $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
 
-        $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);
     }
     #[Route('/', name: 'app_mandat_coges_index', methods: ['GET','POST'])]
-    public function index(Request $request, CogesRepository $cogesRepository): Response
+    public function index(Request $request): Response
     {
-        return $this->render('backend/mandat_coges/index.html.twig', [
-            'coges' => $cogesRepository->findAll(),
-        ]);
+        return $this->render('backend/mandat_coges/index.html.twig');
     }
 
     #[Route('/new', name: 'app_mandat_coges_new', methods: ['GET', 'POST'])]

@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Region;
 use App\Form\RegionType;
+use App\Helper\DataTableHelper;
 use App\Helper\FileUploadHelper;
 use App\Repository\MandatCogesRepository;
 use App\Repository\RegionRepository;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
@@ -30,7 +32,6 @@ class RegionController extends AbstractController
     {
         return $this->render('backend/region/import.html.twig');
     }
-
 
     #[Route('/ajax/select2', name: 'app_region_select2_ajax', methods: ['GET', 'POST'])]
     public function ajaxSelect2(Request $request, RegionRepository $regionRepository): JsonResponse
@@ -75,6 +76,70 @@ class RegionController extends AbstractController
         }else{
             return $this->redirectToRoute('app_region_index');
         }
+    }
+
+    #[Route('/datatable', name: 'app_region_dt', methods: ['GET', 'POST'])]
+    public function datatable(Request $request, Connection $connection)
+    {
+        date_default_timezone_set("Africa/Abidjan");
+        $params = $request->query->all();
+        $paramDB = $connection->getParams();
+        $table = 'region';
+        $primaryKey = 'id';
+        $columns = [
+            [
+                'db' => 'id',
+                'dt' => 'id',
+            ],
+            [
+                'db' => 'libelle',
+                'dt' => 'libelle',
+            ],
+            [
+                'db' => 'description',
+                'dt' => 'description',
+            ],
+            [
+                'db' => 'id',
+                'dt' => '',
+                'formatter' => function($d, $row){
+                    $region_id = $row['id'];
+                    $content = sprintf("<div class='d-flex'><span class='btn btn-primary shadow btn-xs sharp me-1' data-region-id='%s'><i class='fa fa-pencil'></i></span><span data-region-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $region_id, $region_id);
+                    return $content;
+                }
+            ],
+        ];
+
+        $sql_details = array(
+            'user' => $paramDB['user'],
+            'pass' => $paramDB['password'],
+            'db'   => $paramDB['dbname'],
+            'host' => $paramDB['host']
+        );
+
+        $whereResult = '';
+        if(!empty($params['region_filter'])){
+            $whereResult .= " libelle ='". $params['region_filter'] . "' AND";
+        }
+
+        $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
+        $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
+
+        return new JsonResponse($response);
+    }
+
+    #[Route('/ajax/new', name: 'app_region_new_ajax', methods: ['GET', 'POST'])]
+    public function newAjax(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        if($request->isXmlHttpRequest()) {
+            $data = array_filter($request->request->all(),function($d) {
+                return !empty($d);
+            });
+            $connection = $entityManager->getConnection();
+            $connection->insert('region', $data);
+            return $this->json('saved');
+        }
+        return $this->json('error');
     }
 
     #[Route('/', name: 'app_region_index', methods: ['GET', 'POST'])]

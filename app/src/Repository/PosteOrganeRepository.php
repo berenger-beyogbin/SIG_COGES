@@ -33,6 +33,18 @@ class PosteOrganeRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->flush();
     }
+
+    public function findAllAjaxSelect2($libelle): array
+    {
+        $data = $this->createQueryBuilder('c')
+            ->select('c.id, c.libelle_poste as text')
+            ->andWhere("c.libelle LIKE '$libelle%'")
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $data;
+    }
 //    /**
 //     * @return PosteOrgane[] Returns an array of PosteOrgane objects
 //     */

@@ -6,6 +6,7 @@ use App\Repository\RecetteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Boolean;
 
 #[ORM\Entity(repositoryClass: RecetteRepository::class)]
 class Recette
@@ -17,6 +18,9 @@ class Recette
 
     #[ORM\Column]
     private ?int $montantRecette = null;
+
+    #[ORM\Column(type:'boolean', nullable: true)]
+    private ?bool $statut = false;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -68,6 +72,24 @@ class Recette
     {
         $this->pacc = $pacc;
 
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getStatut(): ?bool
+    {
+        return $this->statut;
+    }
+
+    /**
+     * @param bool|null $statut
+     * @return Recette
+     */
+    public function setStatut(?bool $statut): Recette
+    {
+        $this->statut = $statut;
         return $this;
     }
 

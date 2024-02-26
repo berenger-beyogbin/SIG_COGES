@@ -3,7 +3,7 @@
 
 {% block body %}
 
-    <div id="main-wrapper">
+    <div id="main-wrapper"  class="show menu-toggle">
 
         {{ include('backend/_partials/header.html.twig') }}
         {{ include('backend/_partials/left_sidebar.html.twig') }}
@@ -40,19 +40,19 @@
                                     </div>
                                     <div class="row border-1 border-light p-3">
                                         <div class="col-sm-2">
-                                            <select type="text" class="form-control iepp select2 filter" id="iepp_filter" name="iepp_filter">
+                                            <select type="text" class="form-control-sm iepp select2 filter" id="iepp_filter" name="iepp_filter">
                                             </select>
                                         </div>
                                         <div class="col-sm-2">
-                                            <select type="text" class="form-control coges select2 filter" id="coges_filter" name="coges_filter">
+                                            <select type="text" class="form-control-sm coges select2 filter" id="coges_filter" name="coges_filter">
                                             </select>
                                         </div>
                                         <div class="col-sm-2">
-                                            <select type="text" class="form-control dren select2 filter" id="dren_filter" name="dren_filter">
+                                            <select type="text" class="form-control-sm dren select2 filter" id="dren_filter" name="dren_filter">
                                             </select>
                                         </div>
                                         <div class="col-sm-4">
-                                            <input type="text" class="form-control" placeholder="Recherche rapide" name="filter">
+                                            <input type="text" class="form-control form-control-sm" placeholder="Recherche rapide" name="filter">
                                         </div>
                                     </div>
                                     <table id="datatable" class="table dataTable no-footer" role="grid" aria-describedby="dt_info">
@@ -64,10 +64,7 @@
                                             <th>TYPE MILIEU</th>
                                             <th>CYCLE</th>
                                             <th>CODE ETABLISSEMENT</th>
-                                            <th>DREN</th>
-                                            <th>IEPP</th>
-                                            <th>COGES</th>
-                                            <th width="5%">Actions</th>
+                                            <th width="3%">Actions</th>
                                         </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -98,13 +95,65 @@
                 datatable.draw();
             });
 
-            $(".select2").select2();
+            $('.coges').select2({
+                allowClear: true,
+                placeholder: "COGES",
+                language: "fr",
+                delay: 250,
+                ajax: {
+                    url: '{{ path('app_coges_select2_ajax') }}',
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+            $('.iepp').select2({
+                allowClear: true,
+                placeholder: "IEPP",
+                language: "fr",
+                delay: 250,
+                ajax: {
+                    url: '{{ path('app_iepp_select2_ajax') }}',
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+            $('.dren').select2({
+                allowClear: true,
+                placeholder: "DREN",
+                language: "fr",
+                delay: 250,
+                ajax: {
+                    url: '{{ path('app_dren_select2_ajax') }}',
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
 
             function initDatatable(){
                 var dt = $('#datatable').DataTable( {
                     responsive: true,
                     pageLength: 20,
-                 //   searching: true,
+                    searching: false,
                     select: true,
                     lengthChange: false,
                     language: {
@@ -133,10 +182,7 @@
                         { "data": "type_milieu" },
                         { "data": "cycle" },
                         { "data": "code_ets" },
-                        { "data": "dren" },
-                        { "data": "iepp" },
-                        { "data": "coges" },
-                        { "data": "coges_id" },
+                        { "data": "" },
                     ],
                     order: [[1, 'desc']]
                 } );

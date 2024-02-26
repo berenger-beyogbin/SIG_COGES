@@ -1,0 +1,40 @@
+<div class="d-flex justify-content-center mt-5">
+    <table class="table table-sm table-condensed w-90 px-5">
+        <thead>
+        <tr role="row">
+            <th>ACTIVITE</th>
+            <th>MONTANT</th>
+            <th>FICHIER</th>
+            <th>DATE EXECUTION</th>
+            <th>PAIEMENT FOURNISSEUR</th>
+            <th>ACTIONS</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for depense in depenses %}
+            <tr>
+                <td>{{ depense.activite.libelleActvitite }}</td>
+                <td>{{ depense.montantDepense }}</td>
+                <td>{{ depense.nomFichierPreuve }}</td>
+                <td>{{ depense.dateExe | date('d/m/Y') }}</td>
+                <td>{{ recette.paiementFournisseur }}</td>
+                <td width="3%">
+                    <div class='d-flex'>
+                        <span class='btn btn-warning shadow btn-xs sharp me-1 edit-depense' data-depense-id='{{ depense.id }}'><i class='fa fa-pencil'></i></span>
+                        <span class='btn btn-danger shadow btn-xs sharp delete-depense' data-depense-id='{{ depense.id }}'><i class='fa fa-trash'></i></span>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        <tr class="fw-bold fs-3">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><div class="float-end">Total</div></td>
+            <td>{{ total_depenses }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+

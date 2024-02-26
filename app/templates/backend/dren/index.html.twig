@@ -3,7 +3,7 @@
 
 {% block body %}
 
-    <div id="main-wrapper">
+    <div id="main-wrapper" class="show menu-toggle">
 
         {{ include('backend/_partials/header.html.twig') }}
         {{ include('backend/_partials/left_sidebar.html.twig') }}
@@ -38,14 +38,14 @@
                                             <a href="{{ path('app_dren_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
                                         </div>
                                     </div>
-                                    <table id="datatable" class="table dataTable no-footer table-responsive" role="grid" aria-describedby="dt_info">
+                                    <table id="datatable" class="table no-footer table-responsive">
                                         <thead>
                                         <tr role="row">
                                             <th>#</th>
                                             <th>NOM</th>
                                             <th>EMAIL</th>
                                             <th>TELEPHONE</th>
-                                            <th>Actions</th>
+                                            <th width="2%">Actions</th>
                                         </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -82,8 +82,8 @@
 
             $('.region').select2({
                 ajax: {
-                    allowClear: true,
                     placeholder: "REGIONS",
+                    allowClear: true,
                     url: '{{ path('app_region_select2_ajax') }}',
                     delay: 250,
                     data: function (params) {
@@ -97,11 +97,80 @@
                 }
             });
 
+            $('.coges').select2({
+                ajax: {
+                    placeholder: "COGES",
+                    allowClear: true,
+                    url: '{{ path('app_coges_select2_ajax') }}',
+                    delay: 250,
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+            $('.commune').select2({
+                ajax: {
+                    placeholder: "COMMUNES",
+                    allowClear: true,
+                    url: '{{ path('app_commune_select2_ajax') }}',
+                    delay: 250,
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+            $('.iepp').select2({
+                ajax: {
+                    placeholder: "IEPP",
+                    allowClear: true,
+                    url: '{{ path('app_iepp_select2_ajax') }}',
+                    delay: 250,
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+            $('.dren').select2({
+                allowClear: true,
+                placeholder: "DREN",
+                delay: 150,
+                ajax: {
+                    url: '{{ path('app_dren_select2_ajax') }}',
+                    delay: 150,
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
             function initDatatable(){
-                var dt = $('#datatable').DataTable( {
+                var dt = $('#datatable').DataTable({
                     responsive: true,
                     pageLength: 20,
-                    searching: true,
+                    searching: false,
                     select: true,
                     lengthChange: false,
                     language: {
@@ -122,12 +191,13 @@
                         }
                     },
                     columns: [
-                        {"data":  "id"},
-                        {"data":  "libelle"},
-                        {"data":  "email"},
-                        {"data":  "id"},
+                        {"data":  "id" },
+                        {"data":  "libelle" },
+                        {"data":  "email" },
+                        {"data":  "telephone" },
+                        {"data":  "" },
                     ],
-                    order: [[0, 'desc']]
+                    order: [[0, 'asc']]
                 } );
                 return dt;
 
@@ -142,7 +212,7 @@
                     timer: 1500,
                 }).then(function(result){
                     $('#formCreateDren').resetForm();
-                    drenDT.draw();
+                    datatable.draw();
                 });
             });
         });

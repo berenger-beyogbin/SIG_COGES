@@ -3,7 +3,7 @@
 
 {% block body %}
 
-    <div id="main-wrapper">
+    <div id="main-wrapper" class="show menu-toggle">
 
         {{ include('backend/_partials/header.html.twig') }}
         {{ include('backend/_partials/left_sidebar.html.twig') }}
@@ -13,7 +13,7 @@
             <div class="page-titles">
                 <ol class="breadcrumb">
                     <li>
-                        <h5 class="bc-title">Gestion des REGION</h5>
+                        <h5 class="bc-title">Gestion des REGIONS</h5>
                     </li>
                     <li class="breadcrumb-item"><a href="javascript:void(0)">
                             <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -24,7 +24,6 @@
                     </li>
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">REGION</a></li>
                 </ol>
-                <a class="text-primary fs-13" data-bs-toggle="offcanvas" href="#offcanvasExample1" role="button" aria-controls="offcanvasExample1"></a>
             </div>
             <div class="container-fluid">
                 <div class="row">
@@ -35,11 +34,22 @@
                                     <div class="tbl-caption">
                                         <h4 class="heading mb-0">REGION/DISTRICT</h4>
                                         <div>
-                                            <a class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">+ Ajouter</a>
+                                            <a class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" href="#offcanvasCreateRegion" role="button" aria-controls="offcanvasCreateRegion">+ Ajouter</a>
                                             <a href="{{ path('app_region_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
                                         </div>
                                     </div>
-                                    <div id="region-tbl">Chargement...</div>
+                                    <table id="datatable" class="table table-responsive">
+                                        <thead>
+                                        <tr role="row">
+                                            <th>#</th>
+                                            <th>LIBELLE</th>
+                                            <th>DESCRIPTION</th>
+                                            <th width="3%">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -48,9 +58,8 @@
             </div>
         </div>
 
-
-        {#        {{ include("backend/pages/_add_employee_offcanvas.html.twig")}}#}
-        {#        {{ include("backend/pages/_add_task_offcanvas.html.twig")}}#}
+        {{ include("backend/region/_create_region_offcanvas.html.twig")}}
+        {# {{ include("backend/pages/_add_task_offcanvas.html.twig")}} #}
 
         {{ include("backend/_partials/footer.html.twig") }}
 
@@ -63,30 +72,51 @@
     <script src="{{ asset('bundles/datatables/js/datatables.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#region-tbl').initDataTables({{ datatable_settings(datatable) }}, {
-                'dom': 'ZBfrltip',
-                buttons: [
-                ],
-                searching: true,
-                select: true,
-                /* pageLength:5, */
-                lengthChange: false,
-                language: {
-                    paginate: {
-                        url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
-                        first: '',
-                        last: '',
-                        next: '<i class="fa-solid fa-angle-right"></i>',
-                        previous: '<i class="fa-solid fa-angle-left"></i>'
-                    }
+            var datatable = initDatatable();
 
-                },
+            $(".filter").change(function (e) {
+                datatable.draw();
+            });
+            function initDatatable(){
+                var dt = $('#datatable').DataTable( {
+                    responsive: true,
+                    pageLength: 20,
+                    searching: false,
+                    select: true,
+                    lengthChange: false,
+                    language: {
+                        paginate: {
+                            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
+                            first: '',
+                            last: '',
+                            next: '<i class="fa-solid fa-angle-right"></i>',
+                            previous: '<i class="fa-solid fa-angle-left"></i>'
+                        }
+                    },
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        "url": '{{ path('app_region_dt') }}',
+                        "data": function (d) {
+                            d.region_filter = $("#region_filter").val();
+                        }
+                    },
+                    columns: [
+                        {"data":  "id"},
+                        {"data":  "libelle"},
+                        {"data":  "description"},
+                        {"data": "" }
+                    ],
+                    order: [[0, 'asc']]
+                } );
+                return dt;
 
-            }).then(function(dt) {
-                // dt contains the initialized instance of DataTables
-                dt.on('draw', function() {
-                   // alert('Redrawing table');
-                })
+            }
+
+            $('#formCreateRegion').ajaxForm(function(d) {
+            }).then(function(result){
+                $('#formCreateRegion').resetForm();
+                datatable.draw();
             });
 
         });

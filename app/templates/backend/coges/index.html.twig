@@ -3,7 +3,7 @@
 
 {% block body %}
 
-    <div id="main-wrapper">
+    <div id="main-wrapper"  class="show menu-toggle">
 
         {{ include('backend/_partials/header.html.twig') }}
         {{ include('backend/_partials/left_sidebar.html.twig') }}
@@ -68,11 +68,7 @@
                                                 <th>N° COMPTE</th>
                                                 <th>DOMICILIATION</th>
                                                 <th>GROUPE SCOLAIRE</th>
-                                                <th>REGION</th>
-                                                <th>DREN</th>
-                                                <th>IEPP</th>
-                                                <th>COMMUNE</th>
-                                                <th>Actions</th>
+                                                <th width="3%">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -94,12 +90,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    Swal.fire({
-    position: "top-end",
-    icon: "success",
-    title: "Enregistrement effectué avec succès",
-    showConfirmButton: false,
-    timer: 1500,
     <script type="text/javascript">
         $(document).ready(function () {
             var datatable = initDatatable();
@@ -108,12 +98,10 @@
                 datatable.draw();
             });
 
-           // $(".select2").select2();
-
             $('.region').select2({
+                placeholder: "REGIONS",
+                allowClear: true,
                 ajax: {
-                    placeholder: "REGIONS",
-                    allowClear: true,
                     url: '{{ path('app_region_select2_ajax') }}',
                     delay: 250,
                     data: function (params) {
@@ -128,9 +116,9 @@
             });
 
             $('.coges').select2({
+                placeholder: "COGES",
+                allowClear: true,
                 ajax: {
-                    placeholder: "COGES",
-                    allowClear: true,
                     url: '{{ path('app_coges_select2_ajax') }}',
                     delay: 250,
                     data: function (params) {
@@ -145,9 +133,9 @@
             });
 
             $('.commune').select2({
+                placeholder: "COMMUNES",
+                allowClear: true,
                 ajax: {
-                    placeholder: "COMMUNES",
-                    allowClear: true,
                     url: '{{ path('app_commune_select2_ajax') }}',
                     delay: 250,
                     data: function (params) {
@@ -162,9 +150,9 @@
             });
 
             $('.iepp').select2({
+                placeholder: "IEPP",
+                allowClear: true,
                 ajax: {
-                    placeholder: "IEPP",
-                    allowClear: true,
                     url: '{{ path('app_iepp_select2_ajax') }}',
                     delay: 250,
                     data: function (params) {
@@ -179,9 +167,10 @@
             });
 
             $('.dren').select2({
+                allowClear: true,
+                placeholder: "DREN",
+                delay: 250,
                 ajax: {
-                    allowClear: true,
-                    placeholder: "DREN",
                     url: '{{ path('app_dren_select2_ajax') }}',
                     delay: 250,
                     data: function (params) {
@@ -200,7 +189,7 @@
                 var dt = $('#datatable').DataTable( {
                     responsive: true,
                     pageLength: 20,
-                    searching: true,
+                    searching: false,
                     select: true,
                     lengthChange: false,
                     language: {
@@ -225,18 +214,14 @@
                     },
                     columns: [
                         {"data":  "id"},
-                        {"data":  "coges"},
+                        {"data":  "libelle"},
                         {"data":  "cycle"},
                         {"data":  "numero_compte"},
                         { "data": "domiciliation" },
                         { "data": "groupe_scolaire" },
-                        { "data": "region" },
-                        { "data": "dren" },
-                        { "data": "iepp" },
-                        { "data": "commune" },
-                        { "data": "iepp_id" }
+                        { "data": "" }
                     ],
-                    order: [[1, 'desc']]
+                    order: [[0, 'asc']]
                 } );
                 return dt;
 
@@ -247,7 +232,6 @@
                     $('#formCreateCoges').resetForm();
                     datatable.draw();
             });
-
         });
     </script>
 

@@ -1,41 +1,309 @@
 {% extends 'backend/base.html.twig' %}
-
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .form-control {
+           height: 2.1rem;
+        }
+        #btnvoirplus.btn-sm, #btnvoirplus.btn-group-sm>.btn {
+            padding: 0px 10px;
+        }
+        .accordion {
+            --bs-accordion-bg: rgba(136, 136, 136, 0);
+        }
+    </style>
+{% endblock %}
 {% block body %}
 
+<div id="main-wrapper" class="show menu-toggle">
     {{ include('backend/_partials/header.html.twig') }}
 
     {{ include('backend/_partials/left_sidebar.html.twig') }}
 
-    <table id="dren-tbl" class="table dataTable no-footer">
-        <tbody>
-        <tr>
-            <th>Id</th>
-            <td>{{ coge.id }}</td>
-        </tr>
-        <tr>
-            <th>Libelle</th>
-            <td>{{ coge.libelle }}</td>
-        </tr>
-        <tr>
-            <th>Cycle</th>
-            <td>{{ coge.cycle }}</td>
-        </tr>
-        <tr>
-            <th>NumeroCompte</th>
-            <td>{{ coge.numeroCompte }}</td>
-        </tr>
-        <tr>
-            <th>Domiciliation</th>
-            <td>{{ coge.domiciliation }}</td>
-        </tr>
-        <tr>
-            <th>GroupeScolaire</th>
-            <td>{{ coge.groupeScolaire ? 'Yes' : 'No' }}</td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="content-body">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0">DETAILS COGES</h5>
+            </div>
+            <div class="row">
+                <div class="col-xl-4 col-sm-6">
+                    <div class="card box-hover">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box icon-box-lg bg-success-light rounded-circle">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7.24463 14.7815L10.2378 10.8913L13.652 13.5732L16.581 9.79291" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <circle cx="19.9954" cy="4.20021" r="1.9222" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M14.9243 3.12012H7.65655C4.64511 3.12012 2.77783 5.25284 2.77783 8.26428V16.3467C2.77783 19.3581 4.6085 21.4817 7.65655 21.4817H16.2607C19.2721 21.4817 21.1394 19.3581 21.1394 16.3467V9.30776" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                                <div class="total-projects ms-3">
+                                    <h3 class="text-success count">{{ 24 }}</h3>
+                                    <span>Activités prévues</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-sm-6">
+                    <div class="card box-hover">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box icon-box-lg bg-washed-blue rounded-circle">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7.24463 14.7815L10.2378 10.8913L13.652 13.5732L16.581 9.79291" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <circle cx="19.9954" cy="4.20021" r="1.9222" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M14.9243 3.12012H7.65655C4.64511 3.12012 2.77783 5.25284 2.77783 8.26428V16.3467C2.77783 19.3581 4.6085 21.4817 7.65655 21.4817H16.2607C19.2721 21.4817 21.1394 19.3581 21.1394 16.3467V9.30776" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                                <div class="total-projects ms-3">
+                                    <h3 class="text-primary count">{{ 12 }}</h3>
+                                    <span>Activités prévues</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-sm-6">
+                    <div class="card box-hover">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box icon-box-lg bg-purple-light rounded-circle">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7.24463 14.7815L10.2378 10.8913L13.652 13.5732L16.581 9.79291" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <circle cx="19.9954" cy="4.20021" r="1.9222" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M14.9243 3.12012H7.65655C4.64511 3.12012 2.77783 5.25284 2.77783 8.26428V16.3467C2.77783 19.3581 4.6085 21.4817 7.65655 21.4817H16.2607C19.2721 21.4817 21.1394 19.3581 21.1394 16.3467V9.30776" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>                                </div>
+                                <div class="total-projects ms-3">
+                                    <h3 class="text-purple count">7</h3>
+                                    <span>Activités non réalisées</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card dz-card">
+                        <div class="card-body pt-0">
+                            <table class="table table-responsive">
+                                <tbody>
+                                <tr role="row" class="odd">
+                                    <td><strong>COGES : </strong></td>
+                                    <td>{{ coge.libelle ?? 'N/A' }}</td>
+                                    <td><strong>Cycle : </strong></td>
+                                    <td>{{ coge.cycle ?? 'N/A' }}</td>
+                                    <td><strong>Numéro de compte : </strong></td>
+                                    <td>{{ coge.numeroCompte ?? 'N/A' }}</td>
+                                </tr>
+                                <tr role="row" class="odd">
+                                    <td><strong>Domiciliation : </strong></td>
+                                    <td>{{ coge.domiciliation ?? 'N/A' }}</td>
+                                    <td><strong>Groupe scolaire : </strong></td>
+                                    <td>{{ coge.groupeScolaire ?? 'N/A' }}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr role="row" class="odd">
+                                    <td><strong>REGION : </strong></td>
+                                    <td>{{ coge.region ? coge.region.libelle : 'N/A' }}</td>
+                                    <td><strong>DREN : </strong></td>
+                                    <td>{{ coge.dren ? coge.dren.libelle: 'N/A' }}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr role="row" class="even">
+                                    <td><strong>IEPP: </strong></td>
+                                    <td>{{ coge.iepp ? coge.iepp.libelle: 'N/A' }}</td>
+                                    <td><strong>COMMUNE : </strong></td>
+                                    <td>{{ coge.commune? coge.commune.libelle: 'N/A' }}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-12">
+                    <div class="card dz-card" id="custom-tab">
+                        <div class="tab-content" id="myTabContent1">
+                            <div class="tab-pane fade show active" id="DefaultTab1" role="tabpanel" aria-labelledby="home-tab1">
+                                <div class="card-body pt-0">
+                                    <!-- Nav tabs -->
+                                    <div class="custom-tab-1">
+                                        <ul class="nav nav-tabs" role="tablist">
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link active" data-bs-toggle="tab" href="#mandat" aria-selected="true" role="tab"><i class="la la-pager me-2"></i> Mandat en cours</a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" data-bs-toggle="tab" href="#membres" aria-selected="false" tabindex="-1" role="tab"><i class="la la-people-carry me-2"></i> Membres</a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" data-bs-toggle="tab" href="#pacc" aria-selected="false" tabindex="-1" role="tab"><i class="la la-file-contract me-2"></i> PACC</a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" data-bs-toggle="tab" href="#parents" aria-selected="false" tabindex="-1" role="tab"><i class="la la-address-book me-2"></i> Parent d'élèves</a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" data-bs-toggle="tab" href="#message" aria-selected="false" tabindex="-1" role="tab"><i class="la la-envelope me-2"></i> Message</a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade show active" id="mandat" role="tabpanel">
+                                                <div class="m-5">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div> Date de début : <strong>{{ mandat ? mandat.DateDebut|date('d/m/Y'): 'N/A' }}</strong></div>
+                                                        <div class="pl-2"> Date de fin : <strong>{{ mandat ? mandat.DateFin|date('d/m/Y') : 'N/A' }}</strong></div>
+                                                    </div>
+                                                    <hr>
+                                                    <div class="d-flex justify-content-center my-4">
+                                                        <button class="btn btn-warning btn-sm w-10"><i class="la la-plus"> Enregistrer un nouveau mandat</i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="membres" role="tabpanel">
+                                                <div class="m-5">
+                                                    <div class="row d-flex justify-content-end">
+                                                        <button class="btn btn-warning btn-sm w-auto"><i class="la la-plus">Enregistrer un nouveau membre</i></button>
+                                                    </div>
+                                                    <div class="mt-4">
+                                                        <div class="accordion accordion-start-indicator" id="accordion-five">
+                                                            <div class="accordion-item">
+                                                                <div class="accordion-header  rounded-lg" id="accordion-AG" data-bs-toggle="collapse" data-bs-target="#collapseAG" aria-controls="collapseAG"   aria-expanded="true"  role="button">
+                                                                    <span class="accordion-header-text fw-bold">Assemblée Générale</span>
+                                                                    <span class="accordion-header-indicator"></span>
+                                                                </div>
+                                                                <div id="collapseAG" class="collapse accordion__body show" aria-labelledby="accord-AG" data-bs-parent="#accordion-AG">
+                                                                    <div class="accordion-body">
+                                                                        <div>
+                                                                            <table class="table table-condensed table-striped table-bordered table-sm table-responsive">
+                                                                                <thead>
+                                                                                <tr>
+                                                                                    <th>Genre</th>
+                                                                                    <th>Nom prénoms</th>
+                                                                                    <th>Contact</th>
+                                                                                    <th>Profession</th>
+                                                                                    <th>Poste</th>
+                                                                                </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                {% for membre in membres %}
+                                                                                    {% if membre.poste.organeCoges.sigle == "AG" %}
+                                                                                        <tr role="row" class="odd">
+                                                                                            <td><span>{{ membre.genre }}</span></td>
+                                                                                            <td>{{ membre.nom }} {{ membre.prenoms }}</td>
+                                                                                            <td><span class="text-primary">{{ membre.contact }}</span></td>
+                                                                                            <td><span>{{ membre.profession }}</span></td>
+                                                                                            <td><span class="label label-success">{{ membre.poste.libellePoste }}</span></td>
+                                                                                            <td>
+                                                                                                <div class='d-flex'>
+                                                                                                    <span class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-pencil'></i></span>
+                                                                                                    <span class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    {% endif %}
+                                                                                {% endfor %}
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="accordion-item">
+                                                                <div class="accordion-header collapsed rounded-lg" id="accord-5Two" data-bs-toggle="collapse" data-bs-target="#collapse5Two" aria-controls="collapse5Two"   aria-expanded="true"  role="button">
+                                                                    <span class="accordion-header-text fw-bold">Bureau Exécutif</span>
+                                                                    <span class="accordion-header-indicator"></span>
+                                                                </div>
+                                                                <div id="collapse5Two" class="collapse accordion__body" aria-labelledby="accord-5Two" data-bs-parent="#accordion-five">
+                                                                    <div class="accordion-body-text">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="accordion-item">
+                                                                <div class="accordion-header collapsed rounded-lg" id="accord-5Three" data-bs-toggle="collapse" data-bs-target="#collapse5Three" aria-controls="collapse5Three"   aria-expanded="true"  role="button">
+                                                                    <span class="accordion-header-text  fw-bold">Commissariat aux comptes</span>
+                                                                    <span class="accordion-header-indicator"></span>
+                                                                </div>
+                                                                <div id="collapse5Three" class="collapse accordion__body" aria-labelledby="accord-5Three" data-bs-parent="#accordion-five">
+                                                                    <div class="accordion-body-text">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="pacc" role="tabpanel">
+                                                <div class="m-5">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div>Date de début : <strong>{{ pacc ? pacc.dateDebut|date('d/m/Y') : 'N/A' }}</strong></div>
+                                                        <div class="pl-2">Date de fin : <strong>{{ pacc ? pacc.dateFin|date('d/m/Y'): 'N/A' }}</strong></div>
+                                                        <div class="pl-2"><strong> Télécharger le PACC : </strong>
+                                                            {% if pacc is not empty %}
+                                                            <a href="{{ path('app_pacc_download_file', {id: pacc.id}) }}" target="_self">{{ pacc.nomFichier }}</a>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="pl-2">
+                                                            {% if pacc is not empty %}
+                                                            <a class="btn btn-outline-warning btn-sm" id="btnvoirplus" href="{{ path('app_pacc_show', {id: pacc.id }) }}">Voir +</a>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="d-flex justify-content-center mt-3">
+                                                    <button class="btn btn-warning btn-sm w-10"><i class="la la-plus"> Enregistrer un nouveau PACC</i></button>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="parents" role="tabpanel">
+                                                <div class="pt-4">
+                                                    <div class="basic-form">
+                                                        <form>
+                                                            <div class="row">
+                                                                <div class="col-sm-6">
+                                                                    <input type="text" class="form-control" placeholder="Nom et prénoms" name="coges_parent_nom_prenoms">
+                                                                </div>
+                                                                <div class="col-sm-3 mt-2 mt-sm-0">
+                                                                    <input type="tel" class="form-control" placeholder="Téléphone" name="coges_parent_tel">
+                                                                </div>
+                                                                <div class="col-sm-2 mt-2 mt-sm-0">
+                                                                    <button class="btn btn-warning btn-sm w-10"><i class="la la-plus"> Enregistrer</i></button>
+                                                                </div>
+                                                            </div>
 
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div class="row d-flex justify-content-center mt-2">
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="message" role="tabpanel">
+                                                <div class="pt-4">
+                                                    <h4>This is message title</h4>
+                                                    <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor.
+                                                    </p>
+                                                    <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade " id="DefaultTab1-html" role="tabpanel" aria-labelledby="home-tab1">
+                                <div class="card-body p-0 code-area"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     {{ include("backend/_partials/footer.html.twig") }}
+</div>
 {% endblock %}
 
 {% block javascripts %}

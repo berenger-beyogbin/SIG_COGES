@@ -33,6 +33,18 @@ class MembreOrganeRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->flush();
     }
+
+    public function findAllAjaxSelect2($libelle): array
+    {
+        $data = $this->createQueryBuilder('m')
+            ->select('m.id, m.nom as text')
+            ->andWhere("m.nom LIKE '$libelle%'")
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $data;
+    }
 //    /**
 //     * @return MembreOrgane[] Returns an array of MembreOrgane objects
 //     */

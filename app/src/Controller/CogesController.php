@@ -10,6 +10,9 @@ use App\Repository\CogesRepository;
 use App\Repository\CommuneRepository;
 use App\Repository\DrenRepository;
 use App\Repository\IeppRepository;
+use App\Repository\MandatCogesRepository;
+use App\Repository\MembreOrganeRepository;
+use App\Repository\PaccRepository;
 use App\Repository\RegionRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,7 +26,6 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/admin/coges')]
 class CogesController extends AbstractController
 {
-
     #[Route('/import-file', name: 'app_coges_import', methods: [ 'GET'])]
     public function importFile(Request $request): Response
     {
@@ -53,11 +55,8 @@ class CogesController extends AbstractController
     }
 
     #[Route('/process/import-file', name: 'app_coges_proccess_file', methods: ['GET', 'POST'])]
-    public function processUploadedFile(Request $request,
-                                        CogesRepository $cogesRepository,
-                                        RegionRepository $regionRepository,
-                                        CommuneRepository $communeRepository,
-                                        DrenRepository $drenRepository,
+    public function processUploadedFile(Request $request, CogesRepository $cogesRepository, RegionRepository $regionRepository,
+                                        CommuneRepository $communeRepository, DrenRepository $drenRepository,
                                         IeppRepository $ieppRepository): Response
     {
         /* @var UploadedFile $file */
@@ -76,7 +75,7 @@ class CogesController extends AbstractController
                     $region = $regionRepository->findOneBy(['libelle' => $data['REGION']]);
                     if($region) $coges->setRegion($region);
                 }
-                if(isset($data['LIBELLE'])) $coges->setLibelleCOGES($data['LIBELLE']);
+                if(isset($data['LIBELLE'])) $coges->setLibelle($data['LIBELLE']);
                 if(isset($data['DREN'])) {
                     $dren = $drenRepository->findOneBy(['libelle' => $data['DREN']]);
                     if($dren) $coges->setDren($dren);
@@ -107,13 +106,12 @@ class CogesController extends AbstractController
     }
 
     #[Route('/datatable', name: 'app_coges_dt', methods: ['GET', 'POST'])]
-    public function datatable(Request $request,
-                              Connection $connection)
+    public function datatable(Request $request, Connection $connection)
     {
         date_default_timezone_set("Africa/Abidjan");
         $params = $request->query->all();
         $paramDB = $connection->getParams();
-        $table = 'view_coges_region_dren_iepp_commune';
+        $table = 'coges';
         $primaryKey = 'id';
         $columns = [
             [
@@ -121,8 +119,8 @@ class CogesController extends AbstractController
                 'dt' => 'id',
             ],
             [
-                'db' => 'coges',
-                'dt' => 'coges',
+                'db' => 'libelle',
+                'dt' => 'libelle',
             ],
             [
                 'db' => 'cycle',
@@ -145,54 +143,14 @@ class CogesController extends AbstractController
                 }
             ],
             [
-                'db' => 'region',
-                'dt' => 'region',
-                'formatter' => function($d, $row){
-                    return sprintf("<a href='/admin/region/%s' class='link-info'>%s</a>", $row['region_id'], $d);
-                }
-            ],
-            [
-                'db' => 'dren',
-                'dt' => 'dren',
-                'formatter' => function($d, $row){
-                    return sprintf("<a href='/admin/dren/%s' class='link-info'>%s</a>", $row['dren_id'], $d);
-                }
-            ],
-            [
-                'db' => 'iepp',
-                'dt' => 'iepp',
-                'formatter' => function($d, $row){
-                    return sprintf("<a href='/admin/iepp/%s' class='link-info'>%s</a>", $row['iepp_id'], $d);
-                }
-            ],
-            [
-                'db' => 'commune',
-                'dt' => 'commune',
-                'formatter' => function($d, $row){
-                    return sprintf("<a href='/admin/commune/%s' class='link-info'>%s</a>", $row['commune_id'], $d);
-                }
-            ],
-            [
-                'db' => 'iepp_id',
-                'dt' => 'iepp_id',
+                'db' => 'id',
+                'dt' => '',
                 'formatter' => function($d, $row){
                     $coges_id = $row['id'];
-                    $content = sprintf("<div class='d-flex'><span class='btn btn-primary shadow btn-xs sharp me-1' data-coges-id='%s'><i class='fa fa-pencil'></i></span><span data-coges-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $coges_id, $coges_id);
+                    $content = sprintf("<div class='d-flex'><a href='/admin/coges/%s' class='btn btn-light shadow btn-xs sharp me-1' data-coges-id='%s'><i class='fa fa-eye'></i></a><span class='btn btn-primary shadow btn-xs sharp me-1' data-coges-id='%s'><i class='fa fa-pencil'></i></span><span data-coges-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>",$coges_id,$coges_id, $coges_id, $coges_id);
                     return $content;
                 }
-            ],
-            [
-                'db' => 'commune_id',
-                'dt' => 'commune_id'
-            ],
-            [
-                'db' => 'region_id',
-                'dt' => 'region_id'
-            ],
-            [
-                'db' => 'dren_id',
-                'dt' => 'dren_id'
-            ],
+            ]
         ];
 
         $sql_details = array(
@@ -259,10 +217,19 @@ class CogesController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_coges_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(Coges $coge): Response
+    public function show(Coges $coges, MandatCogesRepository $mandatCogesRepository,
+                         MembreOrganeRepository $membreOrganeRepository,
+                         PaccRepository $paccRepository): Response
     {
+        $mandat = $mandatCogesRepository->findBy(['coges' => $coges], ['DateDebut' => 'desc'], 1);
+        $pacc = $paccRepository->findBy(['mandatCoges' => $mandat], ['dateDebut' => 'desc'], 1);
+        $membres = $membreOrganeRepository->findBy(['mandat' => $mandat]);
         return $this->render('backend/coges/show.html.twig', [
-            'coge' => $coge,
+            'coge' => $coges,
+            'mandat' => $mandat ? $mandat[0]: null,
+            'pacc' => $pacc ? $pacc[0]: null,
+            'membres' => $membres
+
         ]);
     }
 

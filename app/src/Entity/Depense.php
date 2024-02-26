@@ -29,8 +29,11 @@ class Depense
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $heureExe = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type:'boolean', nullable: true)]
     private ?bool $paiementFournisseur = null;
+
+    #[ORM\Column(type:'boolean', nullable: true)]
+    private ?bool $statut = false;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -110,7 +113,7 @@ class Depense
         return $this->paiementFournisseur;
     }
 
-    public function setPaiementFournisseur(bool $paiementFournisseur): static
+    public function setPaiementFournisseur(?bool $paiementFournisseur): static
     {
         $this->paiementFournisseur = $paiementFournisseur;
 
@@ -139,6 +142,24 @@ class Depense
     {
         $this->pacc = $pacc;
 
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getStatut(): ?bool
+    {
+        return $this->statut;
+    }
+
+    /**
+     * @param bool|null $statut
+     * @return Depense
+     */
+    public function setStatut(?bool $statut): Depense
+    {
+        $this->statut = $statut;
         return $this;
     }
 

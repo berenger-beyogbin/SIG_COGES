@@ -319,14 +319,13 @@ class DataTableHelper
             $whereAllSql = 'WHERE '.$whereAll;
         }
 
-        // Main query to actually get the data
-        $data = self::sql_exec( $db, $bindings,
-            "SELECT `".implode("`, `", self::pluck($columns, 'db'))."`
+        $sql = "SELECT `" . implode("`, `", self::pluck($columns, 'db')) . "`
 			 FROM `$table`
 			 $where
 			 $order
-			 $limit"
-        );
+			 $limit";
+        // Main query to actually get the data
+        $data = self::sql_exec( $db, $bindings, $sql);
 
         // Data set length after filtering
         $resFilterLength = self::sql_exec( $db, $bindings,

@@ -55,9 +55,7 @@ class EtablissementController extends AbstractController
     }
 
     #[Route('/process/import-file', name: 'app_commune_proccess_file', methods: ['GET', 'POST'])]
-    public function processUploadedFile(Request $request,
-                                        CommuneRepository $communeRepository,
-                                        RegionRepository $regionRepository): Response
+    public function processUploadedFile(Request $request, CommuneRepository $communeRepository, RegionRepository $regionRepository): Response
     {
         /* @var UploadedFile $file */
         $file = $request->getSession()->get('user.uploadedfile');
@@ -97,20 +95,13 @@ class EtablissementController extends AbstractController
         return $this->json('error');
     }
 
-    #[Route('/', name: 'app_etablissement_index', methods: ['GET'])]
-    public function index(Request $request): Response
-    {
-        return $this->render('backend/etablissement/index.html.twig');
-    }
-
     #[Route('/datatable', name: 'app_etablissement_dt', methods: ['GET', 'POST'])]
-    public function datatable(Request $request,
-                              Connection $connection)
+    public function datatable(Request $request, Connection $connection)
     {
         date_default_timezone_set("Africa/Abidjan");
         $params = $request->query->all();
         $paramDB = $connection->getParams();
-        $table = 'view_etablissement_iepp_dren_coges';
+        $table = 'etablissement';
         $primaryKey = 'id';
         $columns = [
             [
@@ -138,42 +129,13 @@ class EtablissementController extends AbstractController
                 'dt' => 'code_ets',
             ],
             [
-                'db' => 'dren',
-                'dt' => 'dren',
+                'db' => 'id',
+                'dt' => '',
                 'formatter' => function($d, $row){
-                    return sprintf("<a href='/admin/dren/%s' class='link-info'>%s</a>", $row['dren_id'], $d);
-                }
-            ],
-            [
-                'db' => 'coges',
-                'dt' => 'coges',
-                'formatter' => function($d, $row){
-                    return sprintf("<a href='/admin/coges/%s' class='link-info'>%s</a>", $row['coges_id'], $d);
-                }
-            ],
-            [
-                'db' => 'iepp',
-                'dt' => 'iepp',
-                'formatter' => function($d, $row){
-                    return sprintf("<a href='/admin/iepp/%s' class='link-info'>%s</a>", $row['iepp_id'], $d);
-                }
-            ],
-            [
-                'db' => 'coges_id',
-                'dt' => 'coges_id',
-                'formatter' => function($d, $row){
-                    $coges_id = $row['id'];
-                    $content = sprintf("<div class='d-flex'><span class='btn btn-primary shadow btn-xs sharp me-1' data-coges-id='%s'><i class='fa fa-pencil'></i></span><span data-coges-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $coges_id, $coges_id);
+                    $etablissement_id = $row['id'];
+                    $content = sprintf("<div class='d-flex'><span class='btn btn-light shadow btn-xs sharp me-1' data-etablissement-id='%s'><i class='fa fa-eye'></i></span><span class='btn btn-warning shadow btn-xs sharp me-1' data-etablissement-id='%s'><i class='fa fa-pencil'></i></span><span data-etablissement-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $etablissement_id, $etablissement_id, $etablissement_id);
                     return $content;
                 }
-            ],
-            [
-                'db' => 'dren_id',
-                'dt' => 'dren_id'
-            ],
-            [
-                'db' => 'iepp_id',
-                'dt' => 'iepp_id'
             ],
         ];
 
@@ -184,21 +146,31 @@ class EtablissementController extends AbstractController
             'host' => $paramDB['host']
         );
 
-        $whereResult = '';
+        $whereResult = null;
+
         if(!empty($params['dren_filter'])){
             $whereResult .= " dren_id ='". $params['dren_filter'] . "' AND";
         }
+
         if(!empty($params['iepp_filter'])){
             $whereResult .= " iepp_id = '". $params['iepp_filter'] . "' AND";
         }
+
         if(!empty($params['coges_filter'])){
             $whereResult .= " coges_id = '". $params['coges_filter'] . "' AND";
         }
 
-        $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
+        if($whereResult) $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
+
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);
+    }
+
+    #[Route('/', name: 'app_etablissement_index', methods: ['GET'])]
+    public function index(Request $request): Response
+    {
+        return $this->render('backend/etablissement/index.html.twig');
     }
 
     #[Route('/new', name: 'app_etablissement_new', methods: ['GET', 'POST'])]

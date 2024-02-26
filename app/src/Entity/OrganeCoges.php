@@ -18,6 +18,8 @@ class OrganeCoges
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $libelleOrgane = null;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $sigle = null;
     #[ORM\OneToMany(mappedBy: 'organeCoges', targetEntity: PosteOrgane::class)]
     private Collection $postes;
 
@@ -72,6 +74,24 @@ class OrganeCoges
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSigle(): ?string
+    {
+        return $this->sigle;
+    }
+
+    /**
+     * @param string|null $sigle
+     * @return OrganeCoges
+     */
+    public function setSigle(?string $sigle): OrganeCoges
+    {
+        $this->sigle = $sigle;
         return $this;
     }
 
