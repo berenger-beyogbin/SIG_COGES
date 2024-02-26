@@ -37,15 +37,13 @@ services:
       - internal
       - proxy
 
-  app:
-    container_name: app
+  appsigcoges:
+    container_name: appsigcoges
     restart: always
     build:
       context: ./docker
     depends_on:
       - dbsigcoges
-    labels:
-      - "traefik.enable=false"
     environment:
       - APP_ENV=prod
       - MAILER_DSN=gmail
@@ -68,7 +66,7 @@ services:
     ports:
       - 82:80
     depends_on:
-      - app
+      - appsigcoges
     networks:
       - internal
       - proxy
