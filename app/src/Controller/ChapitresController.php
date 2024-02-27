@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Activite;
 use App\Entity\Chapitre;
 use App\Form\ChapitresType;
 use App\Repository\ChapitreRepository;
@@ -11,9 +12,24 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/admin/chapitres')]
+#[Route('/admin/chapitre')]
 class ChapitresController extends AbstractController
 {
+    #[Route('/{id}/activites', name: 'app_chapitres_activites_index', methods: ['GET'])]
+    public function activitesChapitre(Chapitre $chapitre, ChapitreRepository $chapitresRepository): Response
+    {
+        $activites = $chapitre->getActivites();
+        $data = null;
+        /** @var Activite $activite */
+        foreach($activites as $activite){
+          $data[] = [
+              'id' => $activite->getId(),
+              'activite' => $activite->getLibelleActivite(),
+          ];
+        }
+          return $this->json($data);
+    }
+
     #[Route('/', name: 'app_chapitres_index', methods: ['GET'])]
     public function index(ChapitreRepository $chapitresRepository): Response
     {

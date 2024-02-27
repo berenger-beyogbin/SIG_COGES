@@ -94,12 +94,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    Swal.fire({
-    position: "top-end",
-    icon: "success",
-    title: "Enregistrement effectué avec succès",
-    showConfirmButton: false,
-    timer: 1500,
     <script type="text/javascript">
         $(document).ready(function () {
             var datatable = initDatatable();
@@ -198,18 +192,23 @@
             function initDatatable(){
                 var dt = $('#datatable').DataTable( {
                     responsive: true,
-                    pageLength: 20,
+                    pageLength: 10,
+                    dom: 'lpftrip',
                     searching: false,
                     select: true,
                     lengthChange: false,
                     language: {
+                        //url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
+                        info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                        infoEmpty: "Affichage de 0 à 0 sur 0 entrées",
+                        lengthMenu: "Afficher _MENU_ entrées",
                         paginate: {
-                            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
                             first: '',
                             last: '',
                             next: '<i class="fa-solid fa-angle-right"></i>',
                             previous: '<i class="fa-solid fa-angle-left"></i>'
-                        }
+                        },
+                        processing: '<i class="fa fa-spinner fa-spin fa-5x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
                     },
                     processing: true,
                     serverSide: true,

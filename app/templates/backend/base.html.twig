@@ -26,14 +26,14 @@
             <link href="{{ asset('assets/backend/vendor/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet">
             <link href="{{ asset('assets/backend/vendor/jvmap/jquery-jvectormap.css') }}" rel="stylesheet">
             <link href="{{ asset('assets/backend/vendor/dropzone/min/dropzone.min.css') }}" rel="stylesheet">
-            <link href="{{ asset('assets/backend/vendor/sweetalert2/dist/sweetalert2.min.css') }}" rel="stylesheet">
             <link href="https://cdn.datatables.net/buttons/1.6.4/css/buttons.dataTables.min.css" rel="stylesheet">
             <link href="{{ asset('assets/backend/vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
             <!-- tagify-css -->
             <link href="{{ asset('assets/backend/vendor/tagify/dist/tagify.css') }}" rel="stylesheet">
             <!-- Style css -->
-{#            <link href="{{ asset('assets/backend/vendor/select2/css/select2.min.css') }}" rel="stylesheet">#}
+            {#            <link href="{{ asset('assets/backend/vendor/select2/css/select2.min.css') }}" rel="stylesheet">#}
             <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+            <link href="{{ asset('assets/backend/vendor/sweetalert2/dist/sweetalert2.min.css') }}" rel="stylesheet">
             <link href="{{ asset('assets/backend/css/style.css') }}" rel="stylesheet">
             <style>
                 [data-primary="color_2"] {
@@ -109,12 +109,12 @@
     </head>
     <body class="vh-100" data-typography="poppins" data-theme-version="light" data-layout="vertical" data-nav-headerbg="color_2" data-headerbg="color_2" data-sidebar-style="overlay" data-sidebarbg="color_2" data-sidebar-position="static" data-header-position="fixed" data-container="wide" direction="ltr" data-primary="color_2" data-secondary="color_1">
     <!--******************* Preloader start ********************-->
-{#        <div id="preloader">#}
-{#            <div class="lds-ripple">#}
-{#                <div></div>#}
-{#                <div></div>#}
-{#            </div>#}
-{#        </div>#}
+        <div id="preloader">
+            <div class="lds-ripple">
+                <div></div>
+                <div></div>
+            </div>
+        </div>
         <!--********* Preloader end *************-->
         {% block body %}
         {% endblock %}

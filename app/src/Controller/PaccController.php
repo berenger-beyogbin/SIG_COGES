@@ -57,12 +57,7 @@ class PaccController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_pacc_show', methods: ['GET'])]
-    public function show(Pacc $pacc,
-                         SourceRepository $sourceRepository,
-                         ActiviteRepository $activiteRepository,
-                         DepenseRepository $depenseRepository,
-                         ChapitreRepository $chapitreRepository,
-                         RecetteRepository $recetteRepository,): Response
+    public function show(Pacc $pacc, SourceRepository $sourceRepository, DepenseRepository $depenseRepository, ChapitreRepository $chapitreRepository, RecetteRepository $recetteRepository): Response
     {
         $sources = $sourceRepository->findBy([], ['libelleSource'=> 'asc']);
         $recettes = $recetteRepository->findBy(['pacc' => $pacc]);
@@ -79,16 +74,11 @@ class PaccController extends AbstractController
 
         $chapitres = $chapitreRepository->findAll();
 
-        $activites = $activiteRepository->findBy([]);
-
         return $this->render('backend/pacc/show.html.twig', [
             'pacc' => $pacc,
             'sources' => $sources,
-            'activites' => $activites,
             'chapitres' => $chapitres,
-            'recettes' => $recettes,
             'total_recettes' => $total_recettes,
-            'depenses' => $depenses,
             'total_depenses' => $total_depenses,
         ]);
     }

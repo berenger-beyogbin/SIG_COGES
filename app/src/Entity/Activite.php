@@ -21,6 +21,7 @@ class Activite
     private ?Chapitre $chapitre = null;
 
     #[ORM\ManyToOne(inversedBy: 'activites')]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Fournisseur $fournisseur = null;
 
     public function getId(): ?int

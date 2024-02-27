@@ -101,7 +101,7 @@ class CommuneController extends AbstractController
         date_default_timezone_set("Africa/Abidjan");
         $params = $request->query->all();
         $paramDB = $connection->getParams();
-        $table = 'view_commune_region';
+        $table = 'commune';
         $primaryKey = 'id';
         $columns = [
             [
@@ -117,18 +117,11 @@ class CommuneController extends AbstractController
                 'dt' => 'description',
             ],
             [
-                'db' => 'region',
-                'dt' => 'region',
-                'formatter' => function($d, $row){
-                    return sprintf("<a href='/admin/region/%s' class='link-info'>%s</a>", $row['region_id'], $d);
-                }
-            ],
-            [
-                'db' => 'region_id',
-                'dt' => 'region_id',
+                'db' => 'id',
+                'dt' => '',
                 'formatter' => function($d, $row){
                     $commune_id = $row['id'];
-                    $content = sprintf("<div class='d-flex'><span class='btn btn-primary shadow btn-xs sharp me-1' data-commune-id='%s'><i class='fa fa-pencil'></i></span><span data-commune-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $commune_id, $commune_id);
+                    $content = sprintf("<div class='d-flex'><span class='btn btn-warning shadow btn-xs sharp me-1' data-commune-id='%s'><i class='fa fa-pencil'></i></span><span data-commune-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $commune_id, $commune_id);
                     return $content;
                 }
             ],

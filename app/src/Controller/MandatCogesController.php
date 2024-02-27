@@ -97,7 +97,7 @@ class MandatCogesController extends AbstractController
         date_default_timezone_set("Africa/Abidjan");
         $params = $request->query->all();
         $paramDB = $connection->getParams();
-        $table = 'view_mandat_coges';
+        $table = 'mandat_coges';
         $primaryKey = 'id';
         $columns = [
             [
@@ -107,24 +107,25 @@ class MandatCogesController extends AbstractController
             [
                 'db' => 'date_debut',
                 'dt' => 'date_debut',
+                'formatter' => function($d, $row){
+                    $date = date('d/m/Y', strtotime($d));
+                    return "<span>$date</span>";
+                }
             ],
             [
                 'db' => 'date_fin',
                 'dt' => 'date_fin',
-            ],
-            [
-                'db' => 'coges',
-                'dt' => 'coges',
                 'formatter' => function($d, $row){
-                    return sprintf("<a href='/admin/coges/%s' class='link-info'>%s</a>", $row['coges_id'], $d);
+                    $date = date('d/m/Y', strtotime($d));
+                    return "<span>$date</span>";
                 }
             ],
             [
                 'db' => 'id',
-                'dt' => 'id',
+                'dt' => '',
                 'formatter' => function($d, $row){
                     $mandat_coges_id = $row['id'];
-                    $content = sprintf("<div class='d-flex'><span class='btn btn-primary shadow btn-xs sharp me-1' data-mandat_coges-id='%s'><i class='fa fa-pencil'></i></span><span data-mandat_coges-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $mandat_coges_id, $mandat_coges_id);
+                    $content = sprintf("<div class='d-flex'><span class='btn btn-warning shadow btn-xs sharp me-1' data-mandat_coges-id='%s'><i class='fa fa-pencil'></i></span><span data-mandat_coges-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $mandat_coges_id, $mandat_coges_id);
                     return $content;
                 }
             ],

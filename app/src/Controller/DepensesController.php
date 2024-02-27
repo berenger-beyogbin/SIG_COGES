@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Depense;
 use App\Form\DepensesType;
+use App\Helper\DataTableHelper;
 use App\Repository\DepenseRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,6 +23,64 @@ class DepensesController extends AbstractController
         return $this->render('backend/depenses/index.html.twig', [
             'depenses' => $depensesRepository->findAll(),
         ]);
+    }
+
+    #[Route('/datatable', name: 'app_depense_dt', methods: ['GET', 'POST'])]
+    public function datatable(Request $request, Connection $connection)
+    {
+        date_default_timezone_set("Africa/Abidjan");
+        $params = $request->query->all();
+        $paramDB = $connection->getParams();
+        $table = 'depense';
+        $primaryKey = 'id';
+        $columns = [
+            [
+                'db' => 'id',
+                'dt' => 'id',
+            ],
+            [
+                'db' => 'activite_id',
+                'dt' => 'activite_id',
+                'formatter' => function($d, $row) use($connection) {
+                    $res = $connection->fetchOne('select libelle_activite from activite where id = :p', ['p' => $d]);
+                    return "<span>$res</span>";
+                }
+            ],
+            [
+                'db' => 'montant_depense',
+                'dt' => 'montant_depense',
+            ],
+            [
+                'db' => 'id',
+                'dt' => '',
+                'formatter' => function($d, $row){
+                    $content = sprintf("<div class='d-flex justify-content-end'><span class='btn btn-warning shadow btn-xs sharp me-1' data-recette-id='%s'><i class='fa fa-pencil'></i></span><span data-recette-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $d, $d);
+                    return $content;
+                }
+            ],
+        ];
+
+        $sql_details = [
+            'user' => $paramDB['user'],
+            'pass' => $paramDB['password'],
+            'db'   => $paramDB['dbname'],
+            'host' => $paramDB['host']
+        ];
+
+        $whereResult = null;
+
+        if(!empty($params['source_filter'])) {
+            $whereResult .= " source_id = '". $params['source_filter'] . "' AND";
+        }
+        if(!empty($params['pacc_filter'])) {
+            $whereResult .= " pacc_id = '". $params['pacc_filter'] . "' AND";
+        }
+
+        if($whereResult) $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
+
+        $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
+
+        return new JsonResponse($response);
     }
 
     #[Route('/new', name: 'app_depense_new', methods: ['GET', 'POST'])]
@@ -37,13 +97,12 @@ class DepensesController extends AbstractController
                 'pacc_id' => $request->get('pacc')
             ]);
 
-            $depenses = $depenseRepository->findBy(['pacc_id' => $request->get('pacc')]);
-            $total_recettes = 0;
+            $depenses = $depenseRepository->findBy(['pacc' => $request->get('pacc')]);
+            $total_depenses = 0;
             foreach($depenses as $depense){
-                $total_recettes += $depense->getMontantDepense();
+                $total_depenses += $depense->getMontantDepense();
             }
-            $response = $this->renderView("backend/depenses/table_ajax.html.twig", ["depenses" => $depenses, "total_recettes" => $total_recettes]);
-            return $this->json($response);
+            return $this->json(['total_depenses' => $total_depenses,'duplicate' => false]);
         }else {
 
             $depense = new Depense();
@@ -63,7 +122,7 @@ class DepensesController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_depense_show', methods: ['GET'])]
-    public function show(Depenses $depense): Response
+    public function show(Depense $depense): Response
     {
         return $this->render('backend/depenses/show.html.twig', [
             'depense' => $depense,

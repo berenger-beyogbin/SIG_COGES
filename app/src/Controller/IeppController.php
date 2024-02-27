@@ -7,11 +7,13 @@ use App\Entity\Commune;
 use App\Entity\Iepp;
 use App\Entity\Region;
 use App\Form\IeppType;
+use App\Helper\DataTableHelper;
 use App\Helper\FileUploadHelper;
 use App\Repository\CommuneRepository;
 use App\Repository\DrenRepository;
 use App\Repository\IeppRepository;
 use App\Repository\RegionRepository;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
@@ -101,6 +103,64 @@ class IeppController extends AbstractController
         return $this->json('error');
     }
 
+    #[Route('/datatable', name: 'app_iepp_dt', methods: ['GET', 'POST'])]
+    public function datatable(Request $request,
+                              Connection $connection)
+    {
+        date_default_timezone_set("Africa/Abidjan");
+        $params = $request->query->all();
+        $paramDB = $connection->getParams();
+        $table = 'iepp';
+        $primaryKey = 'id';
+        $columns = [
+            [
+                'db' => 'id',
+                'dt' => 'id',
+            ],
+            [
+                'db' => 'libelle',
+                'dt' => 'libelle',
+            ],
+            [
+                'db' => 'email',
+                'dt' => 'email',
+            ],
+            [
+                'db' => 'telephone',
+                'dt' => 'telephone',
+            ],
+            [
+                'db' => 'id',
+                'dt' => '',
+                'formatter' => function($d, $row){
+                    $dren_id = $row['id'];
+                    $content = sprintf("<div class='d-flex'><span class='btn btn-warning shadow btn-xs sharp me-1' data-dren-id='%s'><i class='fa fa-pencil'></i></span><span data-dren-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $dren_id, $dren_id);
+                    return $content;
+                }
+            ],
+        ];
+
+        $sql_details = [
+            'user' => $paramDB['user'],
+            'pass' => $paramDB['password'],
+            'db'   => $paramDB['dbname'],
+            'host' => $paramDB['host']
+        ];
+        $whereResult = null;
+
+        if(!empty($params['libelle_filter'])) {
+            $whereResult .= " libelle = '". $params['libelle_filter'] . "' AND";
+        }
+
+        if(!empty($params['dren_filter'])) {
+            $whereResult .= " dren_id = '". $params['dren_filter'] . "' AND";
+        }
+
+        if($whereResult) $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
+        $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
+
+        return new JsonResponse($response);
+    }
 
     #[Route('/', name: 'app_iepp_index', methods: ['GET', 'POST'])]
     public function index(Request $request,  DataTableFactory $dataTableFactory, DrenRepository $drenRepository): Response
@@ -115,7 +175,7 @@ class IeppController extends AbstractController
             }])
             ->add('actions', TextColumn::class,
                 [
-                    'label' => '',
+                    'label' => 'actions',
                     'orderable'=> false,
                     'render' => function($value, $context) {
                         $iepp_id = $context->getId();

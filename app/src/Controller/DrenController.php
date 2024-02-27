@@ -123,7 +123,7 @@ class DrenController extends AbstractController
                 'dt' => '',
                 'formatter' => function($d, $row){
                     $dren_id = $row['id'];
-                    $content = sprintf("<div class='d-flex'><span class='btn btn-primary shadow btn-xs sharp me-1' data-dren-id='%s'><i class='fa fa-pencil'></i></span><span data-dren-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $dren_id, $dren_id);
+                    $content = sprintf("<div class='d-flex'><span class='btn btn-warning shadow btn-xs sharp me-1' data-dren-id='%s'><i class='fa fa-pencil'></i></span><span data-dren-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $dren_id, $dren_id);
                     return $content;
                 }
             ],

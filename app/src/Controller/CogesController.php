@@ -147,7 +147,7 @@ class CogesController extends AbstractController
                 'dt' => '',
                 'formatter' => function($d, $row){
                     $coges_id = $row['id'];
-                    $content = sprintf("<div class='d-flex'><a href='/admin/coges/%s' class='btn btn-light shadow btn-xs sharp me-1' data-coges-id='%s'><i class='fa fa-eye'></i></a><span class='btn btn-primary shadow btn-xs sharp me-1' data-coges-id='%s'><i class='fa fa-pencil'></i></span><span data-coges-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>",$coges_id,$coges_id, $coges_id, $coges_id);
+                    $content = sprintf("<div class='d-flex'><a href='/admin/coges/%s' class='btn btn-light shadow btn-xs sharp me-1' data-coges-id='%s'><i class='fa fa-eye'></i></a><span class='btn btn-warning shadow btn-xs sharp me-1' data-coges-id='%s'><i class='fa fa-pencil'></i></span><span data-coges-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>",$coges_id,$coges_id, $coges_id, $coges_id);
                     return $content;
                 }
             ]

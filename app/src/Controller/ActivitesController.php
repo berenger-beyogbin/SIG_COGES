@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Activite;
 use App\Entity\Activites;
 use App\Form\ActivitesType;
 use App\Helper\DataTableHelper;
@@ -26,19 +27,24 @@ class ActivitesController extends AbstractController
         date_default_timezone_set("Africa/Abidjan");
         $params = $request->query->all();
         $paramDB = $connection->getParams();
-        $table = 'activites';
+        $table = 'activite';
         $primaryKey = 'id';
         $columns = [
             [
                 'db' => 'id',
-                'dt' => 'DT_RowId',
-                'formatter' => function( $d, $row ) {
-                    return 'row_'.$d;
-                }
+                'dt' => 'id'
             ],
             [
                 'db' => 'libelle_activite',
                 'dt' => 'libelle_activite',
+            ],
+            [
+                'db' => 'id',
+                'dt' => '',
+                'formatter' => function($d, $row){
+                    $content = sprintf("<div class='d-flex'><span class='btn btn-warning shadow btn-xs sharp me-1' data-activite-id='%s'><i class='fa fa-pencil'></i></span><span data-activite-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $d, $d);
+                    return $content;
+                }
             ],
         ];
 
@@ -65,7 +71,7 @@ class ActivitesController extends AbstractController
     #[Route('/new', name: 'app_activites_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $activite = new Activites();
+        $activite = new Activite();
         $form = $this->createForm(ActivitesType::class, $activite);
         $form->handleRequest($request);
 
