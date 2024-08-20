@@ -104,7 +104,7 @@ class RegionController extends AbstractController
                 'dt' => '',
                 'formatter' => function($d, $row){
                     $region_id = $row['id'];
-                    $content = sprintf("<div class='d-flex'><span class='btn btn-warning shadow btn-xs sharp me-1' data-region-id='%s'><i class='fa fa-pencil'></i></span><span data-region-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $region_id, $region_id);
+                    $content = sprintf("<div class='d-flex'><span class='btn btn-warning shadow btn-xs sharp me-1 btn-edit' data-id='%s'><i class='fa fa-pencil'></i></span><span data-id='%s' class='btn btn-danger shadow btn-xs sharp btn-delete'><i class='fa fa-trash'></i></span></div>", $region_id, $region_id);
                     return $content;
                 }
             ],
@@ -126,20 +126,6 @@ class RegionController extends AbstractController
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
 
         return new JsonResponse($response);
-    }
-
-    #[Route('/ajax/new', name: 'app_region_new_ajax', methods: ['GET', 'POST'])]
-    public function newAjax(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        if($request->isXmlHttpRequest()) {
-            $data = array_filter($request->request->all(),function($d) {
-                return !empty($d);
-            });
-            $connection = $entityManager->getConnection();
-            $connection->insert('region', $data);
-            return $this->json('saved');
-        }
-        return $this->json('error');
     }
 
     #[Route('/', name: 'app_region_index', methods: ['GET', 'POST'])]
@@ -173,16 +159,15 @@ class RegionController extends AbstractController
     }
 
     #[Route('/new', name: 'app_region_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, RegionRepository $regionRepository): Response
     {
         $region = new Region();
-        $form = $this->createForm(CogesType::class, $region);
+        $form = $this->createForm(RegionType::class, $region);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($region);
-            $entityManager->flush();
-
+            $regionRepository->add($region, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_region_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -201,14 +186,14 @@ class RegionController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_region_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
-    public function edit(Request $request, Region $region, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Region $region, RegionRepository $regionRepository): Response
     {
-        $form = $this->createForm(CogesType::class, $region);
+        $form = $this->createForm(RegionType::class, $region);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
+            $regionRepository->add($region, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_region_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -226,6 +211,7 @@ class RegionController extends AbstractController
             $entityManager->flush();
         }
 
+        if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
         return $this->redirectToRoute('app_region_index', [], Response::HTTP_SEE_OTHER);
     }
 

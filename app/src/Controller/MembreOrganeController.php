@@ -12,6 +12,7 @@ use App\Repository\MembreOrganeRepository;
 use App\Repository\OrganeCogesRepository;
 use App\Repository\PosteOrganeRepository;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -34,21 +35,6 @@ class MembreOrganeController extends AbstractController
     {
         $membreOrgane = $membreOrganeRepository->findAllAjaxSelect2($request->get('search'));
         return $this->json([ "results" => $membreOrgane, "pagination" => ["more" => true]]);
-    }
-
-    #[Route('/ajax/new', name: 'app_membre_organe_new_ajax', methods: ['GET', 'POST'])]
-    public function newAjax(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        if($request->isXmlHttpRequest()) {
-            $data = array_filter($request->request->all(), function($d) {
-                return !empty($d);
-            });
-            $connection = $entityManager->getConnection();
-            $connection->insert('membre_organe', $data);
-            return $this->json('saved');
-        }
-
-        return $this->json('error');
     }
 
 
@@ -119,6 +105,10 @@ class MembreOrganeController extends AbstractController
                 'dt' => 'prenoms',
             ],
             [
+                'db' => 'genre',
+                'dt' => 'genre',
+            ],
+            [
                 'db' => 'profession',
                 'dt' => 'profession',
             ],
@@ -127,19 +117,11 @@ class MembreOrganeController extends AbstractController
                 'dt' => 'contact',
             ],
             [
-                'db' => 'poste_id',
-                'dt' => 'poste_id'
-            ],
-            [
-                'db' => 'mandat_id',
-                'dt' => 'mandat_id'
-            ],
-            [
                 'db' => 'id',
-                'dt' => 'id',
+                'dt' => '',
                 'formatter' => function($d, $row){
-                    $membre_organe_id = $row['id'];
-                    $content = sprintf("<div class='d-flex'><span class='btn btn-primary shadow btn-xs sharp me-1' data-membre_organe-id='%s'><i class='fa fa-pencil'></i></span><span data-membre_organe-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $membre_organe_id, $membre_organe_id);
+                    $membre_organe_id = $d;
+                    $content = sprintf("<div class='d-flex justify-content-end'><span class='btn btn-primary shadow btn-xs sharp me-1 btn-edit-membre_organe' data-id='%s'><i class='fa fa-pencil'></i></span><span data-membre_organe-id='%s' class='btn btn-danger shadow btn-xs sharp btn-delete-membre_organe'><i class='fa fa-trash'></i></span></div>", $membre_organe_id, $membre_organe_id);
                     return $content;
                 }
             ],
@@ -155,9 +137,14 @@ class MembreOrganeController extends AbstractController
 
         $whereResult = null;
 
-        if(!empty($params['coges_filter'])){
-            $whereResult .= " coges_id ='". $params['coges_filter'] . "' AND";
+        if(!empty($params['organe_filter'])){
+            $posteIds = $connection->query("SELECT `id` FROM `poste_organe` WHERE `organe_coges_id` = " . $params['organe_filter'])->fetchAll(FetchMode::COLUMN);
+            if($posteIds) $whereResult .= " poste_id IN (" . implode(",", $posteIds) . ") AND ";
         }
+        if(!empty($params['mandat_filter'])){
+            $whereResult .= " mandat_id = ". $params['mandat_filter'] . " AND";
+        }
+
         if($whereResult) $whereResult = substr_replace($whereResult,'',-strlen(' AND'));
 
         $response = DataTableHelper::complex($_GET, $sql_details, $table, $primaryKey, $columns, $whereResult);
@@ -171,16 +158,15 @@ class MembreOrganeController extends AbstractController
     }
 
     #[Route('/new', name: 'app_membre_organe_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, MembreOrganeRepository $membreOrganeRepository): Response
     {
         $membreOrgane = new MembreOrgane();
         $form = $this->createForm(MembreOrganeType::class, $membreOrgane);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($membreOrgane);
-            $entityManager->flush();
-
+            $membreOrganeRepository->add($membreOrgane, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_membre_organe_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -199,14 +185,14 @@ class MembreOrganeController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_membre_organe_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, MembreOrgane $membreOrgane, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, MembreOrgane $membreOrgane, MembreOrganeRepository $membreOrganeRepository): Response
     {
         $form = $this->createForm(MembreOrganeType::class, $membreOrgane);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
+            $membreOrganeRepository->add($membreOrgane, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_membre_organe_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -223,7 +209,7 @@ class MembreOrganeController extends AbstractController
             $entityManager->remove($membreOrgane);
             $entityManager->flush();
         }
-
+        if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
         return $this->redirectToRoute('app_membre_organe_index', [], Response::HTTP_SEE_OTHER);
     }
 }

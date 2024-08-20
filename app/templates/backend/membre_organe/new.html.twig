@@ -1,11 +1,2 @@
-<!DOCTYPE html>
+{{ include('backend/membre_organe/_form.html.twig') }}
 
-<title>New MembreOrgane</title>
-
-{% block body %}
-    <h1>Create new MembreOrgane</h1>
-
-    {{ include('membre_organe/_form.html.twig') }}
-
-    <a href="{{ path('app_membre_organe_index') }}">back to list</a>
-{% endblock %}

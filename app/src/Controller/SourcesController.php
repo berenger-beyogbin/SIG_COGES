@@ -7,6 +7,7 @@ use App\Form\SourcesType;
 use App\Repository\SourceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,17 +23,23 @@ class SourcesController extends AbstractController
         ]);
     }
 
+    #[Route('/ajax/select2', name: 'app_sources_select2_ajax', methods: ['GET', 'POST'])]
+    public function ajaxSelect2(Request $request, SourceRepository $sourcesRepository): JsonResponse
+    {
+        $sources = $sourcesRepository->findAllAjaxSelect2();
+        return $this->json([ "results" => $sources, "pagination" => ["more" => true]]);
+    }
+
     #[Route('/new', name: 'app_sources_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, SourceRepository $sourceRepository): Response
     {
         $source = new Source();
         $form = $this->createForm(SourcesType::class, $source);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($source);
-            $entityManager->flush();
-
+            $sourceRepository->add($source, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_sources_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -51,14 +58,14 @@ class SourcesController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_sources_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Source $source, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Source $source, SourceRepository $sourceRepository): Response
     {
         $form = $this->createForm(SourcesType::class, $source);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
+            $sourceRepository->add($source, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_sources_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -75,7 +82,7 @@ class SourcesController extends AbstractController
             $entityManager->remove($source);
             $entityManager->flush();
         }
-
+        if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
         return $this->redirectToRoute('app_sources_index', [], Response::HTTP_SEE_OTHER);
     }
 }

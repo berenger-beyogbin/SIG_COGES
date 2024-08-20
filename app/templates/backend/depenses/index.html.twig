@@ -29,8 +29,8 @@
                 <td>{{ depense.HeureExe ? depense.HeureExe|date('H:i:s') : '' }}</td>
                 <td>{{ depense.PaiementFournisseur ? 'Yes' : 'No' }}</td>
                 <td>
-                    <a href="{{ path('app_depenses_show', {'id': depense.id}) }}">Afficher</a>
-                    <a href="{{ path('app_depenses_edit', {'id': depense.id}) }}">Modifier</a>
+                    <a href="{{ path('app_depense_show', {'id': depense.id}) }}">Afficher</a>
+                    <a href="{{ path('app_depense_edit', {'id': depense.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
@@ -41,5 +41,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_depenses_new') }}">Create new</a>
 {% endblock %}

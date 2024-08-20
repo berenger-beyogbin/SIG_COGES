@@ -20,7 +20,7 @@
                                 <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                            Accueil </a>
+                            Tableau de bord </a>
                     </li>
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">MANDAT COGES</a></li>
                 </ol>
@@ -28,36 +28,31 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xl-12">
-                        <div class="card">
-                            <div class="card-body p-0">
-                                <div class="table-responsive active-projects style-1">
-                                    <div class="tbl-caption">
-                                        <h4 class="heading mb-0">MANDAT COGES</h4>
-                                        <div>
-                                            <a class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" href="#offcanvasCreateMandatCoges" role="button" aria-controls="offcanvasCreateDren">+ Enregister un mandat</a>
-                                            <a href="{{ path('app_mandat_coges_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
-                                        </div>
-                                    </div>
-                                    <div class="row border-1 border-light p-3">
-                                        <div class="col-sm-2">
-                                            <select type="text" class="form-control coges" id="coges_filter" name="coges_filter"></select>
-                                        </div>
-                                    </div>
-                                    <div class="min-vh-100">
-                                        <table id="datatable" class="table dataTable no-footer w-auto">
-                                            <thead>
-                                            <tr role="row">
-                                                <th>#</th>
-                                                <th>DATE DEBUT</th>
-                                                <th>DATE FIN</th>
-                                                <th width="3%">Actions</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
-                                    </div>
-
+                        <div class="table-responsive active-projects style-1">
+                            <div class="tbl-caption">
+                                <h4 class="heading mb-0">MANDAT COGES</h4>
+                                <div>
+                                    <button class="btn btn-primary btn-sm" id="btnOffCanvasMandatCoges">+ Enregister un mandat</button>
+                                    <a href="{{ path('app_mandat_coges_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
                                 </div>
+                            </div>
+                            <div class="row border-1 border-light p-3">
+                                <div class="col-sm-2">
+                                    <select type="text" class="form-control coges" id="coges_filter" name="coges_filter"></select>
+                                </div>
+                            </div>
+                            <div class="min-vh-100">
+                                <table id="datatable" class="table dataTable no-footer w-auto">
+                                    <thead>
+                                    <tr role="row">
+                                        <th>#</th>
+                                        <th>DATE DEBUT</th>
+                                        <th>DATE FIN</th>
+                                        <th width="3%">Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -66,7 +61,8 @@
         </div>
 
 
-        {{ include("backend/mandat_coges/_create_mandatcoges_offcanvas.html.twig") }}
+        {{ include("backend/mandat_coges/_mandat_coges_offcanvas.html.twig") }}
+        {{ include("backend/mandat_coges/_mandat_coges_offcanvas.html.twig") }}
 
 
         {{ include("backend/_partials/footer.html.twig") }}
@@ -81,13 +77,14 @@
         $(document).ready(function () {
             var datatable = initDatatable();
 
+            var offcanvasMandatCoges = document.getElementById('offcanvasMandatCoges');
+            var bsoffcanvasMandatCoges= new bootstrap.Offcanvas(offcanvasMandatCoges);
+
             $(".filter").change(function (e) {
                 datatable.draw();
             });
-
             $('#date_debut').datetimepicker();
             $('#date_fin').datetimepicker();
-
             $('.coges').select2({
                 allowClear: true,
                 placeholder: "COGES",
@@ -146,17 +143,49 @@
                 return dt;
             }
 
+            $(document).on("click", "#btnOffCanvasMandatCoges", function(){
+                bsoffcanvasMandatCoges.toggle();
+                $.post("{{ path("app_mandat_coges_new") }}", function(response){
+                    $("#mandat-coges-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='mandat_coges']").attr('action', '{{ path("app_mandat_coges_new") }}');
+                });
+            });
+            $(document).on('click',".btn-mandat-coges-edit", function(){
+                var id = $(this).data('id');
+                bsoffcanvasMandatCoges.toggle();
+                $.post('/admin/mandatcoges/' + id + '/edit', function(response){
+                    $('#mandat-coges-form-container').html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='mandat_coges']").attr('action', '/admin/mandatcoges/' + id + '/edit');
+                });
+            });
 
-            $('#formCreateMandatCoges').ajaxForm(function(d) {
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Enregistrement effectué avec succès",
-                    showConfirmButton: false,
-                    timer: 1500,
-                }).then(function(result){
-                    $('#formCreateMandatCoges').resetForm();
-                    datatable.draw();
+            $(document).on("submit", "form[name='mandat_coges']", function(event) {
+                event.preventDefault();
+                var form = $("form[name='mandat_coges']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(data) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Enregistrement effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $("i.btn-spin").hide();
+                        $("form[name='mandat_coges']").resetForm();
+                        datatable.draw();
+                    });
+                }).fail(function(data) {
+                    // Optionally alert the user of an error here...
                 });
             });
         });

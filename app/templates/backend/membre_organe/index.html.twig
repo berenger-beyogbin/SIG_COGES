@@ -20,7 +20,7 @@
                                 <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                            Accueil </a>
+                            Tableau de bord </a>
                     </li>
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">MEMBRES ORGANES</a></li>
                 </ol>
@@ -28,52 +28,30 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xl-12">
-                        <div class="card">
-                            <div class="card-body p-0">
-                                <div class="table-responsive active-projects style-1">
-                                    <div class="tbl-caption">
-                                        <h4 class="heading mb-0">MEMBRES ORGANES</h4>
-                                        <div>
-                                            <a class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" href="#offcanvasCreateMembreOrgane" role="button" aria-controls="offcanvasCreateMembreOrgane">+ Enregister un membre organe</a>
-                                            <a href="{{ path('app_membre_organe_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
-                                        </div>
-                                    </div>
-                                    <div class="row border-1 border-light p-3">
-                                        <div class="col-sm-2">
-                                            <select type="text" class="form-control poste" id="poste_filter" name="poste_filter"></select>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <select type="text" class="form-control mandat" id="mandat_filter" name="mandat_filter"></select>
-                                        </div>
-                                    </div>
-                                    <table id="datatable" class="table dataTable no-footer" role="grid" aria-describedby="dt_info">
-                                        <thead>
-                                        <tr role="row">
-                                            <th>#</th>
-                                            <th>NOM</th>
-                                            <th>PRENOMS</th>
-                                            <th>GENRE</th>
-                                            <th>PROFESSION</th>
-                                            <th>CONTACT</th>
-                                            <th>POSTE</th>
-                                            <th>MANDAT</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
+                        <div class="table-responsive active-projects style-1">
+                            <div class="tbl-caption">
+                                <h4 class="heading mb-0">MEMBRES ORGANES</h4>
+                                <div>
+                                    <button class="btn btn-primary btn-sm" id="btnOffCanvasMembreOrgane">+ Enregister un membre organe</button>
+                                    <a href="{{ path('app_membre_organe_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
                                 </div>
                             </div>
+                            <div class="row border-1 border-light p-3">
+                                <div class="col-sm-2">
+                                    <select type="text" class="form-control poste" id="poste_filter" name="poste_filter"></select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select type="text" class="form-control mandat" id="mandat_filter" name="mandat_filter"></select>
+                                </div>
+                            </div>
+                            {{ include('backend/membre_organe/_membre_organe_datatable.html.twig') }}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-
-        {{ include("backend/membre_organe/_create_membre_organe_offcanvas.html.twig") }}
-
-
+        {{ include("backend/membre_organe/_membre_organe_offcanvas.html.twig") }}
         {{ include("backend/_partials/footer.html.twig") }}
 
     </div>
@@ -86,10 +64,12 @@
         $(document).ready(function () {
             var datatable = initDatatable();
 
+            var offcanvasMembreOrgane = document.getElementById('offcanvasMembreOrgane');
+            var bsoffcanvasMembreOrgane= new bootstrap.Offcanvas(offcanvasMembreOrgane);
+
             $(".filter").change(function (e) {
                 datatable.draw();
             });
-
 
             $('.mandat').select2({
                 allowClear: true,
@@ -161,28 +141,60 @@
                         {"data":  "id"},
                         {"data":  "nom"},
                         {"data":  "prenoms"},
+                        {"data":  "genre"},
                         { "data": "profession" },
                         { "data": "contact" },
-                        { "data": "poste_id" },
-                        { "data": "mandat_id" },
-                        { "data": "id" }
+                        { "data": "" }
                     ],
                     order: [[1, 'desc']]
                 } );
                 return dt;
             }
 
+            $(document).on("click", "#btnOffCanvasMembreOrgane", function(){
+                bsoffcanvasMembreOrgane.toggle();
+                $.post("{{ path("app_membre_organe_new") }}", function(response){
+                    $("#membre-organe-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='membre_organe']").attr('action', '{{ path("app_membre_organe_new") }}');
+                });
+            });
+            $(document).on('click',".btn-edit-membre_organe", function(){
+                var id = $(this).data('id');
+                bsoffcanvasMembreOrgane.toggle();
+                $.post('/admin/membreorgane/' + id + '/edit', function(response){
+                    $('#membre-organe-form-container').html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='membre_organe']").attr('action', '/admin/membreorgane/' + id + '/edit');
+                });
+            });
 
-            $('#formCreateMembreOrgane').ajaxForm(function(d) {
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Enregistrement effectué avec succès",
-                    showConfirmButton: false,
-                    timer: 1500,
-                }).then(function(result){
-                    $('#formCreateMembreOrgane').resetForm();
-                    datatable.draw();
+            $(document).on("submit", "form[name='membre_organe']", function(event) {
+                event.preventDefault();
+                $(document).find("#btn-spin").show();
+                var form = $("form[name='membre_organe']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(data) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Enregistrement effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $(document).find("#btn-spin").hide();
+                        $("form[name='membre_organe']").resetForm();
+                        datatable.draw();
+                    });
+                }).fail(function(data) {
+                    // Optionally alert the user of an error here...
                 });
             });
         });

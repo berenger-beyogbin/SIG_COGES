@@ -80,20 +80,6 @@ class CommuneController extends AbstractController
         }
     }
 
-    #[Route('/ajax/new', name: 'app_commune_new_ajax', methods: ['GET', 'POST'])]
-    public function newAjax(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        if($request->isXmlHttpRequest()) {
-            $data = array_filter($request->request->all(),function($d) {
-                return !empty($d);
-            });
-            $connection = $entityManager->getConnection();
-            $connection->insert('commune', $data);
-            return $this->json('saved');
-        }
-        return $this->json('error');
-    }
-
     #[Route('/datatable', name: 'app_commune_dt', methods: ['GET', 'POST'])]
     public function datatable(Request $request,
                               Connection $connection)
@@ -121,7 +107,7 @@ class CommuneController extends AbstractController
                 'dt' => '',
                 'formatter' => function($d, $row){
                     $commune_id = $row['id'];
-                    $content = sprintf("<div class='d-flex'><span class='btn btn-warning shadow btn-xs sharp me-1' data-commune-id='%s'><i class='fa fa-pencil'></i></span><span data-commune-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $commune_id, $commune_id);
+                    $content = sprintf("<div class='d-flex'><span class='btn btn-warning shadow btn-xs sharp me-1 btn-edit' data-id='%s'><i class='fa fa-pencil'></i></span><span data-id='%s' class='btn btn-danger shadow btn-xs sharp btn-delete'><i class='fa fa-trash'></i></span></div>", $commune_id, $commune_id);
                     return $content;
                 }
             ],
@@ -160,16 +146,15 @@ class CommuneController extends AbstractController
     }
 
     #[Route('/new', name: 'app_commune_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, CommuneRepository $communeRepository): Response
     {
         $commune = new Commune();
         $form = $this->createForm(CommuneType::class, $commune);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($commune);
-            $entityManager->flush();
-
+            $communeRepository->add($commune, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_commune_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -188,14 +173,14 @@ class CommuneController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_commune_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Commune $commune, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Commune $commune, CommuneRepository $communeRepository): Response
     {
         $form = $this->createForm(CommuneType::class, $commune);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
+            $communeRepository->add($commune, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_commune_index', [], Response::HTTP_SEE_OTHER);
         }
 

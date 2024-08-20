@@ -32,6 +32,16 @@ class ChapitreRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->flush();
     }
+
+    public function findAllAjaxSelect2(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c.id, c.libelleChapitre as text')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
 //    /**
 //     * @return Chapitres[] Returns an array of Chapitres objects
 //     */

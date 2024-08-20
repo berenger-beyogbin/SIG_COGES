@@ -76,20 +76,6 @@ class MandatCogesController extends AbstractController
         }
     }
 
-    #[Route('/ajax/new', name: 'app_mandat_coges_new_ajax', methods: ['GET', 'POST'])]
-    public function newAjax(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        if($request->isXmlHttpRequest()) {
-            $data = array_filter($request->request->all(),function($d) {
-                return !empty($d);
-            });
-            $connection = $entityManager->getConnection();
-            $connection->insert('mandat_coges', $data);
-            return $this->json('saved');
-        }
-        return $this->json('error');
-    }
-
     #[Route('/datatable', name: 'app_mandat_coges_dt', methods: ['GET', 'POST'])]
     public function datatable(Request $request,
                               Connection $connection)
@@ -125,7 +111,7 @@ class MandatCogesController extends AbstractController
                 'dt' => '',
                 'formatter' => function($d, $row){
                     $mandat_coges_id = $row['id'];
-                    $content = sprintf("<div class='d-flex'><span class='btn btn-warning shadow btn-xs sharp me-1' data-mandat_coges-id='%s'><i class='fa fa-pencil'></i></span><span data-mandat_coges-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $mandat_coges_id, $mandat_coges_id);
+                    $content = sprintf("<div class='d-flex'><span class='btn btn-warning shadow btn-xs sharp me-1 btn-mandat-coges-edit' data-id='%s'><i class='fa fa-pencil'></i></span><span data-id='%s' class='btn btn-danger shadow btn-xs sharp btn-mandat-coges-delete'><i class='fa fa-trash'></i></span></div>", $mandat_coges_id, $mandat_coges_id);
                     return $content;
                 }
             ],
@@ -157,16 +143,21 @@ class MandatCogesController extends AbstractController
     }
 
     #[Route('/new', name: 'app_mandat_coges_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, MandatCogesRepository $mandatCogesRepository, CogesRepository $cogesRepository): Response
     {
         $mandatCoge = new MandatCoges();
+
+        if($request->get('coges')) {
+            $coges = $cogesRepository->find($request->get('coges'));
+            if($coges) $mandatCoge->setCoges($coges);
+        }
+
         $form = $this->createForm(MandatCogesType::class, $mandatCoge);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($mandatCoge);
-            $entityManager->flush();
-
+            $mandatCogesRepository->add($mandatCoge, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_mandat_coges_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -185,14 +176,14 @@ class MandatCogesController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_mandat_coges_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, MandatCoges $mandatCoge, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, MandatCoges $mandatCoge, MandatCogesRepository $mandatCogesRepository): Response
     {
         $form = $this->createForm(MandatCogesType::class, $mandatCoge);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
+            $mandatCogesRepository->add($mandatCoge, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_mandat_coges_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -209,7 +200,7 @@ class MandatCogesController extends AbstractController
             $entityManager->remove($mandatCoge);
             $entityManager->flush();
         }
-
+        if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
         return $this->redirectToRoute('app_mandat_coges_index', [], Response::HTTP_SEE_OTHER);
     }
 }

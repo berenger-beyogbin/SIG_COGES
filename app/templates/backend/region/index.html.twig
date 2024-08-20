@@ -20,7 +20,7 @@
                                 <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                            Home </a>
+                            Tableau de bord </a>
                     </li>
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">REGION</a></li>
                 </ol>
@@ -28,39 +28,33 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xl-12">
-                        <div class="card">
-                            <div class="card-body p-0">
-                                <div class="table-responsive active-projects style-1">
-                                    <div class="tbl-caption">
-                                        <h4 class="heading mb-0">REGION/DISTRICT</h4>
-                                        <div>
-                                            <a class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" href="#offcanvasCreateRegion" role="button" aria-controls="offcanvasCreateRegion">+ Ajouter</a>
-                                            <a href="{{ path('app_region_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
-                                        </div>
-                                    </div>
-                                    <table id="datatable" class="table table-responsive">
-                                        <thead>
-                                        <tr role="row">
-                                            <th>#</th>
-                                            <th>LIBELLE</th>
-                                            <th>DESCRIPTION</th>
-                                            <th width="3%">Actions</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
+                        <div class="table-responsive active-projects style-1">
+                            <div class="tbl-caption">
+                                <h4 class="heading mb-0">REGION/DISTRICT</h4>
+                                <div>
+                                    <span class="btn btn-primary btn-sm" id="btnOffCanvasRegion">+ Enregistrer une region</span>
+                                    <a href="{{ path('app_region_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
                                 </div>
                             </div>
+                            <table id="datatable" class="table table-responsive">
+                                <thead>
+                                <tr role="row">
+                                    <th>#</th>
+                                    <th>LIBELLE</th>
+                                    <th>DESCRIPTION</th>
+                                    <th width="3%">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        {{ include("backend/region/_create_region_offcanvas.html.twig")}}
-        {# {{ include("backend/pages/_add_task_offcanvas.html.twig")}} #}
-
+        {{ include("backend/region/_region_offcanvas.html.twig")}}
         {{ include("backend/_partials/footer.html.twig") }}
 
     </div>
@@ -74,9 +68,13 @@
         $(document).ready(function () {
             var datatable = initDatatable();
 
+            var offcanvasRegion = document.getElementById('offcanvasRegion');
+            var bsoffcanvasRegion= new bootstrap.Offcanvas(offcanvasRegion);
+
             $(".filter").change(function (e) {
                 datatable.draw();
             });
+
             function initDatatable(){
                 var dt = $('#datatable').DataTable( {
                     responsive: true,
@@ -113,12 +111,52 @@
 
             }
 
-            $('#formCreateRegion').ajaxForm(function(d) {
-            }).then(function(result){
-                $('#formCreateRegion').resetForm();
-                datatable.draw();
+            $(document).on("click", "#btnOffCanvasRegion", function(){
+                bsoffcanvasRegion.toggle();
+                $.post("{{ path("app_region_new") }}", function(response){
+                    $("#region-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='region']").attr('action', '{{ path("app_region_new") }}');
+                });
             });
-
+            $(document).on("click", ".btn-edit", function(){
+                bsoffcanvasRegion.toggle();
+                var id = $(this).data('id');
+                $.post("/admin/region/" + id + "/edit", function(response){
+                    $("#region-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='region']").attr('action', "/admin/region/" + id + "/edit");
+                });
+            });
+            $(document).on("submit", "form[name='region']", function(event) {
+                event.preventDefault();
+                $(document).find("#btn-spin").show();
+                var form = $("form[name='region']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(data) {
+                    bsoffcanvasRegion.toggle();
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Enregistrement effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $(document).find("#btn-spin").hide();
+                        $("form[name='region']").resetForm();
+                        datatable.draw();
+                    });
+                }).fail(function(data) {
+                    // Optionally alert the user of an error here...
+                });
+            });
         });
     </script>
 

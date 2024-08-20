@@ -5,11 +5,29 @@
         .form-control {
            height: 2.1rem;
         }
-        #btnvoirplus.btn-sm, #btnvoirplus.btn-group-sm>.btn {
+        #btnvoirplus.btn-sm, #btnvoirplus.btn-group-sm>.btn, #btn-file-pacc {
             padding: 0px 10px;
         }
         .accordion {
             --bs-accordion-bg: rgba(136, 136, 136, 0);
+        }
+
+        .choice-grp {
+            max-width: 150px;
+            height: 80px;
+            margin: 0px 5px 0px 5px;
+            padding: 70px 20px 70px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+            cursor: pointer;
+        }
+        .choice-grp:hover{
+            box-shadow: 0 0.125rem 0.25rem #f6d59e !important;
+        }
+        .choice-grp.active{
+            box-shadow: 0 0.125rem 0.1rem 2px #ff9f00 !important;
         }
     </style>
 {% endblock %}
@@ -84,47 +102,43 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xl-12">
-                    <div class="card dz-card">
-                        <div class="card-body pt-0">
-                            <table class="table table-responsive">
-                                <tbody>
-                                <tr role="row" class="odd">
-                                    <td><strong>COGES : </strong></td>
-                                    <td>{{ coge.libelle ?? 'N/A' }}</td>
-                                    <td><strong>Cycle : </strong></td>
-                                    <td>{{ coge.cycle ?? 'N/A' }}</td>
-                                    <td><strong>Numéro de compte : </strong></td>
-                                    <td>{{ coge.numeroCompte ?? 'N/A' }}</td>
-                                </tr>
-                                <tr role="row" class="odd">
-                                    <td><strong>Domiciliation : </strong></td>
-                                    <td>{{ coge.domiciliation ?? 'N/A' }}</td>
-                                    <td><strong>Groupe scolaire : </strong></td>
-                                    <td>{{ coge.groupeScolaire ?? 'N/A' }}</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr role="row" class="odd">
-                                    <td><strong>REGION : </strong></td>
-                                    <td>{{ coge.region ? coge.region.libelle : 'N/A' }}</td>
-                                    <td><strong>DREN : </strong></td>
-                                    <td>{{ coge.dren ? coge.dren.libelle: 'N/A' }}</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr role="row" class="even">
-                                    <td><strong>IEPP: </strong></td>
-                                    <td>{{ coge.iepp ? coge.iepp.libelle: 'N/A' }}</td>
-                                    <td><strong>COMMUNE : </strong></td>
-                                    <td>{{ coge.commune? coge.commune.libelle: 'N/A' }}</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                <div class="col-xl-12 py-5">
+                    <table class="table table-responsive table-condensed table-hover">
+                        <tbody>
+                        <tr role="row" class="odd">
+                            <td><strong>COGES : </strong></td>
+                            <td>{{ coge.libelle ?? 'N/A' }}</td>
+                            <td><strong>Cycle : </strong></td>
+                            <td>{{ coge.cycle ? (coge.cycle == 1 ? 'Primaire' : 'Secondaire') : 'N/A' }}</td>
+                            <td><strong>Numéro de compte : </strong></td>
+                            <td>{{ coge.numeroCompte ?? 'N/A' }}</td>
+                        </tr>
+                        <tr role="row" class="odd">
+                            <td><strong>Domiciliation : </strong></td>
+                            <td>{{ coge.domiciliation ?? 'N/A' }}</td>
+                            <td><strong>Groupe scolaire : </strong></td>
+                            <td>{{ coge.groupeScolaire ? (coge.groupeScolaire ? 'Oui' : 'Non') : 'N/A' }}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr role="row" class="odd">
+                            <td><strong>REGION : </strong></td>
+                            <td>{{ coge.region ? coge.region.libelle : 'N/A' }}</td>
+                            <td><strong>DREN : </strong></td>
+                            <td>{{ coge.dren ? coge.dren.libelle: 'N/A' }}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr role="row" class="even">
+                            <td><strong>IEPP: </strong></td>
+                            <td>{{ coge.iepp ? coge.iepp.libelle: 'N/A' }}</td>
+                            <td><strong>COMMUNE : </strong></td>
+                            <td>{{ coge.commune? coge.commune.libelle: 'N/A' }}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="col-xl-12">
                     <div class="card dz-card" id="custom-tab">
@@ -153,108 +167,58 @@
                                         <div class="tab-content">
                                             <div class="tab-pane fade show active" id="mandat" role="tabpanel">
                                                 <div class="m-5">
-                                                    <div class="d-flex justify-content-between">
+                                                    <div class="d-flex justify-content-center">
                                                         <div> Date de début : <strong>{{ mandat ? mandat.DateDebut|date('d/m/Y'): 'N/A' }}</strong></div>
-                                                        <div class="pl-2"> Date de fin : <strong>{{ mandat ? mandat.DateFin|date('d/m/Y') : 'N/A' }}</strong></div>
+                                                        <div style="margin-left: 150px;"> Date de fin : <strong>{{ mandat ? mandat.DateFin|date('d/m/Y') : 'N/A' }}</strong></div>
                                                     </div>
                                                     <hr>
                                                     <div class="d-flex justify-content-center my-4">
-                                                        <button class="btn btn-warning btn-sm w-10"><i class="la la-plus"> Enregistrer un nouveau mandat</i></button>
+                                                        <button class="btn btn-warning btn-sm w-10" id="btnMandatCoges"><i class="la la-plus"> Enregistrer un nouveau mandat</i></button>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="tab-pane fade" id="membres" role="tabpanel">
                                                 <div class="m-5">
                                                     <div class="row d-flex justify-content-end">
-                                                        <button class="btn btn-warning btn-sm w-auto"><i class="la la-plus">Enregistrer un nouveau membre</i></button>
+                                                        <button class="btn btn-warning btn-sm w-auto" id="btnMembreOrgane"><i class="la la-plus">Enregistrer un nouveau membre</i></button>
                                                     </div>
-                                                    <div class="mt-4">
-                                                        <div class="accordion accordion-start-indicator" id="accordion-five">
-                                                            <div class="accordion-item">
-                                                                <div class="accordion-header  rounded-lg" id="accordion-AG" data-bs-toggle="collapse" data-bs-target="#collapseAG" aria-controls="collapseAG"   aria-expanded="true"  role="button">
-                                                                    <span class="accordion-header-text fw-bold">Assemblée Générale</span>
-                                                                    <span class="accordion-header-indicator"></span>
-                                                                </div>
-                                                                <div id="collapseAG" class="collapse accordion__body show" aria-labelledby="accord-AG" data-bs-parent="#accordion-AG">
-                                                                    <div class="accordion-body">
-                                                                        <div>
-                                                                            <table class="table table-condensed table-striped table-bordered table-sm table-responsive">
-                                                                                <thead>
-                                                                                <tr>
-                                                                                    <th>Genre</th>
-                                                                                    <th>Nom prénoms</th>
-                                                                                    <th>Contact</th>
-                                                                                    <th>Profession</th>
-                                                                                    <th>Poste</th>
-                                                                                </tr>
-                                                                                </thead>
-                                                                                <tbody>
-                                                                                {% for membre in membres %}
-                                                                                    {% if membre.poste.organeCoges.sigle == "AG" %}
-                                                                                        <tr role="row" class="odd">
-                                                                                            <td><span>{{ membre.genre }}</span></td>
-                                                                                            <td>{{ membre.nom }} {{ membre.prenoms }}</td>
-                                                                                            <td><span class="text-primary">{{ membre.contact }}</span></td>
-                                                                                            <td><span>{{ membre.profession }}</span></td>
-                                                                                            <td><span class="label label-success">{{ membre.poste.libellePoste }}</span></td>
-                                                                                            <td>
-                                                                                                <div class='d-flex'>
-                                                                                                    <span class='btn btn-primary shadow btn-xs sharp me-1'><i class='fa fa-pencil'></i></span>
-                                                                                                    <span class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    {% endif %}
-                                                                                {% endfor %}
-                                                                            </table>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                    <div class="mt-4 d-flex justify-content-center">
+                                                        {% for k, organe in organes %}
+                                                            <div class="choice-grp card {{ k == 0 ? 'active' : '' }}" id="ag" data-organe="{{ organe.id }}">
+                                                                <p class="text-center"><i class="la la-people-carry la-3x"></i></p>
+                                                                <p class="fw-bold text-center">{{ organe.libelleOrgane }}</p>
                                                             </div>
-                                                            <div class="accordion-item">
-                                                                <div class="accordion-header collapsed rounded-lg" id="accord-5Two" data-bs-toggle="collapse" data-bs-target="#collapse5Two" aria-controls="collapse5Two"   aria-expanded="true"  role="button">
-                                                                    <span class="accordion-header-text fw-bold">Bureau Exécutif</span>
-                                                                    <span class="accordion-header-indicator"></span>
-                                                                </div>
-                                                                <div id="collapse5Two" class="collapse accordion__body" aria-labelledby="accord-5Two" data-bs-parent="#accordion-five">
-                                                                    <div class="accordion-body-text">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="accordion-item">
-                                                                <div class="accordion-header collapsed rounded-lg" id="accord-5Three" data-bs-toggle="collapse" data-bs-target="#collapse5Three" aria-controls="collapse5Three"   aria-expanded="true"  role="button">
-                                                                    <span class="accordion-header-text  fw-bold">Commissariat aux comptes</span>
-                                                                    <span class="accordion-header-indicator"></span>
-                                                                </div>
-                                                                <div id="collapse5Three" class="collapse accordion__body" aria-labelledby="accord-5Three" data-bs-parent="#accordion-five">
-                                                                    <div class="accordion-body-text">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="mt-5 table-responsive active-projects style-1">
+                                                        {{ include('backend/membre_organe/_membre_organe_datatable.html.twig') }}
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="tab-pane fade" id="pacc" role="tabpanel">
-                                                <div class="m-5">
-                                                    <div class="d-flex justify-content-between">
-                                                        <div>Date de début : <strong>{{ pacc ? pacc.dateDebut|date('d/m/Y') : 'N/A' }}</strong></div>
-                                                        <div class="pl-2">Date de fin : <strong>{{ pacc ? pacc.dateFin|date('d/m/Y'): 'N/A' }}</strong></div>
-                                                        <div class="pl-2"><strong> Télécharger le PACC : </strong>
-                                                            {% if pacc is not empty %}
-                                                            <a href="{{ path('app_pacc_download_file', {id: pacc.id}) }}" target="_self">{{ pacc.nomFichier }}</a>
-                                                            {% endif %}
-                                                        </div>
-                                                        <div class="pl-2">
-                                                            {% if pacc is not empty %}
-                                                            <a class="btn btn-outline-warning btn-sm" id="btnvoirplus" href="{{ path('app_pacc_show', {id: pacc.id }) }}">Voir +</a>
-                                                            {% endif %}
+                                                <div class="mt-5">
+                                                    <div class="col-md-12">
+                                                        <div class="d-flex justify-content-between">
+                                                            <div class="pl-0"><strong>Date de début : </strong>{{ pacc ? pacc.dateDebut|date('d/m/Y') : 'N/A' }}</div>
+                                                            <div><strong>Date de fin : </strong>{{ pacc ? pacc.dateFin|date('d/m/Y'): 'N/A' }}</div>
+                                                            <div><strong>Télécharger le PACC : </strong>
+                                                                {% if pacc %}
+                                                                <button id="btn-file-pacc" class="btn btn-info btn-xs" data-id="{{ pacc.id }}"> Aperçu <i class="fa fa-eye"></i></button>
+                                                                {% else %}
+                                                                <span>N/A</span>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="px-5 pull-right">
+                                                                {% if pacc is not empty %}
+                                                                    <a class="btn btn-outline-warning btn-sm" id="btnvoirplus" href="{{ path('app_pacc_show', {id: pacc.id }) }}">Voir +</a>
+                                                                {% endif %}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <hr>
                                                 <div class="d-flex justify-content-center mt-3">
-                                                    <button class="btn btn-warning btn-sm w-10"><i class="la la-plus"> Enregistrer un nouveau PACC</i></button>
+                                                    <button class="btn btn-warning btn-sm w-10" id="btnOffCanvasPacc"><i class="la la-plus"> Enregistrer un nouveau PACC</i></button>
                                                 </div>
                                             </div>
                                             <div class="tab-pane fade" id="parents" role="tabpanel">
@@ -301,11 +265,236 @@
                 </div>
             </div>
         </div>
+
+         {{ include("backend/mandat_coges/_mandat_coges_offcanvas.html.twig") }}
+         {{ include("backend/pacc/_pacc_offcanvas.html.twig") }}
+         {{ include("backend/membre_organe/_membre_organe_offcanvas.html.twig") }}
+        {{ include("backend/pacc/_file_pacc_offcanvas.html.twig") }}
     </div>
-    {{ include("backend/_partials/footer.html.twig") }}
+
 </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    {#    <script type="text/javascript" src="{{ asset('assets/backend/vendor/bts3-editable/bts3-editable/js/bootstrap-editable.js') }}"></script>#}
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var organeId = {{ organes[0].id }};
+            var mandatId = {{ mandat ? mandat.id : 'null' }};
+
+            var offcanvasPacc = document.getElementById('offcanvasPacc');
+            var bsoffcanvasPacc = new bootstrap.Offcanvas(offcanvasPacc);
+
+            var offcanvasMandatCoges = document.getElementById('offcanvasMandatCoges');
+            var bsoffcanvasMandatCoges = new bootstrap.Offcanvas(offcanvasMandatCoges);
+
+            var offcanvasMembreOrgane = document.getElementById('offcanvasMembreOrgane');
+            var bsoffcanvasMembreOrgane = new bootstrap.Offcanvas(offcanvasMembreOrgane);
+
+            var offcanvasFilePacc = document.getElementById('offcanvasFilePacc');
+            var bsoffcanvasFilePacc= new bootstrap.Offcanvas(offcanvasFilePacc);
+
+            var membreDT = null;
+
+            $(document).on('shown.bs.tab',"a[data-bs-toggle='tab']", function(event){
+                if("#membres" === event.target.getAttribute("href")){
+                    if(!membreDT) membreDT = initDatatable();
+                }
+            });
+
+            function initDatatable(){
+                var dt = $('#membre_organe_datatable').DataTable( {
+                    responsive: true,
+                    pageLength: 5,
+                    searching: false,
+                    select: true,
+                    lengthChange: false,
+                    language: {
+                        //url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
+                        info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                        infoEmpty: "Affichage de 0 à 0 sur 0 entrées",
+                        lengthMenu: "Afficher _MENU_ entrées",
+                        paginate: {
+                            first: '',
+                            last: '',
+                            next: '<i class="fa-solid fa-angle-right"></i>',
+                            previous: '<i class="fa-solid fa-angle-left"></i>'
+                        },
+                        processing: '<i class="fa fa-spinner fa-spin fa-2x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
+                    },
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        "url": '{{ path('app_membre_organe_dt') }}',
+                        "data": function (d) {
+                            d.organe_filter = organeId;
+                            d.mandat_filter = mandatId;
+                        }
+                    },
+                    columns: [
+                        { "data":  "id" },
+                        { "data":  "nom" },
+                        { "data":  "prenoms" },
+                        { "data":  "genre" },
+                        { "data": "profession" },
+                        { "data": "contact" },
+                        { "data": "" }
+                    ],
+                    order: [[1, 'desc']]
+                } );
+                return dt;
+            }
+
+            /////////////////// CREATE  MANDAT COGES///////////////////////
+            $(document).on('click',"#btnMandatCoges", function(){
+                bsoffcanvasMandatCoges.toggle();
+                $.post("{{ path("app_mandat_coges_new") ~ "?coges=" ~  coge.id }}", function(response){
+                    $("#mandat-coges-form-container").html(response);
+                    $('.date').datetimepicker({
+                        format: 'DD/MM/YYYY'
+                    });
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='mandat_coges']").attr('action', '{{ path("app_mandat_coges_new") }}');
+                });
+            });
+            $(document).on("submit", "form[name='mandat_coges']", function(event) {
+                event.preventDefault();
+                $(document).find("#btn-spin").show();
+                var form = $("form[name='mandat_coges']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(data) {
+
+                    bsoffcanvasMandatCoges.toggle();
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Enregistrement effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $(document).find("#btn-spin").hide();
+                        $("form[name='mandat_coges']").resetForm();
+                        window.location.reload();
+                    });
+                }).fail(function(data) {
+                    // Optionally alert the user of an error here...
+                });
+            });
+
+            /////////////////// CREATE  MEMBRE ORGANE///////////////////////
+            $(document).on('click',"#btnMembreOrgane", function(){
+                bsoffcanvasMembreOrgane.toggle();
+                $.post("{{ path('app_membre_organe_new') }}", function(response){
+                    $("#membre-organe-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='membre_organe']").attr('action', '{{ path('app_membre_organe_new') }}');
+                });
+            });
+
+            $('.choice-grp').click(function(){
+                $('.choice-grp').removeClass('active');
+                $(this).addClass('active');
+                organeId = $(this).data('organe');
+                if(membreDT) membreDT.draw();
+            });
+
+            $(document).on("click", ".btn-edit-membre_organe", function(){
+                bsoffcanvasMembreOrgane.toggle();
+                var id = $(this).data('id');
+                $.post("/admin/membreorgane/" + id + "/edit", function(response){
+                    $("#membre-organe-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='commune']").attr('action', "/admin/membreorgane/" + id + "/edit");
+                });
+            });
+
+            $(document).on("submit", "form[name='membre_organe']", function(event) {
+                event.preventDefault();
+                $(document).find("#btn-spin").show();
+                var form = $("form[name='membre_organe']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(data) {
+                    bsoffcanvasMembreOrgane.toggle();
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Enregistrement effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $(document).find("#btn-spin").hide();
+                        $("form[name='membre_organe']").resetForm();
+                        datatable.draw();
+                    });
+                }).fail(function(data) {
+                    // Optionally alert the user of an error here...
+                });
+            });
+
+            ///////////////////AFFICHER FICHIER PACC///////////////////////////////////
+            $(document).on('click', '#btn-file-pacc', function(e){
+                e.preventDefault();
+                var id = $(this).data('id');
+                bsoffcanvasFilePacc.toggle();
+                $.get("/admin/pacc/" + id + "/display-file", function(html){
+                    $('#file-container').html(html);
+                });
+            });
+
+            $(document).on("click", "#btnOffCanvasPacc", function(){
+                bsoffcanvasPacc.toggle();
+                $.post("{{ path("app_pacc_new") }}", function(response){
+                    $("#pacc-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='pacc']").attr('action', '{{ path("app_pacc_new") }}');
+                });
+            });
+
+            $(document).on("submit", "form[name='pacc']", function(event) {
+                event.preventDefault();
+                $(document).find("#btn-spin").show();
+                var form = $("form[name='pacc']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(data) {
+                    bsoffcanvasPacc.toggle();
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Enregistrement effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $(document).find("#btn-spin").hide();
+                        $("form[name='pacc']").resetForm();
+                        datatable.draw();
+                    });
+                }).fail(function(data) {
+                    // Optionally alert the user of an error here...
+                });
+            });
+        });
+    </script>
 {% endblock %}

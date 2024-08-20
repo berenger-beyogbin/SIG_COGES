@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Coges;
+use App\Entity\Pacc;
 use App\Form\CogesType;
 use App\Helper\DataTableHelper;
 use App\Helper\FileUploadHelper;
@@ -12,6 +13,7 @@ use App\Repository\DrenRepository;
 use App\Repository\IeppRepository;
 use App\Repository\MandatCogesRepository;
 use App\Repository\MembreOrganeRepository;
+use App\Repository\OrganeCogesRepository;
 use App\Repository\PaccRepository;
 use App\Repository\RegionRepository;
 use Doctrine\DBAL\Connection;
@@ -55,9 +57,7 @@ class CogesController extends AbstractController
     }
 
     #[Route('/process/import-file', name: 'app_coges_proccess_file', methods: ['GET', 'POST'])]
-    public function processUploadedFile(Request $request, CogesRepository $cogesRepository, RegionRepository $regionRepository,
-                                        CommuneRepository $communeRepository, DrenRepository $drenRepository,
-                                        IeppRepository $ieppRepository): Response
+    public function processUploadedFile(Request $request, CogesRepository $cogesRepository, RegionRepository $regionRepository, CommuneRepository $communeRepository, DrenRepository $drenRepository, IeppRepository $ieppRepository): Response
     {
         /* @var UploadedFile $file */
         $file = $request->getSession()->get('user.uploadedfile');
@@ -147,7 +147,7 @@ class CogesController extends AbstractController
                 'dt' => '',
                 'formatter' => function($d, $row){
                     $coges_id = $row['id'];
-                    $content = sprintf("<div class='d-flex'><a href='/admin/coges/%s' class='btn btn-light shadow btn-xs sharp me-1' data-coges-id='%s'><i class='fa fa-eye'></i></a><span class='btn btn-warning shadow btn-xs sharp me-1' data-coges-id='%s'><i class='fa fa-pencil'></i></span><span data-coges-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>",$coges_id,$coges_id, $coges_id, $coges_id);
+                    $content = sprintf("<div class='d-flex'><a href='/admin/coges/%s' class='btn btn-light shadow btn-xs sharp me-1' data-id='%s'><i class='fa fa-eye'></i></a><span class='btn btn-warning shadow btn-xs sharp me-1 btn-edit' data-id='%s'><i class='fa fa-pencil'></i></span><span data-id='%s' class='btn btn-danger shadow btn-xs sharp btn-delete'><i class='fa fa-trash'></i></span></div>",$coges_id,$coges_id, $coges_id, $coges_id);
                     return $content;
                 }
             ]
@@ -180,34 +180,17 @@ class CogesController extends AbstractController
         return new JsonResponse($response);
     }
 
-    #[Route('/ajax/new', name: 'app_coges_new_ajax', methods: ['GET', 'POST'])]
-    public function newAjax(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        if($request->isXmlHttpRequest()) {
-            $data = array_filter($request->request->all(), function($d) {
-                return !empty($d);
-            });
-            if(array_key_exists('groupe_scolaire', $data)) $data['groupe_scolaire'] = $data['groupe_scolaire'] === 'on' ? 1:0;
-            $connection = $entityManager->getConnection();
-            $connection->insert('coges', $data);
-            return $this->json('saved');
-        }
-
-        return $this->json('error');
-    }
-
     #[Route('/new', name: 'app_coges_new', methods: ['GET', 'POST'])]
     public function new(Request $request, CogesRepository $cogesRepository, EntityManagerInterface $entityManager): Response
     {
-
         $coge = new Coges();
         $form = $this->createForm(CogesType::class, $coge);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $cogesRepository->add($coge);
-
-            return $this->redirectToRoute('app_coges_index', [], Response::HTTP_SEE_OTHER);
+            $cogesRepository->add($coge, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
+            else return $this->redirectToRoute('app_coges_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('backend/coges/new.html.twig', [
@@ -218,31 +201,33 @@ class CogesController extends AbstractController
 
     #[Route('/{id}', name: 'app_coges_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Coges $coges, MandatCogesRepository $mandatCogesRepository,
-                         MembreOrganeRepository $membreOrganeRepository,
+                         OrganeCogesRepository $organeCogesRepository,
                          PaccRepository $paccRepository): Response
     {
+        $organes = $organeCogesRepository->findAll();
+        $posteOrganes = $organeCogesRepository->findAll();
         $mandat = $mandatCogesRepository->findBy(['coges' => $coges], ['DateDebut' => 'desc'], 1);
         $pacc = $paccRepository->findBy(['mandatCoges' => $mandat], ['dateDebut' => 'desc'], 1);
-        $membres = $membreOrganeRepository->findBy(['mandat' => $mandat]);
         return $this->render('backend/coges/show.html.twig', [
             'coge' => $coges,
             'mandat' => $mandat ? $mandat[0]: null,
             'pacc' => $pacc ? $pacc[0]: null,
-            'membres' => $membres
-
+            'organes' => $organes,
+            'posteOrganes' => $posteOrganes,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_coges_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
-    public function edit(Request $request, Coges $coge, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Coges $coge, CogesRepository $cogesRepository): Response
     {
         $form = $this->createForm(CogesType::class, $coge);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $cogesRepository->add($coge, true);
 
-            return $this->redirectToRoute('app_coges_index', [], Response::HTTP_SEE_OTHER);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
+            else return $this->redirectToRoute('app_coges_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('backend/coges/edit.html.twig', [

@@ -1,49 +1,176 @@
-<!DOCTYPE html>
 
-<title>Fournisseurs index</title>
+{% extends 'backend/base.html.twig' %}
 
 {% block body %}
-    <h1>Fournisseurs index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>Contact</th>
-                <th>Entreprise</th>
-                <th>Activite</th>
-                <th>Localite</th>
-                <th>Rib</th>
-                <th>Domiciliation</th>
-                <th>IntituleCompte</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for fournisseur in fournisseurs %}
-            <tr>
-                <td>{{ fournisseur.id }}</td>
-                <td>{{ fournisseur.nom }}</td>
-                <td>{{ fournisseur.contact }}</td>
-                <td>{{ fournisseur.entreprise }}</td>
-                <td>{{ fournisseur.activite }}</td>
-                <td>{{ fournisseur.localite }}</td>
-                <td>{{ fournisseur.rib }}</td>
-                <td>{{ fournisseur.domiciliation }}</td>
-                <td>{{ fournisseur.intituleCompte }}</td>
-                <td>
-                    <a href="{{ path('app_fournisseurs_show', {'id': fournisseur.id}) }}">show</a>
-                    <a href="{{ path('app_fournisseurs_edit', {'id': fournisseur.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="10">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div id="main-wrapper"  class="show menu-toggle">
 
-    <a href="{{ path('app_fournisseurs_new') }}">Create new</a>
+        {{ include('backend/_partials/header.html.twig') }}
+        {{ include('backend/_partials/left_sidebar.html.twig') }}
+
+        <div class="content-body">
+            <!-- row -->
+            <div class="page-titles">
+                <ol class="breadcrumb">
+                    <li>
+                        <h5 class="bc-title">Gestion des fournisseurs</h5>
+                    </li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">
+                            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Tableau de bord </a>
+                    </li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Liste des fournisseurs</a></li>
+                </ol>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="table-responsive active-projects style-1">
+                            <div class="tbl-caption">
+                                <h4 class="heading mb-0">FOURNISSEURS</h4>
+                                <div>
+                                    <button class="btn btn-primary btn-sm" id="btnOffCanvasFournisseur">+ Enregister un fournisseur</button>
+                                </div>
+                            </div>
+                            <div class="row border-1 border-light p-3">
+                            </div>
+                            <div class="min-vh-100">
+                                <table id="datatable" class="table dataTable no-footer  w-auto" role="grid" aria-describedby="dt_info">
+                                    <thead>
+                                    <tr role="row">
+                                        <th>#</th>
+                                        <th>SIGLE</th>
+                                        <th>NOM</th>
+                                        <th>PRENOMS</th>
+                                        <th>TELEPHONE</th>
+                                        <th>ACTIVITE</th>
+                                        <th>BANQUE</th>
+                                        <th>LOCALITE</th>
+                                        <th width="3%">Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{ include("backend/fournisseurs/_fournisseurs_offcanvas.html.twig") }}
+
+        {{ include("backend/_partials/footer.html.twig") }}
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var datatable = initDatatable();
+
+            function initDatatable(){
+                var dt = $('#datatable').DataTable( {
+                    responsive: true,
+                    pageLength: 10,
+                    dom: 'lpftrip',
+                    searching: false,
+                    select: true,
+                    lengthChange: false,
+                    language: {
+                        //url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
+                        info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                        infoEmpty: "Affichage de 0 à 0 sur 0 entrées",
+                        lengthMenu: "Afficher _MENU_ entrées",
+                        paginate: {
+                            first: '',
+                            last: '',
+                            next: '<i class="fa-solid fa-angle-right"></i>',
+                            previous: '<i class="fa-solid fa-angle-left"></i>'
+                        },
+                        processing: '<i class="fa fa-spinner fa-spin fa-5x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
+                    },
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        "url": '{{ path('app_fournisseurs_dt') }}',
+                        "data": function (d) {
+                        }
+                    },
+                    columns: [
+                        {"data":  "id"},
+                        {"data":  "entreprise"},
+                        {"data":  "nom"},
+                        {"data":  "Prenoms"},
+                        {"data":  "contact"},
+                        {"data":  "domaine_activite"},
+                        {"data":  "domiciliation"},
+                        {"data":  "localite"},
+                        { "data": "" }
+                    ],
+                    order: [[0, 'asc']]
+                } );
+                return dt;
+
+            }
+
+            var offcanvasFournisseurs = document.getElementById('offcanvasFournisseurs');
+            var bsoffcanvasFournisseurs = new bootstrap.Offcanvas(offcanvasFournisseurs);
+
+            $(document).on("click", "#btnOffCanvasFournisseur", function(){
+                bsoffcanvasFournisseurs.toggle();
+                $.post("{{ path("app_fournisseurs_new") }}", function(response){
+                    $("#fournisseurs-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='fournisseurs']").attr('action', '{{ path("app_fournisseurs_new") }}');
+                });
+            });
+            $(document).on("click", ".btn-edit", function(){
+                bsoffcanvasFournisseurs.toggle();
+                var id = $(this).data('id');
+                $.post("/admin/fournisseurs/" + id + "/edit", function(response){
+                    $("#fournisseurs-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='dren']").attr('action', "/admin/dren/" + id + "/edit");
+                });
+            });
+            $(document).on("submit", "form[name='fournisseurs']", function(event) {
+                event.preventDefault();
+                $(document).find("#btn-spin").show();
+                var form = $("form[name='fournisseurs']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(data) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Enregistrement effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $(document).find("#btn-spin").hide();
+                        $("form[name='fournisseurs']").resetForm();
+                        datatable.draw();
+                    });
+                }).fail(function(data) {
+                    // Optionally alert the user of an error here...
+                });
+            });
+
+        });
+    </script>
+
 {% endblock %}

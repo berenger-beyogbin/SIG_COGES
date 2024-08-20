@@ -24,10 +24,7 @@ class Depense
     private ?string $nomFichierPreuve = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $dateExe = null;
-
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $heureExe = null;
+    private ?\DateTimeInterface $dateExecution = null;
 
     #[ORM\Column(type:'boolean', nullable: true)]
     private ?bool $paiementFournisseur = null;
@@ -42,6 +39,10 @@ class Depense
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Pacc $pacc = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Fournisseur $fournisseur = null;
 
     public function getId(): ?int
     {
@@ -84,29 +85,24 @@ class Depense
         return $this;
     }
 
-    public function getDateExe(): ?\DateTimeInterface
+    /**
+     * @return \DateTimeInterface|null
+     */
+    public function getDateExecution(): ?\DateTimeInterface
     {
-        return $this->dateExe;
+        return $this->dateExecution;
     }
 
-    public function setDateExe(?\DateTimeInterface $dateExe): static
+    /**
+     * @param \DateTimeInterface|null $dateExecution
+     * @return Depense
+     */
+    public function setDateExecution(?\DateTimeInterface $dateExecution): Depense
     {
-        $this->dateExe = $dateExe;
-
+        $this->dateExecution = $dateExecution;
         return $this;
     }
 
-    public function getHeureExe(): ?\DateTimeInterface
-    {
-        return $this->heureExe;
-    }
-
-    public function setHeureExe(?\DateTimeInterface $heureExe): static
-    {
-        $this->heureExe = $heureExe;
-
-        return $this;
-    }
 
     public function isPaiementFournisseur(): ?bool
     {
@@ -162,5 +158,24 @@ class Depense
         $this->statut = $statut;
         return $this;
     }
+
+    /**
+     * @return Fournisseur|null
+     */
+    public function getFournisseur(): ?Fournisseur
+    {
+        return $this->fournisseur;
+    }
+
+    /**
+     * @param Fournisseur|null $fournisseur
+     * @return Depense
+     */
+    public function setFournisseur(?Fournisseur $fournisseur): Depense
+    {
+        $this->fournisseur = $fournisseur;
+        return $this;
+    }
+
 
 }

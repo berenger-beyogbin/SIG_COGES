@@ -1,13 +1,1 @@
-<!DOCTYPE html>
-
-<title>Edit Sources</title>
-
-{% block body %}
-    <h1>Edit Sources</h1>
-
-    {{ include('sources/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_sources_index') }}">back to list</a>
-
-    {{ include('sources/_delete_form.html.twig') }}
-{% endblock %}
+{{ include('backend/sources/_form.html.twig', {'button_label': 'Update'}) }}

@@ -8,6 +8,7 @@ use App\Form\ChapitresType;
 use App\Repository\ChapitreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,6 +29,13 @@ class ChapitresController extends AbstractController
           ];
         }
           return $this->json($data);
+    }
+
+    #[Route('/ajax/select2', name: 'app_chapitres_select2_ajax', methods: ['GET', 'POST'])]
+    public function ajaxSelect2(Request $request, ChapitreRepository $chapitresRepository): JsonResponse
+    {
+        $chapitres = $chapitresRepository->findAllAjaxSelect2();
+        return $this->json([ "results" => $chapitres, "pagination" => ["more" => true]]);
     }
 
     #[Route('/', name: 'app_chapitres_index', methods: ['GET'])]

@@ -20,9 +20,9 @@ class Activite
     #[ORM\JoinColumn(nullable: false)]
     private ?Chapitre $chapitre = null;
 
-    #[ORM\ManyToOne(inversedBy: 'activites')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Fournisseur $fournisseur = null;
+//    #[ORM\ManyToOne(inversedBy: 'activites')]
+//    #[ORM\JoinColumn(nullable: true)]
+//    private ?Fournisseur $fournisseur = null;
 
     public function getId(): ?int
     {
@@ -53,16 +53,16 @@ class Activite
         return $this;
     }
 
-    public function getFournisseur(): ?Fournisseur
-    {
-        return $this->fournisseur;
-    }
-
-    public function setFournisseur(?Fournisseur $fournisseur): static
-    {
-        $this->fournisseur = $fournisseur;
-
-        return $this;
-    }
+//    public function getFournisseur(): ?Fournisseur
+//    {
+//        return $this->fournisseur;
+//    }
+//
+//    public function setFournisseur(?Fournisseur $fournisseur): static
+//    {
+//        $this->fournisseur = $fournisseur;
+//
+//        return $this;
+//    }
 
 }

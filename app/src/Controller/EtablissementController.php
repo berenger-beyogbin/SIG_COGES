@@ -81,20 +81,6 @@ class EtablissementController extends AbstractController
         }
     }
 
-    #[Route('/ajax/new', name: 'app_etablissement_new_ajax', methods: ['GET', 'POST'])]
-    public function newAjax(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        if($request->isXmlHttpRequest()) {
-            $data = array_filter($request->request->all(),function($d) {
-                return !empty($d);
-            });
-            $connection = $entityManager->getConnection();
-            $connection->insert('etablissement', $data);
-            return $this->json('saved');
-        }
-        return $this->json('error');
-    }
-
     #[Route('/datatable', name: 'app_etablissement_dt', methods: ['GET', 'POST'])]
     public function datatable(Request $request, Connection $connection)
     {
@@ -174,16 +160,15 @@ class EtablissementController extends AbstractController
     }
 
     #[Route('/new', name: 'app_etablissement_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EtablissementRepository $etablissementRepository): Response
     {
         $etablissement = new Etablissement();
         $form = $this->createForm(EtablissementType::class, $etablissement);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($etablissement);
-            $entityManager->flush();
-
+            $etablissementRepository->add($etablissement, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_etablissement_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -203,14 +188,14 @@ class EtablissementController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_etablissement_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Etablissement $etablissement, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Etablissement $etablissement, EtablissementRepository $etablissementRepository): Response
     {
         $form = $this->createForm(EtablissementType::class, $etablissement);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
+            $etablissementRepository->add($etablissement, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_etablissement_index', [], Response::HTTP_SEE_OTHER);
         }
 

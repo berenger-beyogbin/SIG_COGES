@@ -20,7 +20,7 @@
                                 <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                            Accueil </a>
+                            Tableau de bord </a>
                     </li>
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">Liste des IEPP</a></li>
                 </ol>
@@ -28,37 +28,33 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xl-12">
-                        <div class="card">
-                            <div class="card-body p-0">
-                                <div class="table-responsive active-projects style-1">
-                                    <div class="tbl-caption">
-                                        <h4 class="heading mb-0">IEPP</h4>
-                                        <div>
-                                            <a class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" href="#offcanvasCreateIepp" role="button" aria-controls="offcanvasCreateIepp">+ Enregister un IEPP</a>
-                                            <a href="{{ path('app_iepp_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
-                                        </div>
-                                    </div>
-                                    <div class="row border-1 border-light p-3">
-                                        <div class="col-sm-2">
-                                            <select type="text" class="form-control dren filter" id="dren_filter" name="region_filter">
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="min-vh-100">
-                                        <table id="datatable" class="table dataTable no-footer  w-auto" role="grid" aria-describedby="dt_info">
-                                            <thead>
-                                            <tr role="row">
-                                                <th>#</th>
-                                                <th>LIBELLE</th>
-                                                <th>EMAIL</th>
-                                                <th>TELEPHONE</th>
-                                                <th width="3%">Actions</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
-                                    </div>
+                        <div class="table-responsive active-projects style-1">
+                            <div class="tbl-caption">
+                                <h4 class="heading mb-0">IEPP</h4>
+                                <div>
+                                    <button class="btn btn-primary btn-sm" id="btnOffCanvasIepp">+ Enregister un IEPP</button>
+                                    <a href="{{ path('app_iepp_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
                                 </div>
+                            </div>
+                            <div class="row border-1 border-light p-3">
+                                <div class="col-sm-2">
+                                    <select type="text" class="form-control dren filter" id="dren_filter" name="region_filter">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="min-vh-100">
+                                <table id="datatable" class="table dataTable no-footer  w-auto" role="grid" aria-describedby="dt_info">
+                                    <thead>
+                                    <tr role="row">
+                                        <th>#</th>
+                                        <th>LIBELLE</th>
+                                        <th>EMAIL</th>
+                                        <th>TELEPHONE</th>
+                                        <th width="3%">Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -66,7 +62,7 @@
             </div>
         </div>
 
-        {{ include("backend/iepp/_create_iepp_offcanvas.html.twig") }}
+        {{ include("backend/iepp/_iepp_offcanvas.html.twig") }}
 
         {{ include("backend/_partials/footer.html.twig") }}
 
@@ -78,8 +74,11 @@
     {{ parent() }}
     <script type="text/javascript">
         $(document).ready(function () {
-
             var datatable = initDatatable();
+
+            $("i.btn-spin").hide();
+            var offcanvasIepp = document.getElementById('offcanvasIepp');
+            var bsoffcanvasIepp = new bootstrap.Offcanvas(offcanvasIepp);
 
             $(".filter").change(function (e) {
                 datatable.draw();
@@ -110,7 +109,7 @@
                     dom: 'lpftrip',
                     searching: false,
                     select: true,
-                    lengthChange: true,
+                    lengthChange: false,
                     language: {
                         //url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
                         info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
@@ -146,16 +145,48 @@
 
             }
 
-            $('#formCreateIepp').ajaxForm(function(d) {
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Enregistrement effectué avec succès",
-                    showConfirmButton: false,
-                    timer: 1500,
-                }).then(function(result){
-                    $('#formCreateIepp').resetForm();
-                    datatable.draw();
+            $(document).on("click", "#btnOffCanvasIepp", function(){
+                bsoffcanvasIepp.toggle();
+                $.post("{{ path("app_iepp_new") }}", function(response){
+                    $("#iepp-form-container").html(response);
+                    $("form[name='iepp']").attr('action', '{{ path("app_iepp_new") }}');
+                });
+            });
+            $(document).on("click", ".btn-edit", function(){
+                bsoffcanvasIepp.toggle();
+                var id = $(this).data('id');
+                $.post("/admin/iepp/" + id + "/edit", function(response){
+                    $("#iepp-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='iepp']").attr('action', "/admin/iepp/" + id + "/edit");
+                });
+            });
+            $(document).on("submit", "form[name='iepp']", function(event) {
+                event.preventDefault();
+                $("i.btn-spin").show();
+                var form = $("form[name='iepp']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(data) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Enregistrement effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $("i.btn-spin").hide();
+                        $("form[name='iepp']").resetForm();
+                        datatable.draw();
+                    });
+                }).fail(function(data) {
+                    // Optionally alert the user of an error here...
                 });
             });
 

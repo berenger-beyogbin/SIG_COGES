@@ -22,6 +22,8 @@ class MandatCoges
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $DateFin = null;
 
+    private ?string $libelle = null;
+
     #[ORM\ManyToOne(inversedBy: 'mandats')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Coges $coges = null;
@@ -37,6 +39,28 @@ class MandatCoges
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLibelle(): ?string
+    {
+        if($this->getDateDebut() && $this->getDateFin()){
+            return $this->getDateDebut()?->format('Y') . ' - ' . $this->getDateFin()?->format('Y') ;
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * @param string|null $libelle
+     * @return MandatCoges
+     */
+    public function setLibelle(?string $libelle): MandatCoges
+    {
+        $this->libelle = $libelle;
+        return $this;
     }
 
     public function getDateDebut(): ?\DateTimeInterface

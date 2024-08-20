@@ -1,11 +1,1 @@
-<!DOCTYPE html>
-
-<title>New Etablissement</title>
-
-{% block body %}
-    <h1>Create new Etablissement</h1>
-
-    {{ include('etablissement/_form.html.twig') }}
-
-    <a href="{{ path('app_etablissement_index') }}">back to list</a>
-{% endblock %}
+{{ include('backend/etablissement/_form.html.twig') }}

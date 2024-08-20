@@ -89,20 +89,6 @@ class IeppController extends AbstractController
         }
     }
 
-    #[Route('/ajax/new', name: 'app_iepp_new_ajax', methods: ['GET', 'POST'])]
-    public function newAjax(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        if($request->isXmlHttpRequest()) {
-            $data = array_filter($request->request->all(),function($d) {
-                return !empty($d);
-            });
-            $connection = $entityManager->getConnection();
-            $connection->insert('iepp', $data);
-            return $this->json('saved');
-        }
-        return $this->json('error');
-    }
-
     #[Route('/datatable', name: 'app_iepp_dt', methods: ['GET', 'POST'])]
     public function datatable(Request $request,
                               Connection $connection)
@@ -134,7 +120,7 @@ class IeppController extends AbstractController
                 'dt' => '',
                 'formatter' => function($d, $row){
                     $dren_id = $row['id'];
-                    $content = sprintf("<div class='d-flex'><span class='btn btn-warning shadow btn-xs sharp me-1' data-dren-id='%s'><i class='fa fa-pencil'></i></span><span data-dren-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $dren_id, $dren_id);
+                    $content = sprintf("<div class='d-flex'><span class='btn btn-warning shadow btn-xs sharp me-1 btn-edit' data-id='%s'><i class='fa fa-pencil'></i></span><span data-id='%s' class='btn btn-danger shadow btn-xs sharp btn-delete'><i class='fa fa-trash'></i></span></div>", $dren_id, $dren_id);
                     return $content;
                 }
             ],
@@ -204,16 +190,15 @@ class IeppController extends AbstractController
     }
 
     #[Route('/new', name: 'app_iepp_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, IeppRepository $ieppRepository): Response
     {
         $iepp = new Iepp();
         $form = $this->createForm(IeppType::class, $iepp);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($iepp);
-            $entityManager->flush();
-
+            $ieppRepository->add($iepp, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_iepp_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -232,14 +217,14 @@ class IeppController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_iepp_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Iepp $iepp, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Iepp $iepp, IeppRepository $ieppRepository): Response
     {
         $form = $this->createForm(IeppType::class, $iepp);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
+            $ieppRepository->add($iepp, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_iepp_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -256,7 +241,7 @@ class IeppController extends AbstractController
             $entityManager->remove($iepp);
             $entityManager->flush();
         }
-
+        if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
         return $this->redirectToRoute('app_iepp_index', [], Response::HTTP_SEE_OTHER);
     }
 }

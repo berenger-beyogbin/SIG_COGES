@@ -123,7 +123,7 @@ class DrenController extends AbstractController
                 'dt' => '',
                 'formatter' => function($d, $row){
                     $dren_id = $row['id'];
-                    $content = sprintf("<div class='d-flex'><span class='btn btn-warning shadow btn-xs sharp me-1' data-dren-id='%s'><i class='fa fa-pencil'></i></span><span data-dren-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $dren_id, $dren_id);
+                    $content = sprintf("<div class='d-flex'><span class='btn btn-warning shadow btn-xs sharp me-1 btn-edit' data-id='%s'><i class='fa fa-pencil'></i></span><span data-id='%s' class='btn btn-danger shadow btn-xs sharp  btn-delete'><i class='fa fa-trash'></i></span></div>", $dren_id, $dren_id);
                     return $content;
                 }
             ],
@@ -171,15 +171,15 @@ class DrenController extends AbstractController
     }
 
     #[Route('/new', name: 'app_dren_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, DrenRepository $drenRepository): Response
     {
         $dren = new Dren();
         $form = $this->createForm(DrenType::class, $dren);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($dren);
-            $entityManager->flush();
+            $drenRepository->add($dren, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_dren_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -193,13 +193,14 @@ class DrenController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_dren_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Dren $dren, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Dren $dren, DrenRepository $drenRepository): Response
     {
         $form = $this->createForm(DrenType::class, $dren);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $drenRepository->add($dren, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_dren_index', [], Response::HTTP_SEE_OTHER);
         }
 

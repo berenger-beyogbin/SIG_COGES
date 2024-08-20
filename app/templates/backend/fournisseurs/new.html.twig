@@ -1,11 +1,2 @@
-<!DOCTYPE html>
+{{ include('backend/fournisseurs/_form.html.twig') }}
 
-<title>New Fournisseurs</title>
-
-{% block body %}
-    <h1>Create new Fournisseurs</h1>
-
-    {{ include('fournisseurs/_form.html.twig') }}
-
-    <a href="{{ path('app_fournisseurs_index') }}">back to list</a>
-{% endblock %}

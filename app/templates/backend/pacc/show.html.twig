@@ -1,9 +1,10 @@
 {% extends 'backend/base.html.twig' %}
 {% block stylesheets %}
     {{ parent() }}
+{#    <link rel="stylesheet" href="{{ asset('assets/backend/vendor/bts3-editable/bts3-editable/css/bootstrap-editable.css') }}">#}
     <style>
         .form-control {
-            height: 2.1rem;
+            height: 2.5rem;
         }
         #btnvoirplus.btn-sm, #btnvoirplus.btn-group-sm>.btn {
             padding: 0px 10px;
@@ -14,7 +15,6 @@
 
     <div id="main-wrapper" class="show menu-toggle">
         {{ include('backend/_partials/header.html.twig') }}
-
         {{ include('backend/_partials/left_sidebar.html.twig') }}
 
         <div class="content-body">
@@ -22,29 +22,23 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h5 class="mb-0">DETAILS PACC du COGES : <span class="label label-success">{{ pacc.mandatCoges.coges.libelle }}</span></h5>
                 </div>
-
                 <div class="row">
-                    <div class="col-xl-12">
-                        <div class="card dz-card">
-                            <div class="card-body pt-0">
-                                <table class="table table-responsive">
-                                    <tbody>
-                                    <tr role="row" class="odd">
-                                        <td><strong>Date de début : </strong></td>
-                                        <td><span>{{ pacc.dateDebut|date('d/m/Y') }}</span></td>
-                                        <td><strong>Date de fin : </strong></td>
-                                        <td>{{ pacc.dateFin|date('d/m/Y') }}</td>
-                                        <td><strong> Télécharger le PACC : </strong></td>
-                                        <td><a href="{{ path('app_pacc_download_file', {id: pacc.id}) }}" target="_self"> <i class="fa fa-download"></i> {{ pacc.nomFichier }}</a></td>
-
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                    <div class="col-xl-12 my-4">
+                        <table class="table table-responsive">
+                            <tbody>
+                            <tr role="row" class="odd">
+                                <td><strong>Date de début : </strong></td>
+                                <td><span>{{ pacc.dateDebut|date('d/m/Y') }}</span></td>
+                                <td><strong>Date de fin : </strong></td>
+                                <td>{{ pacc.dateFin|date('d/m/Y') }}</td>
+                                <td><strong> Télécharger le PACC : </strong></td>
+                                <td><a href="{{ path('app_pacc_fichier_download', {id: pacc.id}) }}" target="_self"> <i class="fa fa-download"></i> {{ pacc.nomFichier }}</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="col-xl-12">
-                        <div class="card dz-card" id="custom-tab">
+                    <div class="col-xl-12 my-4">
+                        <div class="dz-card" id="custom-tab">
                             <div class="tab-content" id="myTabContent1">
                                 <div class="tab-pane fade show active" id="DefaultTab1" role="tabpanel" aria-labelledby="home-tab1">
                                     <div class="card-body pt-0">
@@ -63,23 +57,13 @@
                                                     <div class="row my-5">
                                                         <div class="col-sm-6">
                                                             <select id="source" class="default-select form-control wide">
-                                                                <option selected="">Choisir la source...</option>
-                                                                {% set dernier = '' %}
-                                                                {% for source in sources %}
-                                                                    {% if source.libelleSource != 'Autres' %}
-                                                                        <option value="{{ source.id }}">{{ source.libelleSource }}</option>
-                                                                    {% else %}
-                                                                        {% set dernier = source %}
-                                                                    {% endif %}
-                                                                {% endfor %}
-                                                                <option value="{{ dernier.id }}">{{ dernier.libelleSource }}</option>
                                                             </select>
                                                         </div>
                                                         <div class="col-sm-3 mt-2 mt-sm-0">
                                                             <input type="number" id="montant_recette" class="form-control" name="montant_recette" placeholder="Montant de la recette">
                                                         </div>
                                                         <div class="col-sm-2 mt-2 mt-sm-0">
-                                                            <button class="btn btn-warning btn-sm w-10" id="saveRecette"><i class="fa fa-plus"> Enregistrer</i></button>
+                                                            <button class="btn btn-warning btn-sm w-10" id="saveRecette" style="height:2.5rem;"><i class="fa fa-plus"> Enregistrer</i></button>
                                                         </div>
                                                     </div>
                                                     <hr>
@@ -87,10 +71,9 @@
                                                         <span>Liste des recettes et montants associés du pacc. </span>
                                                     </div>
                                                     <div class="row mt-5 table-responsive active-projects style-1">
-                                                        <table id="recette-tbl" class="table table-condensed dataTable no-footer" role="grid" aria-describedby="recette-tbl_info">
+                                                        <table id="recette-tbl" class="table table-condensed dataTable no-footer table-responsive" role="grid" aria-describedby="recette-tbl_info">
                                                             <thead class="datable-thead table-light">
                                                                 <tr>
-                                                                    <th></th>
                                                                     <th>SOURCE</th>
                                                                     <th>MONTANT</th>
                                                                     <th>actions</th>
@@ -104,23 +87,18 @@
                                                 <div class="tab-pane fade" id="depenses" role="tabpanel">
                                                     <div class="row my-5">
                                                         <div class="col-sm-3">
-                                                            <select id="chapitre" class="form-control wide">
-                                                                <option value="">Choisir le chapitre ...</option>
-                                                                {% for chapitre in chapitres %}
-                                                                    <option value="{{ chapitre.id }}">{{ chapitre.libelleChapitre }}</option>
-                                                                {% endfor %}
+                                                            <select id="chapitre" class="form-control wide" name="chapitre_id">
                                                             </select>
                                                         </div>
                                                         <div class="col-sm-3">
-                                                            <select id="activite" class="form-control wide">
-                                                                <option value="" disabled selected>.......</option>
+                                                            <select id="activite" class="form-control wide" name="activite_id">
                                                             </select>
                                                         </div>
                                                         <div class="col-sm-3 mt-2 mt-sm-0">
                                                             <input type="number" id="montant_depense" class="form-control" placeholder="Montant de la dépense" name="montant_depense">
                                                         </div>
                                                         <div class="col-sm-2 mt-2 mt-sm-0">
-                                                            <button class="btn btn-warning btn-sm w-10" id="saveDepense"><i class="fa fa-plus"> Enregistrer</i></button>
+                                                            <button class="btn btn-warning btn-sm w-10" id="saveDepense"  style="height:2.5rem;"><i class="fa fa-plus"> Enregistrer</i></button>
                                                         </div>
                                                     </div>
                                                     <hr>
@@ -128,12 +106,14 @@
                                                         <span>Liste des dépenses et montants associés du pacc. </span>
                                                     </div>
                                                     <div class="row mt-5 table-responsive active-projects style-1">
-                                                        <table id="depense-tbl" class="table table-condensed dataTable no-footer w-100" role="grid" aria-describedby="depense-tbl_info">
+                                                        <table id="depense-tbl" class="table table-condensed dataTable no-footer  w-100" role="grid" aria-describedby="depense-tbl_info">
                                                             <thead class="datable-thead table-light">
                                                             <tr>
-                                                                <th></th>
                                                                 <th>ACTIVITE</th>
                                                                 <th>MONTANT</th>
+                                                                <th style="max-width: 100px;">FICHIER</th>
+                                                                <th>DATE EXECUTION</th>
+                                                                <th>PAIEMENT FOURNISSEUR</th>
                                                                 <th>ACTIONS</th>
                                                             </tr>
                                                             </thead>
@@ -152,16 +132,36 @@
                 </div>
             </div>
         </div>
+        {{ include("backend/recettes/_recettes_offcanvas.html.twig") }}
+        {{ include("backend/depenses/_depenses_offcanvas.html.twig") }}
+        {{ include("backend/depenses/_file_depenses_offcanvas.html.twig") }}
+
         {{ include("backend/_partials/footer.html.twig") }}
     </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+{#    <script type="text/javascript" src="{{ asset('assets/backend/vendor/bts3-editable/bts3-editable/js/bootstrap-editable.js') }}"></script>#}
     <script type="text/javascript">
+
         $(document).ready(function () {
 
+            var offcanvasRecette = document.getElementById('offcanvasRecette');
+            var bsoffcanvasRecette = new bootstrap.Offcanvas(offcanvasRecette);
+
+            var offcanvasDepense = document.getElementById('offcanvasDepense');
+            var bsoffcanvasDepense = new bootstrap.Offcanvas(offcanvasDepense);
+
+            var offcanvasFileDepense = document.getElementById('offcanvasFileDepense');
+            var bsoffcanvasFileDepense = new bootstrap.Offcanvas(offcanvasFileDepense);
+
+            // $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-icon-xxs editable-submit"><i class="fa-solid fa-save"></i></button><button type="submit" class="btn btn-danger btn-icon-xxs editable-cancel"><i class="fa-solid fa-cancel"></i></button>';
+            // $.fn.editable.defaults.mode = 'inline';
+
             var recetteDT = initRecetteDatatable();
+            var depenseDT = initDepenseDatatable();
+
             function initRecetteDatatable(){
                 /* DATATABLE INIT */
                 return $('#recette-tbl').DataTable( {
@@ -181,15 +181,15 @@
                             next: '<i class="fa-solid fa-angle-right"></i>',
                             previous: '<i class="fa-solid fa-angle-left"></i>'
                         },
-                        processing: '<i class="fa fa-spinner fa-spin fa-2x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
+                        processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
                     },
                     ajax: {
                         "url": '{{ path('app_recette_dt') }}',
                         "data": function (d) {
+                            d.pacc_filter = "{{ pacc.id }}";
                         }
                     },
                     columns: [
-                        { "data": "id" },
                         { "data":  "source_id" },
                         { "data":  "montant_recette" },
                         { "data": "" }
@@ -197,8 +197,6 @@
                     order: [[0, 'asc']]
                 } );
             }
-
-            var depenseDT = initDepenseDatatable();
             function initDepenseDatatable(){
                 /* DATATABLE INIT */
                 return $('#depense-tbl').DataTable( {
@@ -219,97 +217,109 @@
                             next: '<i class="fa-solid fa-angle-right"></i>',
                             previous: '<i class="fa-solid fa-angle-left"></i>'
                         },
-                        processing: '<i class="fa fa-spinner fa-spin fa-2x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
+                        processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
                     },
                     ajax: {
                         "url": '{{ path('app_depense_dt') }}',
                         "data": function (d) {
+                            d.pacc_filter = "{{ pacc.id }}";
                         }
                     },
                     columns: [
-                        { "data": "id" },
                         { "data":  "activite_id" },
                         { "data":  "montant_depense" },
+                        { "data":  "nom_fichier_preuve" },
+                        { "data":  "date_execution" },
+                        { "data":  "paiement_fournisseur" },
                         { "data": "" }
                     ],
                     order: [[0, 'asc']]
                 } );
             }
 
-            $("#saveRecette").click(function(){
-                $.post("{{ path('app_recette_new') }}", {'source': $("#source").val(), 'montant_recette':$("#montant").val(),'pacc': {{ pacc.id }} }, function(response){
-                    // console.log(response);
-                    if(response.duplicate) {
-                        Swal.fire({
-                            position: "center",
-                            icon: "success",
-                            title: "Attention! un montant a déja été enregistré pour cette recette.",
-                            showConfirmButton: true,
-                        }).then(function(){
-                        });
-                    }else{
-                        recette_DT.draw();
-                    }
-
+            /////////////////// CODE GESTION DEPENSES ///////////////////////
+            $(document).on('click',".dt-delete-depense", function(){
+                $.post("/admin/depense/" + $(this).data('id') + "/delete", function(d){
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Recette supprimé avec sucès.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    depenseDT.draw();
                 });
             });
-
+            $(document).on('submit', "form[name='depenses']", function(event) {
+                event.preventDefault();
+                $(document).find("#btn-spin").show();
+                var form = $("form[name='depenses']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(data) {
+                    bsoffcanvasDepense.toggle();
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Mise à jour effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $(document).find("#btn-spin").hide();
+                        depenseDT.draw();
+                    });
+                }).fail(function(data) {
+                    // Optionally alert the user of an error here...
+                });
+            });
+            $(document).on('click',".dt-edit-depense", function(){
+                var id = $(this).data('id');
+                bsoffcanvasDepense.toggle();
+                $.post('/admin/depense/' + id + '/edit', function(response){
+                    $('#depense-form-container').html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='depenses']").attr('action', '/admin/depense/' + id + '/edit');
+                });
+            });
+            $('#chapitre').select2({
+                placeholder: "Choisir la chapitre",
+                allowClear: true,
+                ajax: {
+                    url: '{{ path('app_chapitres_select2_ajax') }}',
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        return query;
+                    }
+                }
+            });
             $("#saveDepense").click(function(){
                 $.post("{{ path('app_depense_new') }}", {'activite': $("#activite").val(),'pacc': {{ pacc.id }}, 'montant_depense': $("#montant_depense").val() }, function(response){
-                    console.log(response);
                     if(response.duplicate) {
                         Swal.fire({
                             position: "center",
                             icon: "success",
                             title: "Attention! un montant a déja été enregistré pour cette dépense.",
-                            showConfirmButton: true,
-                        }).then(function(){
+                            showConfirmButton: false,
+                            timer: 1500
                         });
                     }else{
                         depenseDT.draw();
                     }
                 });
             });
-
-            $('.delete-depense').click(function(){
-                var id = $(this).data('depense-id');
-                $.post('/admin/depense/' + id, {'id': id}, function(response){
-                    if(response.result === 'success'){
-                        Swal.fire({
-                            position: "center",
-                            icon: "success",
-                            title: "Enregistrement supprimé",
-                            showConfirmButton: true,
-                        }).then(function(){
-                            window.location.reload();
-                        });
-                    }
-                });
-            });
-
-            $('.delete-recette').click(function(){
-                var id = $(this).data('depense-id');
-                $.post('/admin/recette/' + id, {'id': id}, function(response){
-                    if(response.result === 'success'){
-                        Swal.fire({
-                            position: "center",
-                            icon: "success",
-                            title: "Enregistrement supprimé",
-                            showConfirmButton: true,
-                        }).then(function(){
-                            if (result.isConfirmed) {
-                                window.location.reload();
-                            }
-                        });
-                    }
-                });
-            });
-
             $('#chapitre').change(function(){
                 var select = $('#activite');
                 select.empty();
                 select.prop( "disabled", true );
-               // select.append($('<option>', { value:'', text: 'chargement.....'}));
                 $.get('/admin/chapitre/' + $(this).val() + '/activites/', function(activites){
                     if(activites){
                       //  select.empty();
@@ -319,7 +329,99 @@
                       select.prop( "disabled", false );
                     }
                 });
-            })
-        });
+            });
+
+            ////////////////// CODE GESTION RECETTE /////////////////////////
+            $(document).on('click',".dt-delete-recette", function(){
+                $.post("/admin/recette/" + $(this).data('id') + "/delete", function(){
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Recette enregistrée avec sucès.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    recetteDT.draw();
+                });
+            });
+            $(document).on('submit', "form[name='recettes']", function(event) {
+                event.preventDefault();
+                var form = $(this);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize()
+                }).done(function(data) {
+                    bsoffcanvasRecette.toggle();
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Mise à jour effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $(document).find("#btn-spin").hide();
+                        recetteDT.draw();
+                    });
+                }).fail(function(data) {
+                    // Optionally alert the user of an error here...
+                });
+            });
+            $(document).on('click',".dt-edit-recette", function(){
+                var id = $(this).data('id');
+                bsoffcanvasRecette.toggle();
+                $.post('/admin/recette/' + id + '/edit', function(response){
+                    $('#recette-edit-container').html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='recettes']").attr('action', '/admin/recette/' + id + '/edit');
+                });
+            });
+            $('#source').select2({
+                placeholder: "Choisir la source",
+                allowClear: true,
+                ajax: {
+                    url: '{{ path('app_sources_select2_ajax') }}',
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        return query;
+                    }
+                }
+            });
+            $("#saveRecette").click(function(){
+                $.post("{{ path('app_recette_new') }}", {'source': $("#source").val(), 'montant_recette':$("#montant_recette").val(),'pacc': {{ pacc.id }} }, function(response){
+                    if(response.duplicate) {
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: "Attention! un montant a déja été enregistré pour cette recette.",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }else{
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: "Recette enregistrée avec sucès.",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        recetteDT.draw();
+                    }
+                });
+            });
+
+            /////////////////////////////////////////////////////////////////
+            $(document).on('click', '.btn-file', function(e){
+                e.preventDefault();
+                var id = $(this).data('id');
+                bsoffcanvasFileDepense.toggle();
+                $.get("/admin/depense/" + id + "/display-file", function(html){
+                    $('#file-container').html(html);
+                });
+            });
+          });
     </script>
 {% endblock %}

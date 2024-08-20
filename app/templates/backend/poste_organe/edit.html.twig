@@ -1,13 +1,1 @@
-<!DOCTYPE html>
-
-<title>Edit PosteOrgane</title>
-
-{% block body %}
-    <h1>Edit PosteOrgane</h1>
-
-    {{ include('poste_organe/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_poste_organe_index') }}">back to list</a>
-
-    {{ include('poste_organe/_delete_form.html.twig') }}
-{% endblock %}
+{{ include('backend/poste_organe/_form.html.twig') }}

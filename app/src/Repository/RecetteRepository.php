@@ -29,10 +29,20 @@ class RecetteRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function remove(Recette $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
     public function flush(): void
     {
         $this->getEntityManager()->flush();
     }
+
 
 //    /**
 //     * @return Recettes[] Returns an array of Recettes objects

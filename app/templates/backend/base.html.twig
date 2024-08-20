@@ -4,7 +4,9 @@
         <meta charset="UTF-8">
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        {% if app.environment == 'prod' %}
         <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+        {% endif %}
         <meta name="keywords" content="">
         <meta name="author" content="">
         <meta name="robots" content="">
@@ -12,7 +14,6 @@
         <meta name="description" content="SIGCOGES:Système intégré de gestion des COGES">
         <meta property="og:title" content="SIGCOGES:Système intégré de gestion des COGES">
         <meta property="og:description" content="SIGCOGES:Système intégré de gestion des COGES">
-        <meta property="og:image" content="https://w3crm.dexignzone.com/xhtml/social-image.png">
         <meta name="format-detection" content="telephone=no">
         <title>{% block title %}Accueil!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
@@ -32,14 +33,14 @@
             <!-- tagify-css -->
             <link href="{{ asset('assets/backend/vendor/tagify/dist/tagify.css') }}" rel="stylesheet">
             <!-- Style css -->
-            {#            <link href="{{ asset('assets/backend/vendor/select2/css/select2.min.css') }}" rel="stylesheet">#}
-            <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+                        <link href="{{ asset('assets/backend/vendor/select2/css/select2.min.css') }}" rel="stylesheet">
+{#            <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />#}
             <link href="{{ asset('assets/backend/vendor/sweetalert2/dist/sweetalert2.min.css') }}" rel="stylesheet">
             <link href="{{ asset('assets/backend/css/style.css') }}" rel="stylesheet">
             <style>
                 [data-primary="color_2"] {
                     --primary: #08a603;
-                    --primary-hover: #08a603;
+                    --primary-hover: #7dd77b;
                     --primary-dark: rgba(0, 84, 16, 0.42);
                     --rgba-primary-1: #08a603;
                     --rgba-primary-2: #08a603;
@@ -105,6 +106,14 @@
                 .list-group-item {
                     padding: 0.5rem 1.5rem;
                 }
+                select.form-control {
+                    appearance: auto !important;
+                }
+
+                .datepicker table td.day:hover {
+                    background: #e2efe1;
+                    border-radius: 0.375rem;
+                }
             </style>
         {% endblock %}
     </head>
@@ -129,11 +138,10 @@
         <script src="{{ asset('assets/backend/vendor/apexchart/apexchart.js') }}"></script>
         <script src="{{ asset('assets/backend/vendor/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
 
-        <script src="{{ asset('assets/backend/vendor/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
-{#        <script src="{{ asset('assets/backend/vendor/select2/js/select2.full.min.js') }}"></script>#}
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script src="{{ asset('assets/backend/vendor/select2/js/select2.full.min.js') }}"></script>
+{#        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>#}
         <!-- Dashboard 1 -->
-        <script src="{{ asset('assets/backend/vendor/draggable/draggable.js') }}"></script>
+{#        <script src="{{ asset('assets/backend/vendor/draggable/draggable.js') }}"></script>#}
         <script src="{{ asset('assets/backend/vendor/jquery.form/jquery.form.min.js') }}"></script>
 
         <script src="{{ asset('assets/backend/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
@@ -149,9 +157,9 @@
         <script src="{{ asset('assets/backend/vendor/sweetalert2/dist/sweetalert2.min.js') }}"></script>
 
         <!-- Vectormap -->
-        <script src="{{ asset('assets/backend/vendor/jqvmap/js/jquery.vmap.min.js') }}"></script>
-        <script src="{{ asset('assets/backend/vendor/jqvmap/js/jquery.vmap.world.js') }}"></script>
-        <script src="{{ asset('assets/backend/vendor/jqvmap/js/jquery.vmap.usa.js') }}"></script>
+{#        <script src="{{ asset('assets/backend/vendor/jqvmap/js/jquery.vmap.min.js') }}"></script>#}
+{#        <script src="{{ asset('assets/backend/vendor/jqvmap/js/jquery.vmap.world.js') }}"></script>#}
+{#        <script src="{{ asset('assets/backend/vendor/jqvmap/js/jquery.vmap.usa.js') }}"></script>#}
         <script src="{{ asset('assets/backend/js/custom.js') }}"></script>
         <script src="{{ asset('assets/backend/js/deznav-init.js') }}"></script>
         <script src="{{ asset('assets/backend/js/demo.js') }}"></script>

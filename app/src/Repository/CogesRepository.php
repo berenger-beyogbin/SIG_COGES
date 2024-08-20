@@ -49,6 +49,7 @@ class CogesRepository extends ServiceEntityRepository
         return $data;
     }
 
+
 //    public function findOneBySomeField($value): ?COGES
 //    {
 //        return $this->createQueryBuilder('c')

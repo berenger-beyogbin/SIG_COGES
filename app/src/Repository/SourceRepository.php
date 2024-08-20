@@ -33,6 +33,15 @@ class SourceRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->flush();
     }
+
+    public function findAllAjaxSelect2(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->select('s.id, s.libelleSource as text')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 //    /**
 //     * @return Sources[] Returns an array of Sources objects
 //     */

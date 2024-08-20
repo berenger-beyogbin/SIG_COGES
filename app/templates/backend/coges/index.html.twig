@@ -20,7 +20,7 @@
                                 <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                            Accueil </a>
+                            Tableau de bord </a>
                     </li>
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">COGES</a></li>
                 </ol>
@@ -28,54 +28,50 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xl-12">
-                        <div class="card">
-                            <div class="card-body p-0">
-                                <div class="table-responsive active-projects style-1">
-                                    <div class="tbl-caption">
-                                        <h4 class="heading mb-0">COGES</h4>
-                                        <div>
-                                            <a class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" href="#offcanvasCreateCoges" role="button" aria-controls="offcanvasCreateCoges">+ Enregister un coges</a>
-                                            <a href="{{ path('app_coges_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
-                                        </div>
-                                    </div>
-                                    <div class="row border-1 border-light p-3">
-                                        <div class="col-sm-2">
-                                            <select type="text" class="form-control region filter" id="region_filter" name="region_filter">
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <select type="text" class="form-control dren filter" id="dren_filter" name="dren_filter">
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <select type="text" class="form-control iepp filter" id="iepp_filter" name="iepp_filter">
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <select type="text" class="form-control commune filter" id="commune_filter" name="commune_filter">
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <input type="text" class="form-control" placeholder="Recherche rapide" name="filter">
-                                        </div>
-                                    </div>
-                                    <div class="min-vh-100">
-                                        <table id="datatable" class="table dataTable no-footer  w-auto" role="grid" aria-describedby="dt_info">
-                                            <thead>
-                                                <tr role="row">
-                                                    <th>#</th>
-                                                    <th>LIBELLE</th>
-                                                    <th>CYCLE</th>
-                                                    <th>N° COMPTE</th>
-                                                    <th>DOMICILIATION</th>
-                                                    <th>GROUPE SCOLAIRE</th>
-                                                    <th width="3%">Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
-                                    </div>
+                        <div class="table-responsive active-projects style-1">
+                            <div class="tbl-caption">
+                                <h4 class="heading mb-0">COGES</h4>
+                                <div>
+                                    <span id="btnOffCanvasCoges" class="btn btn-primary btn-sm">+ Enregister un coges</span>
+                                    <a href="{{ path('app_coges_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
                                 </div>
+                            </div>
+                            <div class="row border-1 border-light p-3">
+                                <div class="col-sm-2">
+                                    <select type="text" class="form-control region filter" id="region_filter" name="region_filter">
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select type="text" class="form-control dren filter" id="dren_filter" name="dren_filter">
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select type="text" class="form-control iepp filter" id="iepp_filter" name="iepp_filter">
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select type="text" class="form-control commune filter" id="commune_filter" name="commune_filter">
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" placeholder="Recherche rapide" name="filter">
+                                </div>
+                            </div>
+                            <div class="min-vh-100">
+                                <table id="datatable" class="table dataTable no-footer  w-auto" role="grid" aria-describedby="dt_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th>#</th>
+                                            <th>LIBELLE</th>
+                                            <th>CYCLE</th>
+                                            <th>N° COMPTE</th>
+                                            <th>DOMICILIATION</th>
+                                            <th>GROUPE SCOLAIRE</th>
+                                            <th width="3%">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -85,7 +81,7 @@
 
         {{ include("backend/_partials/footer.html.twig") }}
 
-        {{ include("backend/coges/_create_coges_offcanvas.html.twig") }}
+        {{ include("backend/coges/_coges_offcanvas.html.twig") }}
     </div>
 
 {% endblock %}
@@ -94,12 +90,14 @@
     {{ parent() }}
     <script type="text/javascript">
         $(document).ready(function () {
+            var offcanvasCoges = document.getElementById('offcanvasCoges');
+            var bsoffcanvasCoges = new bootstrap.Offcanvas(offcanvasCoges);
             var datatable = initDatatable();
 
             $(".filter").change(function (e) {
                 datatable.draw();
             });
-
+            $('.select2').select2();
             $('.region').select2({
                 placeholder: "REGIONS",
                 allowClear: true,
@@ -116,7 +114,6 @@
                     }
                 }
             });
-
             $('.coges').select2({
                 placeholder: "COGES",
                 allowClear: true,
@@ -133,7 +130,6 @@
                     }
                 }
             });
-
             $('.commune').select2({
                 placeholder: "COMMUNES",
                 allowClear: true,
@@ -150,7 +146,6 @@
                     }
                 }
             });
-
             $('.iepp').select2({
                 placeholder: "IEPP",
                 allowClear: true,
@@ -167,7 +162,6 @@
                     }
                 }
             });
-
             $('.dren').select2({
                 allowClear: true,
                 placeholder: "DREN",
@@ -186,6 +180,52 @@
                 }
             });
 
+            $(document).on("click", "#btnOffCanvasCoges", function(){
+                bsoffcanvasCoges.toggle();
+                $.post("{{ path("app_coges_new") }}", function(response){
+                    $("#coges-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='coges']").attr('action', '{{ path("app_coges_new") }}');
+                });
+            });
+            $(document).on("click", ".btn-edit", function(){
+                bsoffcanvasCoges.toggle();
+                var id = $(this).data('id');
+                $.post("/admin/coges/" + id + "/edit", function(response){
+                    $("#coges-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='coges']").attr('action', "/admin/coges/" + id + "/edit");
+                });
+            });
+            $(document).on("submit", "form[name='coges']", function(event) {
+                event.preventDefault();
+                $(document).find("#btn-spin").show();
+                var form = $("form[name='coges']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(data) {
+                    bsoffcanvasCoges.toggle();
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Enregistrement effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $(document).find("#btn-spin").hide();
+                        $("form[name='coges']").resetForm();
+                        datatable.draw();
+                    });
+                }).fail(function(data) {
+                    // Optionally alert the user of an error here...
+                });
+            });
 
             function initDatatable(){
                 var dt = $('#datatable').DataTable( {
@@ -234,11 +274,6 @@
 
             }
 
-            $('#formCreateCoges').ajaxForm(function(d) {
-            }).then(function(result){
-                    $('#formCreateCoges').resetForm();
-                    datatable.draw();
-            });
         });
     </script>
 

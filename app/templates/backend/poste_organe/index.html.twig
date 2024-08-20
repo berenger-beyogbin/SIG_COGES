@@ -20,7 +20,7 @@
                                 <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                            Accueil </a>
+                            Tableau de bord </a>
                     </li>
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">COGES</a></li>
                 </ol>
@@ -34,29 +34,13 @@
                                     <div class="tbl-caption">
                                         <h4 class="heading mb-0">COGES</h4>
                                         <div>
-                                            <a class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" href="#offcanvasCreateCoges" role="button" aria-controls="offcanvasCreateCoges">+ Enregister un coges</a>
-                                            <a href="{{ path('app_coges_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
+                                            <a class="btn btn-primary btn-sm" id="btnOffCanvasPosteOrgane">+ Enregister un poste organe COGES</a>
                                         </div>
                                     </div>
                                     <div class="row border-1 border-light p-3">
                                         <div class="col-sm-2">
-                                            <select type="text" class="form-control region filter" id="region_filter" name="region_filter">
+                                            <select type="text" class="form-control organe_coges filter" id="organe_coges_filter" name="organe_coges_filter">
                                             </select>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <select type="text" class="form-control dren filter" id="dren_filter" name="dren_filter">
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <select type="text" class="form-control iepp filter" id="iepp_filter" name="iepp_filter">
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <select type="text" class="form-control commune filter" id="commune_filter" name="commune_filter">
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <input type="text" class="form-control" placeholder="Recherche rapide" name="filter">
                                         </div>
                                     </div>
                                     <table id="datatable" class="table dataTable no-footer" role="grid" aria-describedby="dt_info">
@@ -87,7 +71,7 @@
 
         {{ include("backend/_partials/footer.html.twig") }}
 
-        {{ include("backend/coges/_create_coges_offcanvas.html.twig") }}
+        {{ include("backend/coges/_poste_organe_offcanvas.html.twig") }}
     </div>
 
 {% endblock %}
@@ -102,11 +86,11 @@
                 datatable.draw();
             });
 
-            $('.region').select2({
-                placeholder: "REGIONS",
+            $('.organe_coges').select2({
+                placeholder: "ORGANE",
                 allowClear: true,
                 ajax: {
-                    url: '{{ path('app_region_select2_ajax') }}',
+                    url: '{{ path('app_organe__select2_ajax') }}',
                     delay: 250,
                     data: function (params) {
                         var query = {
@@ -119,74 +103,6 @@
                 }
             });
 
-            $('.coges').select2({
-                placeholder: "COGES",
-                allowClear: true,
-                ajax: {
-                    url: '{{ path('app_coges_select2_ajax') }}',
-                    delay: 250,
-                    data: function (params) {
-                        var query = {
-                            search: params.term,
-                            type: 'public'
-                        }
-                        // Query parameters will be ?search=[term]&type=public
-                        return query;
-                    }
-                }
-            });
-
-            $('.commune').select2({
-                placeholder: "COMMUNES",
-                allowClear: true,
-                ajax: {
-                    url: '{{ path('app_commune_select2_ajax') }}',
-                    delay: 250,
-                    data: function (params) {
-                        var query = {
-                            search: params.term,
-                            type: 'public'
-                        }
-                        // Query parameters will be ?search=[term]&type=public
-                        return query;
-                    }
-                }
-            });
-
-            $('.iepp').select2({
-                placeholder: "IEPP",
-                allowClear: true,
-                ajax: {
-                    url: '{{ path('app_iepp_select2_ajax') }}',
-                    delay: 250,
-                    data: function (params) {
-                        var query = {
-                            search: params.term,
-                            type: 'public'
-                        }
-                        // Query parameters will be ?search=[term]&type=public
-                        return query;
-                    }
-                }
-            });
-
-            $('.dren').select2({
-                allowClear: true,
-                placeholder: "DREN",
-                delay: 250,
-                ajax: {
-                    url: '{{ path('app_dren_select2_ajax') }}',
-                    delay: 250,
-                    data: function (params) {
-                        var query = {
-                            search: params.term,
-                            type: 'public'
-                        }
-                        // Query parameters will be ?search=[term]&type=public
-                        return query;
-                    }
-                }
-            });
 
 
             function initDatatable(){

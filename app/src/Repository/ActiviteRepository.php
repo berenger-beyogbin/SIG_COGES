@@ -21,6 +21,18 @@ class ActiviteRepository extends ServiceEntityRepository
         parent::__construct($registry, Activite::class);
     }
 
+    public function findAllAjaxSelect2($chapitre): array
+    {
+        return $this->createQueryBuilder('a')
+            ->select('a.id, a.libelleActivite as text')
+            ->andWhere('a.chapitre = :chapitre')
+            ->setParameter('chapitre', $chapitre)
+            ->orderBy('a.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
 //    /**
 //     * @return Activites[] Returns an array of Activites objects
 //     */

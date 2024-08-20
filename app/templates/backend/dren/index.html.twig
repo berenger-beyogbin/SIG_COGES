@@ -20,7 +20,7 @@
                                 <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                            Accueil </a>
+                            Tableau de bord </a>
                     </li>
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">DREN</a></li>
                 </ol>
@@ -28,31 +28,27 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xl-12">
-                        <div class="card">
-                            <div class="card-body p-0">
-                                <div class="table-responsive active-projects style-1">
-                                    <div class="tbl-caption">
-                                        <h4 class="heading mb-0">DREN</h4>
-                                        <div>
-                                            <a class="btn btn-primary btn-sm" data-bs-toggle="offcanvas" href="#offcanvasCreateDren" role="button" aria-controls="offcanvasCreateDren">+ Enregister une DREN</a>
-                                            <a href="{{ path('app_dren_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
-                                        </div>
-                                    </div>
-                                    <div class="min-vh-100">
-                                        <table id="datatable" class="table no-footer table-responsive">
-                                            <thead>
-                                            <tr role="row">
-                                                <th>#</th>
-                                                <th>NOM</th>
-                                                <th>EMAIL</th>
-                                                <th>TELEPHONE</th>
-                                                <th width="2%">Actions</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
-                                    </div>
+                        <div class="table-responsive active-projects style-1">
+                            <div class="tbl-caption">
+                                <h4 class="heading mb-0">DREN</h4>
+                                <div>
+                                    <span class="btn btn-primary btn-sm" id="btnOffCanvasDren">+ Enregister une DREN</span>
+                                    <a href="{{ path('app_dren_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
                                 </div>
+                            </div>
+                            <div class="min-vh-100">
+                                <table id="datatable" class="table no-footer table-responsive">
+                                    <thead>
+                                    <tr role="row">
+                                        <th>#</th>
+                                        <th>NOM</th>
+                                        <th>EMAIL</th>
+                                        <th>TELEPHONE</th>
+                                        <th width="2%">Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -60,9 +56,7 @@
             </div>
         </div>
 
-
-        {{ include("backend/dren/_create_dren_offcanvas.html.twig") }}
-
+        {{ include("backend/dren/_dren_offcanvas.html.twig") }}
 
         {{ include("backend/_partials/footer.html.twig") }}
 
@@ -77,6 +71,9 @@
         $(document).ready(function () {
 
             var datatable = initDatatable();
+
+            var offcanvasDren = document.getElementById('offcanvasDren');
+            var bsoffcanvasDren = new bootstrap.Offcanvas(offcanvasDren);
 
             $(".filter").change(function (e) {
                 datatable.draw();
@@ -210,16 +207,50 @@
 
             }
 
-            $('#formCreateDren').ajaxForm(function(d) {
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Enregistrement effectué avec succès",
-                    showConfirmButton: false,
-                    timer: 1500,
-                }).then(function(result){
-                    $('#formCreateDren').resetForm();
-                    datatable.draw();
+            $(document).on("click", "#btnOffCanvasDren", function(){
+                bsoffcanvasDren.toggle();
+                $.post("{{ path("app_dren_new") }}", function(response){
+                    $("#dren-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='dren']").attr('action', '{{ path("app_dren_new") }}');
+                });
+            });
+            $(document).on("click", ".btn-edit", function(){
+                bsoffcanvasDren.toggle();
+                var id = $(this).data('id');
+                $.post("/admin/dren/" + id + "/edit", function(response){
+                    $("#dren-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='dren']").attr('action', "/admin/dren/" + id + "/edit");
+                });
+            });
+            $(document).on("submit", "form[name='dren']", function(event) {
+                event.preventDefault();
+                $(document).find("#btn-spin").show();
+                var form = $("form[name='dren']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(data) {
+                    bsoffcanvasDren.toggle();
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Enregistrement effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $(document).find("#btn-spin").hide();
+                        $("form[name='dren']").resetForm();
+                        datatable.draw();
+                    });
+                }).fail(function(data) {
+                    // Optionally alert the user of an error here...
                 });
             });
         });

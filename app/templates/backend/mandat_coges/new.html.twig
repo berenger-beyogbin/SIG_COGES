@@ -1,16 +1,1 @@
-{% extends 'backend/base.html.twig' %}
-
-{% block body %}
-
-    {{ include('backend/_partials/header.html.twig') }}
-
-    {{ include('backend/_partials/left_sidebar.html.twig') }}
-
-    {{ include('dren/_form.html.twig') }}
-
-    {{ include("backend/_partials/footer.html.twig") }}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-{% endblock %}
+{{ include('backend/mandat_coges/_form.html.twig') }}

@@ -12,6 +12,7 @@ use App\Repository\RecetteRepository;
 use App\Repository\SourceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -38,7 +39,7 @@ class PaccController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($pacc);
             $entityManager->flush();
-
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_pacc_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -48,12 +49,19 @@ class PaccController extends AbstractController
         ]);
     }
 
-
-    #[Route('/download-file/{id}', name: 'app_pacc_download_file', methods: ['POST', 'GET'])]
-    public function downloadFile(Request $request, Pacc $pacc): Response
+    #[Route('/{id}/file', name: 'app_pacc_fichier_download', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function downloadFichierPacc(Pacc $pacc): Response
     {
-        $outputFile = "/var/www/html/public/uploads/example.pdf";
-        return $this->file($outputFile);
+        $file = '/var/www/html/public/media/pacc/' . $pacc->getCheminFichier();
+        return $this->file($file);
+    }
+
+    #[Route('/{id}/display-file', name: 'app_pacc_display_file', methods: ['GET', 'POST'])]
+    public function displayFicherPreuveInIFrame(Pacc $pacc): JsonResponse
+    {
+        $url = '/media/pacc/' . $pacc->getCheminFichier();
+        $content = "<object data='$url#view=Fit' type='application/pdf' width='100%' height='800'><p>It appears your Web browser is not configured to display PDF files. No worries, just <a href='$url'>Cliquez ici pour télécharger le fichier.</a></p></object>";
+        return $this->json($content);
     }
 
     #[Route('/{id}', name: 'app_pacc_show', methods: ['GET'])]
@@ -84,14 +92,14 @@ class PaccController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_pacc_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Pacc $pacc, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Pacc $pacc, PaccRepository $paccRepository): Response
     {
         $form = $this->createForm(PaccType::class, $pacc);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
+            $paccRepository->add($pacc, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_pacc_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -108,7 +116,7 @@ class PaccController extends AbstractController
             $entityManager->remove($pacc);
             $entityManager->flush();
         }
-
+        if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
         return $this->redirectToRoute('app_pacc_index', [], Response::HTTP_SEE_OTHER);
     }
 }

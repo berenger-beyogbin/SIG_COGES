@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Depense;
 use App\Form\DepensesType;
 use App\Helper\DataTableHelper;
+use App\Helper\FileUploadHelper;
 use App\Repository\DepenseRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,6 +26,14 @@ class DepensesController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/display-file', name: 'app_depense_display_file', methods: ['GET', 'POST'])]
+    public function displayFicherPreuveInIFrame(Depense $depense): JsonResponse
+    {
+        $url = '/media/pacc/' . $depense->getFichierPreuve();
+        $content = "<object data='$url#view=Fit' type='application/pdf' width='100%' height='800'><p>It appears your Web browser is not configured to display PDF files. No worries, just <a href='$url'>Cliquez ici pour télécharger le fichier.</a></p></object>";
+        return $this->json($content);
+    }
+
     #[Route('/datatable', name: 'app_depense_dt', methods: ['GET', 'POST'])]
     public function datatable(Request $request, Connection $connection)
     {
@@ -42,7 +51,7 @@ class DepensesController extends AbstractController
                 'db' => 'activite_id',
                 'dt' => 'activite_id',
                 'formatter' => function($d, $row) use($connection) {
-                    $res = $connection->fetchOne('select libelle_activite from activite where id = :p', ['p' => $d]);
+                    $res = $connection->fetchOne("select libelle_activite from activite where id = $d");
                     return "<span>$res</span>";
                 }
             ],
@@ -51,10 +60,25 @@ class DepensesController extends AbstractController
                 'dt' => 'montant_depense',
             ],
             [
+                'db' => 'nom_fichier_preuve',
+                'dt' => 'nom_fichier_preuve',
+                'formatter' => function($d, $row) {
+                     return sprintf("<a href='#' class='btn-link btn-file' data-id='%s'>%s</a>", $row['id'], $d);
+                }
+            ],
+            [
+                'db' => 'date_execution',
+                'dt' => 'date_execution',
+            ],
+            [
+                'db' => 'paiement_fournisseur',
+                'dt' => 'paiement_fournisseur',
+            ],
+            [
                 'db' => 'id',
                 'dt' => '',
                 'formatter' => function($d, $row){
-                    $content = sprintf("<div class='d-flex justify-content-end'><span class='btn btn-warning shadow btn-xs sharp me-1' data-recette-id='%s'><i class='fa fa-pencil'></i></span><span data-recette-id='%s' class='btn btn-danger shadow btn-xs sharp'><i class='fa fa-trash'></i></span></div>", $d, $d);
+                    $content = sprintf("<div class='d-flex justify-content-end'><span class='btn btn-warning shadow btn-xs sharp me-1 dt-edit-depense' data-id='%s'><i class='fa fa-pencil'></i></span><span data-id='%s' ><i class='btn btn-danger shadow btn-xs sharp dt-delete-depense'><i class='fa fa-trash'></i></span></div>", $d, $d);
                     return $content;
                 }
             ],
@@ -89,7 +113,7 @@ class DepensesController extends AbstractController
         if($request->isXmlHttpRequest()){
             $depense = $depenseRepository->findOneBy(['pacc' => $request->get('pacc'), 'activite' => $request->get('activite')]);
 
-            if($depense) return $this->json(['duplicate' => true, 'activite' => $request->get('activite')]);
+            if($depense) return $this->json(['duplicate' => 1, 'activite' => $request->get('activite')]);
 
             $connection->insert('depense', [
                 'montant_depense' => $request->get('montant_depense'),
@@ -102,7 +126,7 @@ class DepensesController extends AbstractController
             foreach($depenses as $depense){
                 $total_depenses += $depense->getMontantDepense();
             }
-            return $this->json(['total_depenses' => $total_depenses,'duplicate' => false]);
+            return $this->json(['total_depenses' => $total_depenses,'duplicate' => 0]);
         }else {
 
             $depense = new Depense();
@@ -129,16 +153,29 @@ class DepensesController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/file', name: 'app_depense_fichier_preuve_download', methods: ['GET'])]
+    public function downloadFichierPreuve(Depense $depense): Response
+    {
+         $file = '/var/www/html/public/media/pacc/' . $depense->getFichierPreuve();
+         return $this->file($file);
+    }
+
     #[Route('/{id}/edit', name: 'app_depense_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Depense $depense, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Depense $depense, DepenseRepository $depenseRepository, FileUploadHelper $fileUploadHelper): Response
     {
         $form = $this->createForm(DepensesType::class, $depense);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_depense_index', [], Response::HTTP_SEE_OTHER);
+            if($form->has('FichierPreuve') && $form->get('FichierPreuve')?->getData()) {
+                $res = $fileUploadHelper->upload($form->get('FichierPreuve')?->getData(), '/var/www/html/public/media/pacc/');
+                if($res) {
+                    $depense->setFichierPreuve($res->getFilename());
+                   //@todo  $depense->setStatut();
+                }
+            }
+            $depenseRepository->add($depense, true);
+            return $this->json(['success' => 1]);
         }
 
         return $this->render('backend/depenses/edit.html.twig', [
@@ -147,21 +184,18 @@ class DepensesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_depense_delete', methods: ['POST'])]
-    public function delete(Request $request, Depense $depense, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/delete', name: 'app_depense_delete', methods: ['POST', 'GET'])]
+    public function delete(Request $request, Depense $depense, DepenseRepository $depenseRepository): Response
     {
         if($request->isXmlHttpRequest()){
-            $entityManager->remove($depense);
-            $entityManager->flush();
+            $depenseRepository->remove($depense, true);
             return $this->json(['result' => 'success']);
         }else{
             if ($this->isCsrfTokenValid('delete'.$depense->getId(), $request->request->get('_token'))) {
-                $entityManager->remove($depense);
-                $entityManager->flush();
+                $depenseRepository->remove($depense, true);
             }
 
             return $this->redirectToRoute('app_depense_index', [], Response::HTTP_SEE_OTHER);
         }
-
     }
 }

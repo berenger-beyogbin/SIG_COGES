@@ -37,7 +37,7 @@ class MandatCogesRepository extends ServiceEntityRepository
     public function findAllAjaxSelect2($libelle): array
     {
         $data = $this->createQueryBuilder('c')
-            ->select('c.id, c.libelle as text')
+            ->select('c.id, c.libelle AS text')
             ->andWhere("c.libelle LIKE '%$libelle%'")
             ->getQuery()
             ->getResult()

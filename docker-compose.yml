@@ -26,7 +26,7 @@ services:
       - proxy
 
   db:
-    image: mariadb:10.5
+    image: mariadb:10.5.19
     container_name: db
     restart: always
     labels:

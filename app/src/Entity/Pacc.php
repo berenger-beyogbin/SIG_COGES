@@ -20,6 +20,8 @@ class Pacc
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateFin = null;
 
+    private ?string $libelle = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $cheminFichier = null;
 
@@ -94,4 +96,29 @@ class Pacc
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+       return $this->id;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLibelle(): ?string
+    {
+        return $this->libelle = $this->dateDebut->format('Y') . ' - ' . $this->dateFin->format('Y');
+    }
+
+    /**
+     * @param string|null $libelle
+     * @return Pacc
+     */
+    public function setLibelle(?string $libelle): Pacc
+    {
+        $this->libelle = $libelle;
+        return $this;
+    }
+
+
 }

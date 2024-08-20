@@ -1,11 +1,2 @@
-<!DOCTYPE html>
+{{ include('backend/pacc/_form.html.twig') }}
 
-<title>New Pacc</title>
-
-{% block body %}
-    <h1>Create new Pacc</h1>
-
-    {{ include('pacc/_form.html.twig') }}
-
-    <a href="{{ path('app_pacc_index') }}">back to list</a>
-{% endblock %}

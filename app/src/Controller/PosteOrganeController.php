@@ -130,32 +130,16 @@ class PosteOrganeController extends AbstractController
         return new JsonResponse($response);
     }
 
-    #[Route('/ajax/new', name: 'app_poste_organe_new_ajax', methods: ['GET', 'POST'])]
-    public function newAjax(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        if($request->isXmlHttpRequest()) {
-            $data = array_filter($request->request->all(), function($d) {
-                return !empty($d);
-            });
-            $connection = $entityManager->getConnection();
-            $connection->insert('poste_organe', $data);
-            return $this->json('saved');
-        }
-
-        return $this->json('error');
-    }
-
     #[Route('/new', name: 'app_poste_organe_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, PosteOrganeRepository $posteOrganeRepository): Response
     {
         $posteOrgane = new PosteOrgane();
         $form = $this->createForm(PosteOrganeType::class, $posteOrgane);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($posteOrgane);
-            $entityManager->flush();
-
+            $posteOrganeRepository->add($posteOrgane, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_poste_organe_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -174,14 +158,14 @@ class PosteOrganeController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_poste_organe_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, PosteOrgane $posteOrgane, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, PosteOrgane $posteOrgane, PosteOrganeRepository $posteOrganeRepository): Response
     {
         $form = $this->createForm(PosteOrganeType::class, $posteOrgane);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
+            $posteOrganeRepository->add($posteOrgane, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_poste_organe_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -198,7 +182,7 @@ class PosteOrganeController extends AbstractController
             $entityManager->remove($posteOrgane);
             $entityManager->flush();
         }
-
+        if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
         return $this->redirectToRoute('app_poste_organe_index', [], Response::HTTP_SEE_OTHER);
     }
 }

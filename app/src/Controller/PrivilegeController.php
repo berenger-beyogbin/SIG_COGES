@@ -23,16 +23,15 @@ class PrivilegeController extends AbstractController
     }
 
     #[Route('/new', name: 'app_privilege_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, PrivilegeRepository $privilegeRepository): Response
     {
         $privilege = new Privilege();
         $form = $this->createForm(PrivilegeType::class, $privilege);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($privilege);
-            $entityManager->flush();
-
+            $privilegeRepository->add($privilege, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_privilege_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -51,14 +50,14 @@ class PrivilegeController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_privilege_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Privilege $privilege, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Privilege $privilege, PrivilegeRepository $privilegeRepository): Response
     {
         $form = $this->createForm(PrivilegeType::class, $privilege);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
+            $privilegeRepository->add($privilege, true);
+            if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
             return $this->redirectToRoute('app_privilege_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -75,7 +74,7 @@ class PrivilegeController extends AbstractController
             $entityManager->remove($privilege);
             $entityManager->flush();
         }
-
+        if($request->isXmlHttpRequest()) return $this->json([ "success" => 1 ]);
         return $this->redirectToRoute('app_privilege_index', [], Response::HTTP_SEE_OTHER);
     }
 }

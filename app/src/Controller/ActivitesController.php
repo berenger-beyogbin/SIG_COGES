@@ -3,11 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Activite;
-use App\Entity\Activites;
 use App\Form\ActivitesType;
 use App\Helper\DataTableHelper;
 use App\Repository\ActiviteRepository;
-use App\Repository\CogesRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -60,6 +58,13 @@ class ActivitesController extends AbstractController
         return new JsonResponse($response);
     }
 
+    #[Route('/ajax/select2', name: 'app_activites_select2_ajax', methods: ['GET', 'POST'])]
+    public function ajaxSelect2(Request $request, ActiviteRepository $activiteRepository): JsonResponse
+    {
+        $activites = $activiteRepository->findAllAjaxSelect2($request->get('chapitre_id'));
+        return $this->json([ "results" => $activites, "pagination" => ["more" => true]]);
+    }
+
     #[Route('/', name: 'app_activites_index', methods: ['GET'])]
     public function index(ActiviteRepository $activitesRepository): Response
     {
@@ -89,7 +94,7 @@ class ActivitesController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_activites_show', methods: ['GET'])]
-    public function show(Activites $activite): Response
+    public function show(Activite $activite): Response
     {
         return $this->render('backend/activites/show.html.twig', [
             'activite' => $activite,
@@ -97,7 +102,7 @@ class ActivitesController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_activites_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Activites $activite, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Activite $activite, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ActivitesType::class, $activite);
         $form->handleRequest($request);
