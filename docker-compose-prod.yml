@@ -1,8 +1,8 @@
 version: '3.8'
 
 networks:
-  internal:
-  proxy:
+  sigcoges:
+  proxy_1:
     external: true
 
 services:
@@ -23,7 +23,7 @@ services:
     ports:
       - 3383:3306
     networks:
-      - internal
+      - sigcoges
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -34,8 +34,8 @@ services:
     environment:
       UPLOAD_LIMIT: 300M
     networks:
-      - internal
-      - proxy
+      - sigcoges
+      - proxy_1
 
   app:
     container_name: app
@@ -51,7 +51,7 @@ services:
     volumes:
       - ./app:/var/www/html
     networks:
-      - internal
+      - sigcoges
 
   nginx:
     container_name: nginx
@@ -68,6 +68,6 @@ services:
     depends_on:
       - app
     networks:
-      - internal
-      - proxy
+      - sigcoges
+      - proxy_1
 
