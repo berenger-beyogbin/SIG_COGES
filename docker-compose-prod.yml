@@ -21,7 +21,7 @@ services:
       - ./docker/mariadb/my.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
     ports:
-      - 3307:3306
+      - 3383:3306
     networks:
       - internal
 
@@ -30,7 +30,7 @@ services:
     depends_on:
       - db
     ports:
-      - 83:80
+      - 8083:80
     environment:
       UPLOAD_LIMIT: 300M
     networks:
@@ -64,7 +64,7 @@ services:
       - ./docker/nginx/sites/:/etc/nginx/sites-available
       - ./docker/nginx/conf.d/:/etc/nginx/conf.d
     ports:
-      - 82:80
+      - 8085:80
     depends_on:
       - app
     networks:
