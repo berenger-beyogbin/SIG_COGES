@@ -7,9 +7,9 @@ networks:
 
 services:
 
-  sigcoges_db:
+  db:
     image: mariadb:10.5
-    container_name: sigcoges_db
+    container_name: db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: QT6e5APtSYaU
@@ -25,10 +25,10 @@ services:
     networks:
       - sigcoges
 
-  sigcoges_phpmyadmin:
+  phpmyadmin:
     image: phpmyadmin/phpmyadmin
     depends_on:
-      - sigcoges_db
+      - db
     ports:
       - 8083:80
     environment:
@@ -37,24 +37,24 @@ services:
       - sigcoges
       - proxy_1
 
-  sigcoges_app:
-    container_name: sigcoges_app
+  app:
+    container_name: app
     restart: always
     build:
       context: ./docker
     depends_on:
-      - sigcoges_db
+      - db
     environment:
       - APP_ENV=prod
       - MAILER_DSN=gmail
-      - DATABASE_URL=mysql://root:QT6e5APtSYaU@sigcoges_db:3306/sigcoges_db
+      - DATABASE_URL=mysql://root:QT6e5APtSYaU@db:3306/sigcoges_db
     volumes:
       - ./app:/var/www/html
     networks:
       - sigcoges
 
-  sigcoges_nginx:
-    container_name: sigcoges_nginx
+  nginx:
+    container_name: nginx
     restart: always
     build:
       context: ./docker/nginx
@@ -66,7 +66,7 @@ services:
     ports:
       - 8085:80
     depends_on:
-      - sigcoges_app
+      - app
     networks:
       - sigcoges
       - proxy_1
