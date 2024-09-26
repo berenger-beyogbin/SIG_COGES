@@ -1,0 +1,167 @@
+
+{% extends 'backend/base.html.twig' %}
+
+{% block body %}
+
+    <div id="main-wrapper"  class="show menu-toggle">
+
+        {{ include('backend/_partials/header.html.twig') }}
+        {{ include('backend/_partials/left_sidebar.html.twig') }}
+
+        <div class="content-body">
+            <!-- row -->
+            <div class="page-titles">
+                <ol class="breadcrumb">
+                    <li>
+                        <h5 class="bc-title">Gestion des COGES</h5>
+                    </li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">
+                            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Tableau de bord </a>
+                    </li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">COGES</a></li>
+                </ol>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="table-responsive active-projects style-1">
+                                    <div class="tbl-caption">
+                                        <h4 class="heading mb-0">COGES</h4>
+                                        <div>
+                                            <a class="btn btn-primary btn-sm" id="btnOffCanvasPosteOrgane">+ Enregister un poste organe COGES</a>
+                                        </div>
+                                    </div>
+                                    <div class="row border-1 border-light p-3">
+                                        <div class="col-sm-2">
+                                            <select type="text" class="form-control organe_coges filter" id="organe_coges_filter" name="organe_coges_filter">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <table id="datatable" class="table dataTable no-footer" role="grid" aria-describedby="dt_info">
+                                        <thead>
+                                            <tr role="row">
+                                                <th>#</th>
+                                                <th>LIBELLE</th>
+                                                <th>CYCLE</th>
+                                                <th>N° COMPTE</th>
+                                                <th>DOMICILIATION</th>
+                                                <th>GROUPE SCOLAIRE</th>
+                                                <th>REGION</th>
+                                                <th>DREN</th>
+                                                <th>IEPP</th>
+                                                <th>COMMUNE</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{ include("backend/_partials/footer.html.twig") }}
+
+        {{ include("backend/coges/_poste_organe_offcanvas.html.twig") }}
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var datatable = initDatatable();
+
+            $(".filter").change(function (e) {
+                datatable.draw();
+            });
+
+            $('.organe_coges').select2({
+                placeholder: "ORGANE",
+                allowClear: true,
+                ajax: {
+                    url: '{{ path('app_organe__select2_ajax') }}',
+                    delay: 250,
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+
+
+            function initDatatable(){
+                var dt = $('#datatable').DataTable( {
+                    responsive: true,
+                    pageLength: 10,
+                    dom: 'lpftrip',
+                    searching: false,
+                    select: true,
+                    lengthChange: false,
+                    language: {
+                        //url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
+                        info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                        infoEmpty: "Affichage de 0 à 0 sur 0 entrées",
+                        lengthMenu: "Afficher _MENU_ entrées",
+                        paginate: {
+                            first: '',
+                            last: '',
+                            next: '<i class="fa-solid fa-angle-right"></i>',
+                            previous: '<i class="fa-solid fa-angle-left"></i>'
+                        },
+                        processing: '<i class="fa fa-spinner fa-spin fa-5x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
+                    },
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        "url": '{{ path('app_coges_dt') }}',
+                        "data": function (d) {
+                            d.region_filter = $("#region_filter").val();
+                            d.iepp_filter = $("#iepp_filter").val();
+                            d.commune_filter = $("#commune_filter").val();
+                            d.dren_filter = $("#dren_filter").val();
+                        }
+                    },
+                    columns: [
+                        {"data":  "id"},
+                        {"data":  "coges"},
+                        {"data":  "cycle"},
+                        {"data":  "numero_compte"},
+                        { "data": "domiciliation" },
+                        { "data": "groupe_scolaire" },
+                        { "data": "region" },
+                        { "data": "dren" },
+                        { "data": "iepp" },
+                        { "data": "commune" },
+                        { "data": "iepp_id" }
+                    ],
+                    order: [[1, 'desc']]
+                } );
+                return dt;
+
+            }
+
+            $('#formCreateCoges').ajaxForm(function(d) {
+            }).then(function(result){
+                    $('#formCreateCoges').resetForm();
+                    datatable.draw();
+            });
+        });
+    </script>
+
+{% endblock %}

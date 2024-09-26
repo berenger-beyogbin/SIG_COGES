@@ -1,0 +1,17 @@
+{{ form_start(form) }}
+<div class="row">
+    <div class="col-xl-8 mb-3">
+        {{ form_label(form.libellePoste) }}
+        {{ form_widget(form.libellePoste) }}
+    </div>
+    <div class="col-xl-8 mb-3">
+        {{ form_label(form.organeCoges) }}
+        {{ form_widget(form.organeCoges) }}
+    </div>
+    {{ form_row(form._token) }}
+</div>
+<div class="mt-3">
+    <button type="submit" class="btn btn-primary me-1" data-bs-dismiss="offcanvas">Enregister</button>
+    <span class="btn btn-info light ms-1" id="btnCancel"  data-bs-dismiss="offcanvas">Annuler</span>
+</div>
+{{ form_end(form, {'render_rest': false}) }}

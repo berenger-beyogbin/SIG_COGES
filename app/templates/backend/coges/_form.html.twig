@@ -1,0 +1,55 @@
+{{ form_start(form) }}
+<div class="row">
+    <div class="col-xl-8 mb-3">
+        {{ form_label(form.libelle) }}
+        {{ form_widget(form.libelle) }}
+    </div>
+    <div class="row">
+        <div class="col-xl-6 mb-3">
+            {{ form_label(form.cycle) }}
+            {{ form_widget(form.cycle) }}
+        </div>
+        <div class="col-xl-6 mb-3 pt-4">
+            {{ form_label(form.groupeScolaire) }}
+            {{ form_widget(form.groupeScolaire) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-6 mb-3">
+            {{ form_label(form.numeroCompte) }}
+            {{ form_widget(form.numeroCompte) }}
+        </div>
+        <div class="col-xl-6 mb-3">
+            {{ form_label(form.domiciliation) }}
+            {{ form_widget(form.domiciliation) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-6 mb-3">
+            {{ form_label(form.region) }}
+            {{ form_widget(form.region) }}
+        </div>
+
+        <div class="col-xl-6 mb-3">
+            {{ form_label(form.commune) }}
+            {{ form_widget(form.commune) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-6 mb-3">
+            {{ form_label(form.dren) }}
+            {{ form_widget(form.dren) }}
+        </div>
+        <div class="col-xl-6 mb-3">
+            {{ form_label(form.iepp) }}
+            {{ form_widget(form.iepp) }}
+        </div>
+    </div>
+    {{ form_row(form._token) }}
+    <hr>
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary me-1"><i id="btn-spin" class="fa fa-spinner fa-spin fa-1x"></i> Enregister</button>
+        <span class="btn btn-info light ms-1" id="btnCancel"  data-bs-dismiss="offcanvas">Annuler</span>
+    </div>
+</div>
+{{ form_end(form, {'render_rest': false}) }}

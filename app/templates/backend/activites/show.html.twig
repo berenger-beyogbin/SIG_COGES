@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<title>Activites</title>
+
+{% block body %}
+    <h1>Activites</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ activite.id }}</td>
+            </tr>
+            <tr>
+                <th>LibelleActivite</th>
+                <td>{{ activite.LibelleActivite }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_activites_index') }}">back to list</a>
+
+    <a href="{{ path('app_activites_edit', {'id': activite.id}) }}">edit</a>
+
+    {{ include('activites/_delete_form.html.twig') }}
+{% endblock %}

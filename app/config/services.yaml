@@ -22,3 +22,15 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Helper\CsvReaderHelper:
+        arguments:
+            $container: '@service_container'
+
+    App\Helper\UserHelper:
+        arguments:
+            $uploadDirectory: '%kernel.project_dir%'
+
+    App\Service\DbMetadataService:
+        arguments:
+            $container: '@service_container'

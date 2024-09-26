@@ -1,0 +1,41 @@
+{{ form_start(form) }}
+<div class="row">
+    <div class="col-xl-8 mb-3">
+        {{ form_label(form.nom) }}
+        {{ form_widget(form.nom) }}
+    </div>
+    <div class="col-xl-8 mb-3">
+        {{ form_label(form.localite) }}
+        {{ form_widget(form.localite) }}
+    </div>
+    <div class="col-xl-8 mb-3">
+        {{ form_label(form.typeMilieu) }}
+        {{ form_widget(form.typeMilieu) }}
+    </div>
+    <div class="col-xl-8 mb-3">
+        {{ form_label(form.cycle) }}
+        {{ form_widget(form.cycle) }}
+    </div>
+    <div class="col-xl-8 mb-3">
+        {{ form_label(form.codeEts) }}
+        {{ form_widget(form.codeEts) }}
+    </div>
+    <div class="col-xl-8 mb-3">
+        {{ form_label(form.dren) }}
+        {{ form_widget(form.dren) }}
+    </div>
+    <div class="col-xl-8 mb-3">
+        {{ form_label(form.coges) }}
+        {{ form_widget(form.coges) }}
+    </div>
+    <div class="col-xl-8 mb-3">
+        {{ form_label(form.iepp) }}
+        {{ form_widget(form.iepp) }}
+    </div>
+    <hr>
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary me-1"><i id="btn-spin" class="fa fa-spinner fa-spin fa-1x"></i> Enregister</button>
+        <span class="btn btn-info light ms-1" id="btnCancel"  data-bs-dismiss="offcanvas">Annuler</span>
+    </div>
+</div>
+{{ form_end(form, {'render_rest': false}) }}

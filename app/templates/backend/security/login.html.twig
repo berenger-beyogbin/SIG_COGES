@@ -1,0 +1,49 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}Authentification{% endblock %}
+
+{% block body %}
+     <div class="authincation h-100">
+        <div class="container h-100">
+            <div class="row justify-content-center h-100 align-items-center">
+                <div class="col-md-6">
+                    <div class="authincation-content">
+                        <div class="row no-gutters">
+                            <div class="col-xl-12">
+                                <div class="auth-form">
+                                    <div class="text-center mb-3">
+                                        <a href="{{ path('app_index') }}"><img src="images/logo/logo-full.png" alt=""></a>
+                                    </div>
+                                    <h4 class="text-center mb-4">Authentification</h4>
+                                    {% if error %}
+                                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                    {% endif %}
+
+                                    {% if app.user %}
+                                        <div class="mb-3">
+                                            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                                        </div>
+                                    {% endif %}
+                                    <form method="post">
+                                        <div class="mb-3">
+                                            <label class="mb-1" for="username"><strong>Nom d'utilisateur</strong></label>
+                                            <input type="text" placeholder="Nom d'utilisateur"  value="{{ last_username }}" name="username" id="username" class="form-control" autocomplete="username" required autofocus>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="mb-1" for="password"><strong>Mot de passe</strong></label>
+                                            <input type="password" name="password" id="password" class="form-control" autocomplete="current-password" required>
+                                        </div>
+                                        <div class="text-center mt-4">
+                                            <button type="submit" class="btn btn-primary btn-block">Me connecter</button>
+                                        </div>
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token('authenticate') }}">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

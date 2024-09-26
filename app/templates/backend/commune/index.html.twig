@@ -1,0 +1,219 @@
+
+{% extends 'backend/base.html.twig' %}
+
+{% block body %}
+
+    <div id="main-wrapper"  class="show menu-toggle">
+
+        {{ include('backend/_partials/header.html.twig') }}
+        {{ include('backend/_partials/left_sidebar.html.twig') }}
+
+        <div class="content-body">
+            <!-- row -->
+            <div class="page-titles">
+                <ol class="breadcrumb">
+                    <li>
+                        <h5 class="bc-title">Gestion des COMMUNES</h5>
+                    </li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">
+                            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Tableau de bord </a>
+                    </li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">COMMUNE</a></li>
+                </ol>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="table-responsive active-projects style-1">
+                            <div class="tbl-caption">
+                                <h4 class="heading mb-0">COMMUNES</h4>
+                                <div>
+                                    <span class="btn btn-primary btn-sm" id="btnOffCanvasCommune">+ Enregister un commune</span>
+                                    <a href="{{ path('app_commune_import') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
+                                </div>
+                            </div>
+                            <div class="row border-1 border-light p-3">
+                                <div class="col-sm-2">
+                                    <select type="text" class="form-control region filter" id="region_filter" name="region_filter">
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select type="text" class="form-control commune filter" id="commune_filter" name="commune_filter">
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" placeholder="Recherche rapide" name="filter">
+                                </div>
+                            </div>
+                            <div class="min-vh-100">
+                                <table id="datatable" class="table dataTable no-footer w-auto" role="grid" aria-describedby="dt_info">
+                                    <thead>
+                                    <tr role="row">
+                                        <th>#</th>
+                                        <th>LIBELLE</th>
+                                        <th>DESCRIPTION</th>
+                                        <th width="3%">Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{ include("backend/commune/_commune_offcanvas.html.twig") }}
+
+        {{ include("backend/_partials/footer.html.twig") }}
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/datatables/js/datatables.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var datatable = initDatatable();
+
+            var offcanvasCommune = document.getElementById('offcanvasCommune');
+            var bsoffcanvasCommune = new bootstrap.Offcanvas(offcanvasCommune);
+
+            $(".filter").change(function (e) {
+                datatable.draw();
+            });
+
+            $('.region').select2({
+                placeholder: "REGION",
+                allowClear: true,
+                ajax: {
+                    url: '{{ path('app_region_select2_ajax') }}',
+                    delay: 250,
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+            $('.commune').select2({
+                placeholder: "COMMUNE",
+                allowClear: true,
+                ajax: {
+                    url: '{{ path('app_commune_select2_ajax') }}',
+                    delay: 250,
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+            function initDatatable(){
+                var dt = $('#datatable').DataTable( {
+                    responsive: true,
+                    pageLength: 10,
+                    dom: 'lpftrip',
+                    searching: false,
+                    select: true,
+                    lengthChange: false,
+                    language: {
+                        //url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
+                        info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                        infoEmpty: "Affichage de 0 à 0 sur 0 entrées",
+                        lengthMenu: "Afficher _MENU_ entrées",
+                        paginate: {
+                            first: '',
+                            last: '',
+                            next: '<i class="fa-solid fa-angle-right"></i>',
+                            previous: '<i class="fa-solid fa-angle-left"></i>'
+                        },
+                        processing: '<i class="fa fa-spinner fa-spin fa-5x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
+                    },
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        "url": '{{ path('app_commune_dt') }}',
+                        "data": function (d) {
+                            d.region_filter = $("#region_filter").val();
+                            d.commune_filter = $("#commune_filter").val();
+                        }
+                    },
+                    columns: [
+                        {"data":  "id"},
+                        {"data":  "libelle"},
+                        {"data":  "description"},
+                        { "data": "" },
+                    ],
+                    order: [[0, 'desc']]
+                } );
+                return dt;
+
+            }
+
+            $(document).on("click", "#btnOffCanvasCommune", function(){
+                bsoffcanvasCommune.toggle();
+                $.post("{{ path("app_commune_new") }}", function(response){
+                    $("#commune-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='commune']").attr('action', '{{ path("app_commune_new") }}');
+                });
+            });
+            $(document).on("click", ".btn-edit", function(){
+                bsoffcanvasCommune.toggle();
+                var id = $(this).data('id');
+                $.post("/admin/commune/" + id + "/edit", function(response){
+                    $("#commune-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='commune']").attr('action', "/admin/commune/" + id + "/edit");
+                });
+            });
+            $(document).on("submit", "form[name='commune']", function(event) {
+                event.preventDefault();
+                $(document).find("#btn-spin").show();
+                var form = $("form[name='commune']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(data) {
+                    bsoffcanvasCommune.toggle();
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Enregistrement effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $(document).find("#btn-spin").hide();
+                        $("form[name='commune']").resetForm();
+                        datatable.draw();
+                    });
+                }).fail(function(data) {
+                    // Optionally alert the user of an error here...
+                });
+            });
+
+        });
+    </script>
+
+{% endblock %}

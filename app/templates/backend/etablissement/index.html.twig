@@ -1,0 +1,249 @@
+
+{% extends 'backend/base.html.twig' %}
+
+{% block body %}
+
+    <div id="main-wrapper"  class="show menu-toggle">
+
+        {{ include('backend/_partials/header.html.twig') }}
+        {{ include('backend/_partials/left_sidebar.html.twig') }}
+
+        <div class="content-body">
+            <!-- row -->
+            <div class="page-titles">
+                <ol class="breadcrumb">
+                    <li>
+                        <h5 class="bc-title">Gestion des Etablissements</h5>
+                    </li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">
+                            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Tableau de bord </a>
+                    </li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">ETABLISSEMENTS</a></li>
+                </ol>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="table-responsive active-projects style-1">
+                            <div class="tbl-caption">
+                                <h4 class="heading mb-0">ETABLISSEMENTS</h4>
+                                <div>
+                                    <button class="btn btn-primary btn-sm" id="btnOffCanvasEtablissement">+ Enregister un établissement</button>
+                                    <a href="{{ path('app_etablissement_index') }}" type="button" class="btn btn-secondary btn-sm" style="position:relative;overflow: hidden;">Importer un fichier</a>
+                                </div>
+                            </div>
+                            <div class="row border-1 border-light p-3">
+                                <div class="col-sm-2">
+                                    <select type="text" class="form-control-sm iepp select2 filter" id="iepp_filter" name="iepp_filter">
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select type="text" class="form-control-sm coges select2 filter" id="coges_filter" name="coges_filter">
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select type="text" class="form-control-sm dren select2 filter" id="dren_filter" name="dren_filter">
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control form-control-sm" placeholder="Recherche rapide" name="filter">
+                                </div>
+                            </div>
+                            <table id="datatable" class="table dataTable no-footer" role="grid" aria-describedby="dt_info">
+                                <thead>
+                                <tr role="row">
+                                    <th>#</th>
+                                    <th>NOM</th>
+                                    <th>LOCALITE</th>
+                                    <th>TYPE MILIEU</th>
+                                    <th>CYCLE</th>
+                                    <th>CODE ETABLISSEMENT</th>
+                                    <th width="3%">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{ include("backend/etablissement/_etablissement_offcanvas.html.twig") }}
+
+        {{ include("backend/_partials/footer.html.twig") }}
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var datatable = initDatatable();
+
+            $("i.btn-spin").hide();
+            var offcanvasEtablissement = document.getElementById('offcanvasEtablissement');
+            var bsoffcanvasEtablissement = new bootstrap.Offcanvas(offcanvasEtablissement);
+
+
+            $(".filter").change(function (e) {
+                datatable.draw();
+            });
+
+            $('.coges').select2({
+                allowClear: true,
+                placeholder: "COGES",
+                language: "fr",
+                delay: 250,
+                ajax: {
+                    url: '{{ path('app_coges_select2_ajax') }}',
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+            $('.iepp').select2({
+                allowClear: true,
+                placeholder: "IEPP",
+                language: "fr",
+                delay: 250,
+                ajax: {
+                    url: '{{ path('app_iepp_select2_ajax') }}',
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+            $('.dren').select2({
+                allowClear: true,
+                placeholder: "DREN",
+                language: "fr",
+                delay: 250,
+                ajax: {
+                    url: '{{ path('app_dren_select2_ajax') }}',
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            type: 'public'
+                        }
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    }
+                }
+            });
+
+            function initDatatable(){
+                var dt = $('#datatable').DataTable( {
+                    responsive: true,
+                    pageLength: 10,
+                    dom: 'lpftrip',
+                    searching: false,
+                    select: true,
+                    lengthChange: false,
+                    language: {
+                        //url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
+                        info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                        infoEmpty: "Affichage de 0 à 0 sur 0 entrées",
+                        lengthMenu: "Afficher _MENU_ entrées",
+                        paginate: {
+                            first: '',
+                            last: '',
+                            next: '<i class="fa-solid fa-angle-right"></i>',
+                            previous: '<i class="fa-solid fa-angle-left"></i>'
+                        },
+                        processing: '<i class="fa fa-spinner fa-spin fa-5x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
+                    },
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        "url": '{{ path('app_etablissement_dt') }}',
+                        "data": function (d) {
+                            d.iepp_filter = $("#iepp_filter").val();
+                            d.dren_filter = $("#dren_filter").val();
+                            d.coges_filter = $("#coges_filter").val();
+                        }
+                    },
+                    columns: [
+                        {"data":  "id"},
+                        {"data":  "nom"},
+                        {"data":  "localite"},
+                        { "data": "type_milieu" },
+                        { "data": "cycle" },
+                        { "data": "code_ets" },
+                        { "data": "" },
+                    ],
+                    order: [[1, 'desc']]
+                } );
+                return dt;
+            }
+
+
+            $(document).on("click", "#btnOffCanvasEtablissemnt", function(){
+                bsoffcanvasCoges.toggle();
+                $.post("{{ path("app_etablissement_new") }}", function(response){
+                    $("#etablissement-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='etablissement']").attr('action', '{{ path("app_etablissement_new") }}');
+                });
+            });
+            $(document).on("click", ".btn-edit", function(){
+                bsoffcanvasCoges.toggle();
+                var id = $(this).data('id');
+                $.post("/admin/etablissement/" + id + "/edit", function(response){
+                    $("#etablissement-form-container").html(response);
+                    $(document).find("#btn-spin").hide();
+                    $("form[name='region']").attr('action', "/admin/etablissement/" + id + "/edit");
+                });
+            });
+            $(document).on("submit", "form[name='etablissement']", function(event) {
+                event.preventDefault();
+                $(document).find("#btn-spin").show();
+                var form = $("form[name='etablissement']");
+                var formData = new FormData(form[0]);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(data) {
+                    bsoffcanvasEtablissement.toggle();
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Enregistrement effectuée avec succès",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function (result) {
+                        $(document).find("#btn-spin").hide();
+                        $("form[name='etablissement']").resetForm();
+                        datatable.draw();
+                    });
+                }).fail(function(data) {
+                    // Optionally alert the user of an error here...
+                });
+            });
+
+        });
+    </script>
+
+{% endblock %}

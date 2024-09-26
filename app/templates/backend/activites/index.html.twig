@@ -1,0 +1,118 @@
+
+{% extends 'backend/base.html.twig' %}
+
+{% block body %}
+
+    <div id="main-wrapper"  class="show menu-toggle">
+
+        {{ include('backend/_partials/header.html.twig') }}
+        {{ include('backend/_partials/left_sidebar.html.twig') }}
+
+        <div class="content-body">
+            <!-- row -->
+            <div class="page-titles">
+                <ol class="breadcrumb">
+                    <li>
+                        <h5 class="bc-title">Gestion des activités COGES</h5>
+                    </li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">
+                            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Tableau de bord </a>
+                    </li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Actiités</a></li>
+                </ol>
+                <a class="text-primary fs-13" data-bs-toggle="offcanvas" href="#offcanvasExample1" role="button" aria-controls="offcanvasExample1">+ Add Task</a>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="table-responsive active-projects style-1">
+                                    <div class="tbl-caption">
+                                        <h4 class="heading mb-0">Activités</h4>
+                                        <div>
+                                            <button class="btn btn-primary btn-sm" id="btnOffCanvasActivite">+ Ajouter</button>
+                                        </div>
+                                    </div>
+                                    <div class="min-vh-100">
+                                        <table id="activites-tbl" class="table dataTable no-footer" role="grid" aria-describedby="activites-tbl_info">
+                                            <thead class="datable-thead table-light">
+                                            <tr>
+                                                <th></th>
+                                                <th>Libellé</th>
+                                                <th width="3%">actions</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        {#        {{ include("backend/pages/_add_employee_offcanvas.html.twig")}}#}
+        {#        {{ include("backend/pages/_add_task_offcanvas.html.twig")}}#}
+
+        {{ include("backend/_partials/footer.html.twig") }}
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var datatable = initDatatable();
+
+            function initDatatable(){
+                /* DATATABLE INIT */
+                var dt = $('#activites-tbl').DataTable( {
+                    responsive: true,
+                    pageLength: 10,
+                    dom: 'lpftrip',
+                    processing: true,
+                    serverSide: true,
+                    searching: false,
+                    language: {
+                        //url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
+                        info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                        infoEmpty: "Affichage de 0 à 0 sur 0 entrées",
+                        lengthMenu: "Afficher _MENU_ entrées",
+                        paginate: {
+                            first: '',
+                            last: '',
+                            next: '<i class="fa-solid fa-angle-right"></i>',
+                            previous: '<i class="fa-solid fa-angle-left"></i>'
+                        },
+                        processing: '<i class="fa fa-spinner fa-spin fa-5x fa-fw text-warning"></i><span class="sr-only">Chargement en cours...</span>'
+                    },
+                    ajax: {
+                        "url": '{{ path('app_activites_dt') }}',
+                        "data": function (d) {
+                        }
+                    },
+                    columns: [
+                        { "data": "id" },
+                        { "data":  "libelle_activite" },
+                        { "data": "" }
+                    ],
+                    order: [[0, 'asc']]
+                } );
+
+                return dt;
+            }
+        })
+    </script>
+
+{% endblock %}

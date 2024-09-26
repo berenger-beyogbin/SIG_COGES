@@ -1,0 +1,35 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block body %}
+
+    {{ include('backend/_partials/header.html.twig') }}
+
+    {{ include('backend/_partials/left_sidebar.html.twig') }}
+
+    <table id="iepp-tbl" class="table dataTable no-footer">
+        <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ iepp.id }}</td>
+        </tr>
+        <tr>
+            <th>Libelle</th>
+            <td>{{ iepp.libelle }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>{{ iepp.email }}</td>
+        </tr>
+        <tr>
+            <th>Telephone</th>
+            <td>{{ iepp.Telephone }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    {{ include("backend/_partials/footer.html.twig") }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block title %}Création compte utilisateur!{% endblock %}
+
+{% block body %}
+    <div class="authincation h-100">
+        <div class="container h-100">
+            <div class="row justify-content-center h-100 align-items-center">
+                <div class="col-md-6">
+                    <div class="authincation-content">
+                        <div class="row no-gutters">
+                            <div class="col-xl-12">
+                                <div class="auth-form">
+                                    <div class="text-center mb-3">
+                                        <a href="{{ path('app_index') }}"><img src="images/logo/logo-full.png" alt=""></a>
+                                    </div>
+                                    <h4 class="text-center mb-4">Création de compte utilisateur</h4>
+                                    {% for flash_error in app.flashes('verify_email_error') %}
+                                        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                                    {% endfor %}
+
+                                    {{ form_errors(registrationForm) }}
+
+                                    {{ form_start(registrationForm) }}
+                                        {{ form_row(registrationForm.username, { attr: {class: 'mb-3'} }) }}
+                                        {{ form_row(registrationForm.plainPassword, { attr: {class: 'mb-3'} }) }}
+                                        {{ form_row(registrationForm.email, { attr: {class: 'mb-3'} }) }}
+                                        {{ form_row(registrationForm.agreeTerms, { attr: {class: 'mb-3'} }) }}
+
+                                    <div class="text-center mt-4">
+                                        <button type="submit" class="btn btn-primary btn-block"> Créer le compte</button>
+                                    </div>
+                                    <div class="new-account mt-3">
+                                        <p>Si vous avez déjà un compte ? <a class="text-primary" href="{{ path('app_login') }}">Cliquez ici</a></p>
+                                    </div>
+                                    {{ form_end(registrationForm) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

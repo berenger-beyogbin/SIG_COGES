@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<title>Pacc index</title>
+
+{% block body %}
+    <h1>Pacc index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>DateDebut</th>
+                <th>DateFin</th>
+                <th>CheminFichier</th>
+                <th>NomFichier</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for pacc in paccs %}
+            <tr>
+                <td>{{ pacc.id }}</td>
+                <td>{{ pacc.dateDebut ? pacc.dateDebut|date('Y-m-d') : '' }}</td>
+                <td>{{ pacc.dateFin ? pacc.dateFin|date('Y-m-d') : '' }}</td>
+                <td>{{ pacc.cheminFichier }}</td>
+                <td>{{ pacc.nomFichier }}</td>
+                <td>
+                    <a href="{{ path('app_pacc_show', {'id': pacc.id}) }}">show</a>
+                    <a href="{{ path('app_pacc_edit', {'id': pacc.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_pacc_new') }}">Create new</a>
+{% endblock %}

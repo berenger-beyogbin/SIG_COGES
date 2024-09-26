@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<title>MembreOrgane</title>
+
+{% block body %}
+    <h1>MembreOrgane</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ membre_organe.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ membre_organe.nom }}</td>
+            </tr>
+            <tr>
+                <th>Genre</th>
+                <td>{{ membre_organe.genre }}</td>
+            </tr>
+            <tr>
+                <th>Profession</th>
+                <td>{{ membre_organe.profession }}</td>
+            </tr>
+            <tr>
+                <th>Contact</th>
+                <td>{{ membre_organe.contact }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_membre_organe_index') }}">back to list</a>
+
+    <a href="{{ path('app_membre_organe_edit', {'id': membre_organe.id}) }}">edit</a>
+
+    {{ include('membre_organe/_delete_form.html.twig') }}
+{% endblock %}

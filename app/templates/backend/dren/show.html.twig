@@ -1,0 +1,31 @@
+{% extends 'backend/base.html.twig' %}
+
+{% block body %}
+
+    {{ include('backend/_partials/header.html.twig') }}
+
+    {{ include('backend/_partials/left_sidebar.html.twig') }}
+
+    <table id="dren-tbl" class="table dataTable no-footer">
+        <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ dren.id }}</td>
+        </tr>
+        <tr>
+            <th>Libelle</th>
+            <td>{{ dren.libelle }}</td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td>{{ dren.description }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    {{ include("backend/_partials/footer.html.twig") }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

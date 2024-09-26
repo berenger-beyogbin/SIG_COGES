@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<title>Etablissement</title>
+
+{% block body %}
+    <h1>Etablissement</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ etablissement.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ etablissement.nom }}</td>
+            </tr>
+            <tr>
+                <th>Localite</th>
+                <td>{{ etablissement.localite }}</td>
+            </tr>
+            <tr>
+                <th>TypeMilieu</th>
+                <td>{{ etablissement.typeMilieu }}</td>
+            </tr>
+            <tr>
+                <th>Cycle</th>
+                <td>{{ etablissement.cycle }}</td>
+            </tr>
+            <tr>
+                <th>CodeEts</th>
+                <td>{{ etablissement.codeEts }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_etablissement_index') }}">back to list</a>
+
+    <a href="{{ path('app_etablissement_edit', {'id': etablissement.id}) }}">edit</a>
+
+    {{ include('etablissement/_delete_form.html.twig') }}
+{% endblock %}

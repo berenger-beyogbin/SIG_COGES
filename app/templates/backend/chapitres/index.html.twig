@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<title>Chapitres index</title>
+
+{% block body %}
+    <h1>Chapitres index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>LibelleChapitre</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for chapitre in chapitres %}
+            <tr>
+                <td>{{ chapitre.id }}</td>
+                <td>{{ chapitre.libelleChapitre }}</td>
+                <td>
+                    <a href="{{ path('app_chapitres_show', {'id': chapitre.id}) }}">show</a>
+                    <a href="{{ path('app_chapitres_edit', {'id': chapitre.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_chapitres_new') }}">Create new</a>
+{% endblock %}
